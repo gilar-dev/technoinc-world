@@ -1,0 +1,179 @@
+.menu-panel {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.menu-panel.light {
+    background-color: var(--light-bg-color);
+}
+.menu-panel.dark {
+    background-color: var(--dark-bg-color);
+}
+
+.menu-panel .menu-box {
+    padding: 1em;
+    font-size: 1.5em;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: start;
+    gap: 1em;
+    transition: padding ease .3s;
+    color: #fff;
+    background-color: #000;
+}
+
+.menu-box #menu-btn {
+    font-size: 1.1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    border: none;
+    color: #fff;
+    background-color: transparent
+}
+
+.menu-box #menu-btn:hover {
+    color: rgb(125, 125, 125);
+}
+
+.sidebar-menu {
+    width: 70vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    transform: translateX(-100%);
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    transition: transform ease .5s, background-color ease .5s;
+}
+.light .sidebar-menu {
+    background-color: var(--light-bg-color);
+}
+.light .sidebar-panel,
+.light #sidebar-close-btn,
+.light .sidebar-list,
+.light .list-box,
+.light .menu-panel a,
+.light .menu-panel p {
+    color: #000;
+    transition: color ease .5s;
+}
+.dark .sidebar-menu {
+    background-color: var(--dark-bg-color);
+
+}
+.dark .sidebar-panel,
+.dark #sidebar-close-btn,
+.dark .sidebar-list,
+.dark .list-box,
+.dark .menu-panel a,
+.dark .menu-panel p {
+    color: #fff;
+    transition: color ease .5s;
+}
+
+.sidebar-menu .sidebar-panel {
+    padding: .7em;
+    font-size: 1.3em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-panel #sidebar-close-btn {
+    font-size: .7em;
+    display: flex;
+    align-items: center;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    transition: transform ease .3s;
+}
+
+
+
+.sidebar-panel #sidebar-close-btn:hover {
+    color: rgb(125, 125, 125);
+}
+.sidebar-menu.active {
+    transform: translateX(0);
+}
+.sidebar-menu.active #sidebar-close-btn {
+    transform: rotateZ(180deg)
+}
+
+.menu-panel:has(.sidebar-menu.active) .close-area-btn {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    background-color: rgb(0, 0, 0, .5);
+}
+
+.sidebar-menu .sidebar-list {
+    padding: 1em 1em 0 1em;
+}
+
+.sidebar-menu .sidebar-list input[type="checkbox"] {
+    display: none;
+}
+
+.sidebar-list .list-title {
+    padding: .5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+}
+.light .sidebar-list .list-title {
+    background-color: rgb(210, 205, 175);
+}
+.dark .sidebar-list .list-title {
+    background-color: rgb(35, 45, 65);
+}
+
+.sidebar-list .list-title .dropdown-icon {
+    transform: rotateZ(180deg);
+    transition: transform ease .3s;
+}
+
+.sidebar-list:has(input[type="checkbox"]:checked) .list-title .dropdown-icon {
+    transform: rotateZ(0deg);
+}
+
+.sidebar-list .list-box {
+    max-height: 0;
+    margin-bottom: 1em;
+    padding-left: 1em;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height ease .3s, opacity ease .3s;
+}
+
+.sidebar-list:has(input[type="checkbox"]:checked) .list-box {
+    opacity: 1;
+    max-height: 150px;
+}
+
+.sidebar-list .list-box ul {
+    list-style: none;
+    font-size: 15px;
+}
+
+.list-box a {
+    text-decoration: none;
+}
+
+.list-box ul li {
+    margin-top: 5px;
+}
+
+.list-box.featured ul li {
+    margin-top: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .5em;
+}

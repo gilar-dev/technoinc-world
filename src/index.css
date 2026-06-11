@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Chelsea+Market&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --light-bg-color: rgb(235, 225, 210);
+    --dark-bg-color: rgb(20, 30, 50);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+body.light {
+    background-color: var(--light-bg-color);
+}
+body.light p:not(.unchanged),
+body.light h3:not(.unchanged) {
+    color: #000;
+}
+
+body.dark {
+    background-color: var(--dark-bg-color);
+}
+body.dark p:not(.unchanged),
+body.dark h3:not(.unchanged) {
+    color: #fff;
+}
+
+p {
+    font-family: "Montserrat", Arial, Helvetica, sans-serif;
+    font-weight: 500;
+}
+
+.scroll-effect {
+    opacity: 0;
+    transform: translateY(100%);
+    transition: opacity, transform ease .5s;
+}

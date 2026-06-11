@@ -1,0 +1,98 @@
+.header-container {
+    width: 100%;
+    text-align: center;
+}
+
+.header-container .technoinc-logo {
+    min-height: 800px;
+    position: relative;
+    background-image: url("../assets/technoinc-mc.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.technoinc-logo #linear-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: rgb(20, 30, 50, .7);
+}
+
+.technoinc-logo #title-img {
+    width: 70%;
+    margin-top: 5em;
+    margin-bottom: 5em;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: transform ease 1s, opacity ease 1s;
+}
+
+.technoinc-logo .logo-title-text {
+    margin-bottom: 2em;
+    padding: 1em;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(100%);
+    color: #fff;
+    transition: transform ease 1s, opacity ease 1s;
+}
+
+.logo-title-text h1 {
+    margin-bottom: .3em;
+    font-family: "Chelsea Market", Arial, Helvetica, sans-serif;
+    font-size: 2.3em;
+}
+
+.logo-title-text p {
+    font-family: "Montserrat", Arial, Helvetica, sans-serif;
+    font-weight: 500;
+    line-height: 1.5em;
+}
+
+.header-container ul {
+    padding: 1em;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--dark-bg-color);
+}
+
+.header-container a {
+    padding: 1em;
+    text-decoration: none;
+    color: #faecec;
+}
+
+.header-container a:hover {
+    background-color: #a5a6ac;
+}
+
+@media screen and (min-width: 800px) {
+
+    .technoinc-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .technoinc-logo #title-img {
+        width: 40%;
+        position: absolute;
+        right: 10%;
+    }
+
+    .technoinc-logo .logo-title-text {
+        width: 35%;
+        position: absolute;
+        left: 10%;
+    }
+
+    .logo-title-text h1 {
+        font-size: 5vw;
+    }
+
+    .logo-title-text p {
+        font-size: 1.2vw;
+    }
+}
