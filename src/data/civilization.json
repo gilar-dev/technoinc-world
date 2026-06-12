@@ -2,7 +2,7 @@
     {
         "officialName": "United Lands of Augusta",
         "shortName": "ULA",
-        "capitalCity": "Keralis, M.T.",
+        "capital": "Keralis, M.T.",
         "leader": "Harrison Thorne",
         "flagUrl": "../assets/flag/ula-flag.png",
         "ideology": "Capitalism",
@@ -11,7 +11,7 @@
     {
         "officialName": "People's Sosnev Socialist Republics",
         "shortName": "PSSR",
-        "capitalCity": "Mossgrad",
+        "capital": "Mossgrad",
         "leader": "Reznovich Viktor",
         "flagUrl": "../assets/flag/pssr-flag.png",
         "ideology": "Communism",
