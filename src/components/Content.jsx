@@ -23,7 +23,7 @@ function Content() {
                         <h3 className="scroll-effect">⚔️ War & Love</h3>
                         <p className="scroll-effect">
                             Participate in intense, wild raids and strategic conflicts. Victory isn't just 
-                            about strength—it's about coordination, leadershipn and love.
+                            about strength—it's about coordination, leadership and love.
                         </p>
                     </div>
                 </div>

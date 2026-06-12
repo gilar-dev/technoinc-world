@@ -15,12 +15,12 @@ function Footer() {
         <footer>
             <p className="scroll-effect unchanged">&copy; Copyright {new Date().getFullYear()} <strong>TechnoInc</strong>. All rights reserved.</p>
             <span className="scroll-effect">
-                <a href="#" target="_blank" title="Instagram">
+                <a href="https://www.instagram.com/_glrin?igsh=MW5vMWhlMXZqZmJvNA==" target="_blank" title="Instagram">
                     <i className="fa-brands fa-instagram"></i>
                 </a>
             </span>
             <span className="scroll-effect">
-                <a href="#" target="_blank" title="GitHub">
+                <a href="https://www.github.com/gilar-dev" target="_blank" title="GitHub">
                     <i className="fa-brands fa-github"></i>
                 </a>
             </span>

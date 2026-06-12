@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react"
-import "../css/Menu.css"
+import { useState, useEffect } from "react";
+import "../css/Menu.css";
 
 function Menu({ theme, themeToggle }) {
     const [isActive, setIsActive] = useState();
@@ -26,6 +26,9 @@ function Menu({ theme, themeToggle }) {
             window.removeEventListener("scroll", scrollMovement);
         }
     }, []);
+
+    // Automatically close the sidebar menu when theme is switched
+    useEffect(() => setIsActive(!isActive), [theme]) 
 
     return(
         <section className={`menu-panel ${theme}`}>
@@ -100,4 +103,4 @@ function Menu({ theme, themeToggle }) {
     );
 }
 
-export default Menu
+export default Menu;
