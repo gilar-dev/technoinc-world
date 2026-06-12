@@ -1,20 +1,82 @@
 [
     {
+        "id": "ula",
+        "category": "Civilization",
         "officialName": "United Lands of Augusta",
+        "nativeName": "The United Lands of Augusta",
+        "latinization": "",
         "shortName": "ULA",
         "capital": "Keralis, M.T.",
+        "capitalUrl": "",
         "leader": "Harrison Thorne",
-        "flagUrl": "../assets/flag/ula-flag.png",
+        "leaderUrl": "https://p.novaskin.me/5093163314.png",
+        "flagUrl": "../assets/flags/ula-flag.png",
         "ideology": "Capitalism",
+        "parties": [
+            {
+                "id": "ula-fp",
+                "officialName": "The Federal Party",
+                "nativeName": "The Federal Party",
+                "latinization": ""
+            },
+            {
+                "id": "ula-lp",
+                "officialName": "The Liberty Party",
+                "nativeName": "The Liberty Party",
+                "latinization": ""
+            }
+        ],
+        "towns": [
+            "Keralis, M.T.",
+            "Sanfostone",
+            "Moana",
+            "New Port"
+        ],
+        "regions": [
+            "Land of Technoland",
+            "Land of Cismont",
+            "Land of Moana",
+            "Land of Mesada",
+            "Land of New Port",
+            "Land of Wenaska",
+            "Land of Calidonia"
+        ],
         "description": "A superpower civilization with capitalism ideology"
     },
     {
+        "id": "pssr",
+        "category": "Civilization",
         "officialName": "People's Sosnev Socialist Republics",
+        "nativeName": "Народные Сосневские Социалистические Республики",
+        "latinization": "Narodnyye Sosnevskiye Sotsialisticheskiye Respubliki",
         "shortName": "PSSR",
         "capital": "Mossgrad",
+        "capitalUrl": "",
         "leader": "Reznovich Viktor",
-        "flagUrl": "../assets/flag/pssr-flag.png",
+        "leaderUrl": "https://s.namemc.com/3d/skin/body.png?id=dcbb35e49415292d&model=classic&width=308&height=308",
+        "flagUrl": "../assets/flags/pssr-flag.png",
         "ideology": "Communism",
+        "parties": [
+            {
+                "id": "pssr-cpsp",
+                "officialName": "Communist Party of Sosnev People",
+                "nativeName": "Коммунистическая Партия Сосневского Народа",
+                "latinization": "Kommunisticheskaya Partiya Sosnevskogo Naroda"
+            }
+        ],
+        "towns": [
+            "Mossgrad",
+            "Saint-Poluostrov"
+        ],
+        "regions": [
+            "Rodinan SSR",
+            "Urnian SSR",
+            "Belarodinan SSR",
+            "Sigiz SSR",
+            "Kishik SSR",
+            "Tarkan SSR",
+            "Ashkod SSR"
+        ],
         "description": "A superpower civilization with communism ideology"
     }
 ]

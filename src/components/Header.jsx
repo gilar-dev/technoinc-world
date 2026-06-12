@@ -1,6 +1,6 @@
-import { useEffect } from "react"
-import "../css/Header.css"
-import image from "../assets/technoinc-logo.png"
+import { useEffect } from "react";
+import "../css/Header.css";
+import image from "../assets/icons/technoinc-logo.png";
 
 function Header() {
 
@@ -15,7 +15,7 @@ function Header() {
         logoTitleText.style.opacity = "1";
     }, []);
 
-    return(
+    return (
         <header className="header-container">
             <div className="technoinc-logo">
                 <div id="linear-bg"></div>

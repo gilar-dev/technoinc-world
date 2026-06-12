@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import "../css/Menu.css";
 
-function Menu({ theme, themeToggle }) {
-    const [isActive, setIsActive] = useState();
+function Menu({ theme, themeToggle, sidebarStats }) {
 
-    const sidebarMenuClicked = () => setIsActive(!isActive);
+    // Set the value of isActive for sidebar menu
+    const sidebarMenuClicked = () => sidebarStats[1](sidebarStats[0] === "active" ? "" : "active");
 
     useEffect(() => {
         const menuBox = document.querySelector(".menu-box");
@@ -27,10 +27,7 @@ function Menu({ theme, themeToggle }) {
         }
     }, []);
 
-    // Automatically close the sidebar menu when theme is switched
-    useEffect(() => setIsActive(!isActive), [theme]) 
-
-    return(
+    return (
         <section className={`menu-panel ${theme}`}>
 
             <div className="menu-box">
@@ -48,7 +45,7 @@ function Menu({ theme, themeToggle }) {
                 onClick={sidebarMenuClicked}>
             </div>
 
-            <div className={`sidebar-menu ${isActive ? "active" : ""}`}>
+            <div className={`sidebar-menu ${sidebarStats[0] ? "active" : ""}`}>
                 <div className="sidebar-panel">
                     <h6>TechnoInc MC Wiki</h6>
                     <button 

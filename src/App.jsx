@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 // Import custom components
 import Menu from "./components/Menu.jsx";
 import Header from "./components/Header.jsx";
-import Civilization from "./components/Civilization.jsx";
+import Article from "./components/Article.jsx";
 import Content from "./components/Content.jsx";
 import Faq from "./components/Faq.jsx";
 import Footer from "./components/Footer.jsx";
@@ -12,6 +12,9 @@ import Footer from "./components/Footer.jsx";
 import data from "./data/civilization.json";
 
 function App() {
+
+  // Set the status of sidebar menu
+  const [isActive, setIsActive] = useState();
     
   // Set the theme of website
   const[theme, setTheme] = useState(() => {
@@ -21,6 +24,7 @@ function App() {
   // A switch to move to different theme
   const themeToggle = () => {
     setTheme(theme === "light" ? "dark" : "light");
+    setIsActive(isActive === "active" ? "" : "active")
   }
 
   // Read the value of theme when changing
@@ -52,9 +56,9 @@ function App() {
     }
   }, []);
 
-  return(
+  return (
     <>
-      <Menu theme={theme} themeToggle={themeToggle} />
+      <Menu theme={theme} themeToggle={themeToggle} sidebarStats={[isActive, setIsActive]} />
       <Header />
       <Content />
       <Faq />

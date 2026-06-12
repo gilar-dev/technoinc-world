@@ -5,7 +5,8 @@ import './index.css';
 import App from './App.jsx';
 
 const routePathes = createBrowserRouter([
-  { path: "/", element: <App/> }
+  { path: "/", element: <App /> },
+  { path: "*", element: <App /> }
 ]);
 
 createRoot(document.getElementById('root')).render(

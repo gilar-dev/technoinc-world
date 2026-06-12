@@ -1,0 +1,33 @@
+{
+    "trendingArticles": [
+        {
+            "id": 1,
+            "title": "ULA",
+            "imageUrl": "../assets/flags/ula-flag.png"
+        },
+        {
+            "id": 2,
+            "title": "PSSR",
+            "imageUrl": "../assets/flags/pssr-flag.png"
+        },
+        {
+            "id": 3,
+            "title": "Versaly",
+            "imageUrl": "../assets/flags/versaly-flag.png"
+        }
+    ],
+    "popularCategories": [
+        {
+            "title": "Civilizations",
+            "imageUrl": ""
+        },
+        {
+            "title": "Organizations",
+            "imageUrl": ""
+        },
+        {
+            "title": "",
+            "imageUrl": ""
+        }
+    ]
+}

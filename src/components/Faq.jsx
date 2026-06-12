@@ -24,7 +24,7 @@ function Faq() {
             <div className="faq-box">
                 <h1 className="scroll-effect">FAQ</h1>
                 <div className="question-box">
-                    <input name="faq-checks" id="question-1" type="radio" checked={selectedValue === "question-1"}></input>
+                    <input name="faq-checks" id="question-1" type="radio" checked={selectedValue === "question-1"} readOnly></input>
                     <label htmlFor="question-1" onClick={() => showAnswer("question-1")}>
                         <h3>What is TechnoInc?</h3>
                         <i className="fa-solid fa-angle-down"></i>
@@ -36,7 +36,7 @@ function Faq() {
                 </div>
 
                 <div className="question-box">
-                    <input name="faq-checks" id="question-2" type="radio" checked={selectedValue === "question-2"}></input>
+                    <input name="faq-checks" id="question-2" type="radio" checked={selectedValue === "question-2"} readOnly></input>
                     <label htmlFor="question-2" onClick={() => showAnswer("question-2")}>
                         <h3>How do civilizations work?</h3>
                         <i className="fa-solid fa-angle-down"></i>
@@ -49,7 +49,7 @@ function Faq() {
                 </div>
 
                 <div className="question-box">
-                    <input name="faq-checks" id="question-3" type="radio" checked={selectedValue === "question-3"}></input>
+                    <input name="faq-checks" id="question-3" type="radio" checked={selectedValue === "question-3"} readOnly></input>
                     <label htmlFor="question-3" onClick={() => showAnswer("question-3")}>
                         <h3>Do I need to learn about history to understand this world?</h3>
                         <i className="fa-solid fa-angle-down"></i>
@@ -61,7 +61,7 @@ function Faq() {
                 </div>
 
                 <div className="question-box">
-                    <input name="faq-checks" id="question-4" type="radio" checked={selectedValue === "question-4"}></input>
+                    <input name="faq-checks" id="question-4" type="radio" checked={selectedValue === "question-4"} readOnly></input>
                     <label htmlFor="question-4" onClick={() => showAnswer("question-4")}>
                         <h3>Why does player create this world?</h3>
                         <i className="fa-solid fa-angle-down"></i>
@@ -74,7 +74,7 @@ function Faq() {
                 </div>
 
                 <div className="question-box">
-                    <input name="faq-checks" id="question-5" type="radio" checked={selectedValue === "question-5"}></input>
+                    <input name="faq-checks" id="question-5" type="radio" checked={selectedValue === "question-5"} readOnly></input>
                     <label htmlFor="question-5" onClick={() => showAnswer("question-5")}>
                         <h3>What makes TechnoInc different from other worlds?</h3>
                         <i className="fa-solid fa-angle-down"></i>

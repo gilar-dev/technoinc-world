@@ -6,7 +6,7 @@
 .header-container .technoinc-logo {
     min-height: 800px;
     position: relative;
-    background-image: url("../assets/technoinc-mc.jpg");
+    background-image: url("../assets/icons/technoinc-header-bg.jpg");
     background-size: cover;
     background-position: center;
 }

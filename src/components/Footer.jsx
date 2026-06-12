@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import "../css/Footer.css"
+import "../css/Footer.css";
 
 function Footer() {
 
@@ -11,7 +11,7 @@ function Footer() {
         window.addEventListener
     }, []);
 
-    return(
+    return (
         <footer>
             <p className="scroll-effect unchanged">&copy; Copyright {new Date().getFullYear()} <strong>TechnoInc</strong>. All rights reserved.</p>
             <span className="scroll-effect">
