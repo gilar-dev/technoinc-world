@@ -3,12 +3,12 @@
         {
             "id": 1,
             "title": "United Lands of Augusta",
-            "imageUrl": "/src/assets/flags/ula-flag.png"
+            "imageUrl": "/assets/flags/ula-flag.png"
         },
         {
             "id": 2,
             "title": "United Civilizations",
-            "imageUrl": "/src/assets/organizations/uc-logo-org.png"
+            "imageUrl": "/assets/organizations/uc-logo-org.png"
         },
         {
             "id": 3,
@@ -18,14 +18,14 @@
         {
             "id": 4,
             "title": "People's Sosnev Socialist Republics",
-            "imageUrl": "/src/assets/flags/pssr-flag.png"
+            "imageUrl": "/assets/flags/pssr-flag.png"
         }
     ],
     "popularCategories": [
         {
             "id": 1,
             "title": "Civilizations",
-            "imageUrl": "/src/assets/icons/technoinc-header-bg.jpg"
+            "imageUrl": "/assets/icons/technoinc-header-bg.jpg"
         },
         {
             "id": 2,
@@ -35,12 +35,12 @@
         {
             "id": 3,
             "title": "Organizations",
-            "imageUrl": "/src/assets/organizations/uc-headquarters-org.jpg"
+            "imageUrl": "/assets/organizations/uc-headquarters-org.jpg"
         },
         {
             "id": 4,
             "title": "Towns",
-            "imageUrl": "/src/assets/towns/keralis-mt-town.jpg"
+            "imageUrl": "/assets/towns/keralis-mt-town.jpg"
         }
     ]
 }

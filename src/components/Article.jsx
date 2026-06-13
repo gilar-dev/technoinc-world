@@ -2,7 +2,7 @@ import arc from "../data/article.json";
 import "../css/Article.css";
 
 function Article() {
-
+    
     const trendingArticles = arc.trendingArticles.map(item => (
         <div key={item.id} className="article-card">
             <img src={item.imageUrl}></img>

@@ -18,7 +18,7 @@ function Header() {
         <header className="header-container">
             <div className="technoinc-logo">
                 <div id="linear-bg"></div>
-                <img id="title-img" src="/src/assets/icons/technoinc-logo.png"></img>
+                <img id="title-img" src="/assets/icons/technoinc-logo.png"></img>
                 <div className="logo-title-text">
                     <h1>A World of TechnoInc</h1>
                     <p className="unchanged">
