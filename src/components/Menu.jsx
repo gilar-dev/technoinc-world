@@ -70,6 +70,7 @@ function Menu({ theme, themeToggle, sidebarStats }) {
                             <li><a href="#">Ideologies</a></li>
                             <li><a href="#">Organizations</a></li>
                             <li><a href="#">Parties</a></li>
+                            <li><a href="#">Towns</a></li>
                         </ul>
                     </div>
                 </div>

@@ -60,6 +60,7 @@ function App() {
     <>
       <Menu theme={theme} themeToggle={themeToggle} sidebarStats={[isActive, setIsActive]} />
       <Header />
+      <Article />
       <Content />
       <Faq />
       <Footer />
