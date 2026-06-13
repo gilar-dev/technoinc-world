@@ -12,15 +12,17 @@
 }
 
 .menu-panel .menu-box {
-    padding: 1em;
+    padding: .5em;
     font-size: 1.5em;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
-    gap: 1em;
-    transition: padding ease .3s;
+    gap: .6em;
+    border: solid rgb(85, 85, 85);
+    border-width: 1px 0 1px 0;
     color: #fff;
     background-color: #000;
+    transition: padding ease .3s;
 }
 
 .menu-box #menu-btn {
@@ -36,6 +38,10 @@
 
 .menu-box #menu-btn:hover {
     color: rgb(125, 125, 125);
+}
+
+.menu-box div #title.bellow {
+    font-size: .5em;
 }
 
 .sidebar-menu {
@@ -92,7 +98,9 @@
     transition: transform ease .3s;
 }
 
-
+.menu-box:has(#wiki-title) #title {
+    font-size: .5em;
+}
 
 .sidebar-panel #sidebar-close-btn:hover {
     color: rgb(125, 125, 125);
@@ -162,12 +170,9 @@
     font-size: 15px;
 }
 
-.list-box a {
-    text-decoration: none;
-}
-
 .list-box ul li {
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .list-box.featured ul li {

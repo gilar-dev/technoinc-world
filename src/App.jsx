@@ -13,28 +13,6 @@ import data from "./data/civilization.json";
 
 function App() {
 
-  // Set the status of sidebar menu
-  const [isActive, setIsActive] = useState();
-    
-  // Set the theme of website
-  const[theme, setTheme] = useState(() => {
-    return localStorage.getItem("technoinc-theme") || "light";
-  });
-  
-  // A switch to move to different theme
-  const themeToggle = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-    setIsActive(isActive === "active" ? "" : "active")
-  }
-
-  // Read the value of theme when changing
-  useEffect(() => {
-
-    localStorage.setItem("technoinc-theme", theme);
-    document.body.classList.remove(theme === "light" ? "dark" : "light");
-    document.body.classList.add(theme);
-  }, [theme]);
-
   // Apply a show-up effect to element with specific class
   useEffect(() => {
 
@@ -49,16 +27,18 @@ function App() {
       });
     }
 
+    // Add event listener to handle scroll event
     window.addEventListener("scroll", scrollShowUp);
 
     return () => {
+      // Remove event listener from window when component is unbounded
       window.removeEventListener("scroll", scrollShowUp);
     }
   }, []);
 
   return (
     <>
-      <Menu theme={theme} themeToggle={themeToggle} sidebarStats={[isActive, setIsActive]} />
+      <Menu />
       <Header />
       <Article />
       <Content />

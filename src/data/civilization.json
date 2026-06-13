@@ -7,10 +7,10 @@
         "latinization": "",
         "shortName": "ULA",
         "capital": "Keralis, M.T.",
-        "capitalUrl": "",
+        "capitalUrl": "/assets/towns/keralis-mt-town.jpg",
         "leader": "Harrison Thorne",
         "leaderUrl": "https://p.novaskin.me/5093163314.png",
-        "flagUrl": "../assets/flags/ula-flag.png",
+        "flagUrl": "/assets/flags/ula-flag.png",
         "ideology": "Capitalism",
         "parties": [
             {

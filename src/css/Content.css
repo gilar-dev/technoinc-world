@@ -53,6 +53,7 @@
 
 .activity-box p {
     font-size: .95em;
+    font-weight: 500;
 }
 
 @media screen and (min-width: 900px) {

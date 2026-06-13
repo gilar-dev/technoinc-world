@@ -1,17 +1,42 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "../css/Menu.css";
 
-function Menu({ theme, themeToggle, sidebarStats }) {
+function Menu({ wikiTitle }) {
+
+    // Set the status of sidebar menu
+    const [isActive, setIsActive] = useState("");
+
+    // Define the website theme color
+    const [theme, setTheme] = useState(
+        localStorage.getItem("technoinc-theme") || "light"
+    );
+
+    // Function to switch to different theme
+    const themeToggle = () => {
+        setTheme(theme === "light" ? "dark" : "light");
+        setIsActive(isActive === "active" ? "" : "active")
+    }
 
     // Set the value of isActive for sidebar menu
-    const sidebarMenuClicked = () => sidebarStats[1](sidebarStats[0] === "active" ? "" : "active");
+    const sidebarMenuClicked = () => setIsActive(isActive === "" ? "active" : "");
 
+    const wikiTitleCheck = wikiTitle !== undefined && <h6 id="wiki-title">{wikiTitle}</h6>;
+
+    // Read the value of theme when changes
+    useEffect(() => {
+        localStorage.setItem("technoinc-theme", theme);
+        document.body.classList.remove(theme === "light" ? "dark" : "light");
+        document.body.classList.add(theme);
+    }, [theme]);
+
+    // Menu effect when the page is being scrolled
     useEffect(() => {
         const menuBox = document.querySelector(".menu-box");
         
         const scrollMovement = () => {
-            if (window.scrollY === 0) menuBox.style.padding = "1em";
-            else menuBox.style.padding = ".8em";
+            if (window.scrollY === 0) menuBox.style.padding = ".7em";
+            else menuBox.style.padding = ".5em";
         }
 
         for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
@@ -27,6 +52,16 @@ function Menu({ theme, themeToggle, sidebarStats }) {
         }
     }, []);
 
+    // List of category in sidebar menu
+    const categoryList = [
+        "Civilizations",
+        "Characters",
+        "Ideologies",
+        "Organizations",
+        "Parties",
+        "Towns",
+    ];
+
     return (
         <section className={`menu-panel ${theme}`}>
 
@@ -37,7 +72,10 @@ function Menu({ theme, themeToggle, sidebarStats }) {
                     onClick={sidebarMenuClicked}>
                     <i className="fa-solid fa-bars"></i>
                 </button>
-                <h6>TechnoInc MC Wiki</h6>
+                <div>
+                    {wikiTitleCheck}
+                    <h6 id="title">TechnoInc MC Wiki</h6>
+                </div>
             </div>
 
             <div
@@ -45,7 +83,7 @@ function Menu({ theme, themeToggle, sidebarStats }) {
                 onClick={sidebarMenuClicked}>
             </div>
 
-            <div className={`sidebar-menu ${sidebarStats[0] ? "active" : ""}`}>
+            <div className={`sidebar-menu ${isActive}`}>
                 <div className="sidebar-panel">
                     <h6>TechnoInc MC Wiki</h6>
                     <button 
@@ -64,14 +102,16 @@ function Menu({ theme, themeToggle, sidebarStats }) {
                         </span>
                     </label>
                     <div className="list-box">
-                        <ul>
-                            <li><a href="#">Civilizations</a></li>
-                            <li><a href="#">Characters</a></li>
-                            <li><a href="#">Ideologies</a></li>
-                            <li><a href="#">Organizations</a></li>
-                            <li><a href="#">Parties</a></li>
-                            <li><a href="#">Towns</a></li>
-                        </ul>
+                        <ul>{
+                            categoryList.map(item =>
+                            <Link 
+                                key={item}
+                                to={`/category/${item.toLowerCase()}`}
+                                onClick={sidebarMenuClicked}
+                                style={{textDecoration: "none"}}>
+                                <li>{item}</li>
+                            </Link>)
+                        }</ul>
                     </div>
                 </div>
                 <div className="sidebar-list">
@@ -90,7 +130,7 @@ function Menu({ theme, themeToggle, sidebarStats }) {
                             </li>
                             <li>
                                 <i className="fa-regular fa-map"></i>
-                                <a href="#">Interactive map</a>
+                                <p>Interactive map</p>
                             </li>
                         </ul>
                     </div>
