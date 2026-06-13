@@ -1,0 +1,10 @@
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[[redirects]]
+from = "https://netlify.app*"
+to = "https://netlify.world"
+status = 301
+force = true
