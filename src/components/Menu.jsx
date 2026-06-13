@@ -37,7 +37,7 @@ function Menu({ theme, themeToggle, sidebarStats }) {
                     onClick={sidebarMenuClicked}>
                     <i className="fa-solid fa-bars"></i>
                 </button>
-            <h6>TechnoInc MC Wiki</h6>
+                <h6>TechnoInc MC Wiki</h6>
             </div>
 
             <div
