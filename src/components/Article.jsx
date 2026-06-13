@@ -3,34 +3,22 @@ import "../css/Article.css";
 
 function Article() {
 
-    const trendingArticles = arc.trendingArticles.map(item => {
+    const trendingArticles = arc.trendingArticles.map(item => (
+        <div key={item.id} className="article-card">
+            <img src={item.imageUrl}></img>
+            <p className="unchanged">{item.title}</p>
+        </div>
+    ));
 
-        // Get the path of url to get the trending article images
-        const imgUrl = new URL(item.imageUrl, import.meta.url).href;
-
-        return (
-            <div key={item.id} className="article-card">
-                <img src={imgUrl}></img>
+    const popularCategories = arc.popularCategories.map(item => (
+        <div key={item.id} className="category-card">
+            <img src={item.imageUrl}></img>
+            <div>
                 <p className="unchanged">{item.title}</p>
+                <i className="fa-solid fa-border-all"></i>
             </div>
-        )
-    });
-
-    const popularCategories = arc.popularCategories.map(item => {
-
-        // Get the path of url to get the popular category images
-        const imgUrl = new URL(item.imageUrl, import.meta.url).href;
-
-        return (
-            <div key={item.id} className="category-card">
-                <img src={imgUrl}></img>
-                <div>
-                    <p className="unchanged">{item.title}</p>
-                    <i className="fa-solid fa-border-all"></i>
-                </div>
-            </div>
-        )
-    });
+        </div>
+    ));
 
     return (
         <section className="article-container">
