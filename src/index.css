@@ -20,26 +20,51 @@ body {
 body.light {
     background-color: var(--light-theme-color);
 }
-body.light p:not(.unchanged),
-body.light h3:not(.unchanged) {
+body.light > :not(.unchanged) {
     color: #000;
 }
 
 body.dark {
     background-color: var(--dark-theme-color);
 }
-body.dark p:not(.unchanged),
-body.dark h3:not(.unchanged) {
+body.dark > :not(.unchanged) {
     color: #fff;
 }
 
+img {
+    image-rendering: pixelated;
+}
+
 p {
-    font-family: "Montserrat", Arial, Helvetica, sans-serif;
     font-weight: 500;
+}
+
+a {
+    text-decoration: none;
 }
 
 .scroll-effect {
     opacity: 0;
     transform: translateY(100%);
     transition: opacity, transform ease .5s;
+}
+
+.react-router-link {
+    text-decoration: none;
+}
+
+.highlight {
+    display: inline-flex;
+    justify-content: center;
+    position: relative;
+}
+
+.highlight::before {
+    content: "";
+    width: calc(100% + 6px);
+    height: 45%;
+    position: absolute;
+    bottom: 0;
+    z-index: -1;
+    background-color: rgba(200, 200, 200, .5);
 }

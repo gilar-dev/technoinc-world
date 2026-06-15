@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { categoryList } from "../main.jsx";
 import "../css/Menu.css";
 
-function Menu({ wikiTitle }) {
+function Menu({wikiTitle = ""}) {
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
@@ -21,7 +22,7 @@ function Menu({ wikiTitle }) {
     // Set the value of isActive for sidebar menu
     const sidebarMenuClicked = () => setIsActive(isActive === "" ? "active" : "");
 
-    const wikiTitleCheck = wikiTitle !== undefined && <h6 id="wiki-title">{wikiTitle}</h6>;
+    const wikiTitleCheck = wikiTitle !== "" && <h6 id="wiki-title">{wikiTitle}</h6>;
 
     // Read the value of theme when changes
     useEffect(() => {
@@ -52,16 +53,6 @@ function Menu({ wikiTitle }) {
         }
     }, []);
 
-    // List of category in sidebar menu
-    const categoryList = [
-        "Civilizations",
-        "Characters",
-        "Ideologies",
-        "Organizations",
-        "Parties",
-        "Towns",
-    ];
-
     return (
         <section className={`menu-panel ${theme}`}>
 
@@ -74,7 +65,7 @@ function Menu({ wikiTitle }) {
                 </button>
                 <div>
                     {wikiTitleCheck}
-                    <h6 id="title">TechnoInc MC Wiki</h6>
+                    <h6 id="title" className="unchanged">TechnoInc MC Wiki</h6>
                 </div>
             </div>
 
@@ -85,7 +76,9 @@ function Menu({ wikiTitle }) {
 
             <div className={`sidebar-menu ${isActive}`}>
                 <div className="sidebar-panel">
-                    <h6>TechnoInc MC Wiki</h6>
+                    <a href="/" title="Home">
+                        <h6>TechnoInc MC Wiki</h6>
+                    </a>
                     <button 
                         id="sidebar-close-btn"
                         title="Close sidebar menu"
@@ -102,16 +95,13 @@ function Menu({ wikiTitle }) {
                         </span>
                     </label>
                     <div className="list-box">
-                        <ul>{
-                            categoryList.map(item =>
-                            <Link 
-                                key={item}
-                                to={`/category/${item.toLowerCase()}`}
-                                onClick={sidebarMenuClicked}
-                                style={{textDecoration: "none"}}>
-                                <li>{item}</li>
-                            </Link>)
-                        }</ul>
+                        <ul>
+                            {categoryList.map((item, idx) =>
+                                <a key={idx} href={`/category/${item}`}>
+                                    <li>{item}</li>
+                                </a>
+                            )}
+                        </ul>
                     </div>
                 </div>
                 <div className="sidebar-list">
@@ -139,6 +129,11 @@ function Menu({ wikiTitle }) {
 
         </section>
     );
+}
+
+// Define the Menu props data type
+Menu.PropTypes = {
+    wikiTitle: PropTypes.string
 }
 
 export default Menu;

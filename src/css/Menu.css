@@ -12,7 +12,7 @@
 }
 
 .menu-panel .menu-box {
-    padding: .5em;
+    padding: .7em;
     font-size: 1.5em;
     letter-spacing: 1px;
     display: flex;
@@ -45,7 +45,7 @@
 }
 
 .sidebar-menu {
-    width: 70vw;
+    width: 350px;
     height: 100vh;
     position: absolute;
     top: 0;
@@ -68,7 +68,6 @@
 }
 .dark .sidebar-menu {
     background-color: var(--dark-theme-color);
-
 }
 .dark .sidebar-panel,
 .dark #sidebar-close-btn,
@@ -181,4 +180,27 @@
     display: flex;
     align-items: center;
     gap: .5em;
+}
+
+@media screen and (min-width: 1200px) {
+    body {
+        padding-left: 350px;
+    }
+
+    .sidebar-menu {
+        transform: translateX(-100%);
+        border-right: 1px solid rgb(85, 85, 85);
+        border-radius: 0;
+        background-color: #000;
+    }
+
+    .sidebar-menu.active {
+        transform: translateX(-100%);
+    }
+
+    .menu-box #menu-btn,
+    .close-area-btn,
+    .sidebar-panel #sidebar-close-btn {
+        display: none;
+    }
 }

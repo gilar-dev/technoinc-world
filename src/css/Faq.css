@@ -3,6 +3,7 @@
     padding: 3em;
     border-left: 3px solid rgb(0, 175, 255);
     border-radius: 5px;
+    color: #000;
     background-color: rgb(190, 190, 190);
 }
 
@@ -16,7 +17,6 @@
 
 .faq-container .faq-box {
     padding: .7em;
-    color: #fff;
 }
 
 .faq-box input[type="radio"] {

@@ -96,3 +96,19 @@
         font-size: 1.2vw;
     }
 }
+
+@media screen and (min-width: 1200px) {
+    .technoinc-logo #title-img {
+        width: 35%;
+        position: absolute;
+        right: 10%;
+    }
+
+    .logo-title-text h1 {
+        font-size: 3vw;
+    }
+
+    .logo-title-text p {
+        font-size: 1vw;
+    }
+}

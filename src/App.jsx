@@ -1,6 +1,3 @@
-import { useState, useEffect } from "react";
-
-// Import custom components
 import Menu from "./components/Menu.jsx";
 import Header from "./components/Header.jsx";
 import Article from "./components/Article.jsx";
@@ -8,8 +5,7 @@ import Content from "./components/Content.jsx";
 import Faq from "./components/Faq.jsx";
 import Footer from "./components/Footer.jsx";
 
-// Import another file
-import data from "./data/civilization.json";
+import { useState, useEffect } from "react";
 
 function App() {
 
@@ -43,7 +39,7 @@ function App() {
       <Article />
       <Content />
       <Faq />
-      <Footer />
+      <Footer effect="scroll-effect" />
     </>
   );
 }

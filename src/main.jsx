@@ -5,11 +5,22 @@ import './index.css';
 
 // Import local components
 import App from './App.jsx';
-import Category from "./components/Category.jsx";
+import CategoryPage from "./components/CategoryPage.jsx";
+import ContentPage from './components/ContentPage.jsx';
+
+export const categoryList = [
+  "Civilizations",
+  "Characters",
+  "Ideologies",
+  "Organizations",
+  "Parties",
+  "Towns"
+];
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
-  { path:"/category/:categoryName", element: <Category /> }
+  { path: "/category/:categoryName", element: <CategoryPage /> },
+  { path: "/category/:categoryName/:contentId", element: <ContentPage />}
 ]);
 
 createRoot(document.getElementById('root')).render(

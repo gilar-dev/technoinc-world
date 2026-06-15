@@ -54,7 +54,7 @@
         "capitalUrl": "",
         "leader": "Reznovich Viktor",
         "leaderUrl": "https://s.namemc.com/3d/skin/body.png?id=dcbb35e49415292d&model=classic&width=308&height=308",
-        "flagUrl": "../assets/flags/pssr-flag.png",
+        "flagUrl": "/assets/flags/pssr-flag.png",
         "ideology": "Communism",
         "parties": [
             {
@@ -78,5 +78,30 @@
             "Ashkod SSR"
         ],
         "description": "A superpower civilization with communism ideology"
+    },
+    {
+        "id": "versaly",
+        "category": "Civilization",
+        "officialName": "Republic of Versaly",
+        "nativeName": "Resarum Publicarum Versalia",
+        "latinization": "Resarum Publicarum Versalia",
+        "shortName": "Versaly",
+        "capital": "Vera",
+        "capitalUrl": "",
+        "leader": "Janerus Novicius",
+        "leaderUrl": "https://s.namemc.com/3d/skin/body.png?id=dcbb35e49415292d&model=classic&width=308&height=308",
+        "flagUrl": "/assets/flags/versaly-flag.png",
+        "ideology": "Communism",
+        "parties": [],
+        "towns": [
+            "Vera",
+            "Adreana"
+        ],
+        "regions": [
+            "Province of Vera",
+            "Province of Adreana",
+            "Province of Janeria"
+        ],
+        "description": "An ancient civilization where old law, art, history, technology, and culture were invented by the ancient superpower civilization known as Kingdom of Vera"
     }
 ]

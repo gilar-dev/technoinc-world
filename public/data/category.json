@@ -1,0 +1,87 @@
+[
+    {
+        "categoryName": "Civilizations",
+        "list": [
+            {
+                "name": "United Lands of Augusta",
+                "imgUrl": "/assets/flags/ula-flag.png",
+                "linkUrl": "/category/Civilizations/ULA"
+            },
+            {
+                "name": "People's Sosnev Socialist Republics",
+                "imgUrl": "/assets/flags/pssr-flag.png",
+                "linkUrl": "/category/Civilizations/PSSR"
+            },
+            {
+                "name": "Kingdom of Versaly",
+                "imgUrl": "/assets/flags/versaly-flag.png",
+                "linkUrl": "/category/Civilizations/Versaly"
+            },
+            {
+                "name": "Republic of Franzel",
+                "imgUrl": "/assets/flags/franzel-flag.png",
+                "linkUrl": "/category/Civilizations/Franzel"
+            },
+            {
+                "name": "Federal Republic of Garseny",
+                "imgUrl": "/assets/flags/garseny-flag.png",
+                "linkUrl": "/category/Civilizations/Garseny"
+            }
+        ]
+    },
+    {
+        "categoryName": "Characters",
+        "list": [
+            {
+                "name": "Harrison Thorne",
+                "imgUrl": "https://p.novaskin.me/5093163314.png",
+                "linkUrl": "/category/Characters/Harrison-Thorne"
+            },
+            {
+                "name": "Reznovich Viktor",
+                "imgUrl": "https://s.namemc.com/3d/skin/body.png?id=dcbb35e49415292d&model=classic&width=308&height=308",
+                "linkUrl": "/category/Characters/Reznovich-Viktor"
+            },
+            {
+                "name": "Janerus Novicius",
+                "imgUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgs2sArLPqkPYgLdlaZ9c1gclfZOj2Av5xIA&s",
+                "linkUrl": "/category/Characters/Janerus-Novicius"
+            }
+        ]
+    },
+    {
+        "categoryName": "Ideologies",
+        "list": [
+        ]
+    },
+    {
+        "categoryName": "Organizations",
+        "list": [
+            {
+                "name": "United Civilizations",
+                "imgUrl": "/assets/organizations/uc-logo-org.png",
+                "linkUrl": "/category/Organizations/UC"
+            },
+            {
+                "name": "UCEERO",
+                "imgUrl": "/assets/organizations/uceero-logo-org.png",
+                "linkUrl": "/category/Organizations/UCEERO"
+            },
+            {
+                "name": "UCIZEF",
+                "imgUrl": "/assets/organizations/ucizef-logo-org.png",
+                "linkUrl": "/category/Organizations/UCIZEF"
+            }
+        ]
+    },
+    {
+        "categoryName": "Parties",
+        "list": [
+        ]
+    },
+    {
+        "categoryName": "Towns",
+        "list": [
+        ]
+    }
+]
