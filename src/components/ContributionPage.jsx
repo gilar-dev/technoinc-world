@@ -8,8 +8,8 @@ function ContributionPage() {
         <>
         <Menu />
 
-        <div className="w-full flex justify-center items-center">
-            <input type="text" className=""></input>
+        <div id="verification-box">
+            <h2></h2>
         </div>
 
         <Footer />

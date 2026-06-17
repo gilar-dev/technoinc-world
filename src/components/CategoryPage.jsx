@@ -2,7 +2,6 @@ import Menu from "./Menu.jsx";
 import Footer from "./Footer.jsx";
 import { useState, useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { categoryList } from "../main.jsx";
 import "../css/DynamicPage.css";
 
 function CategoryPage() {
@@ -10,11 +9,8 @@ function CategoryPage() {
     // Get the id of dynamic route url
     const { categoryName } = useParams();
     
+    // Get data from database
     const [data, setData] = useState();
-    
-    // Return if category name does not exist
-    const categoryExist = categoryList.includes(categoryName);
-    if (!categoryExist) return <Navigate to="/" replace />
 
     // Get data based on the chosen category
     useEffect(() => {

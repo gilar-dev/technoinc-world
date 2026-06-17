@@ -25,7 +25,8 @@ const router = createBrowserRouter([
   { path: "/", element: <App /> },
   { path: "/contribution", element: <ContributionPage /> },
   { path: "/category/:categoryName", element: <CategoryPage /> },
-  { path: "/category/:categoryName/:contentId", element: <ContentPage />}
+  { path: "/category/:categoryName/:contentId", element: <ContentPage />},
+  { path: "*", element: <App /> }
 ]);
 
 // Create root and run rendering the website

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { categoryList } from "../main.jsx";
 import "../css/Menu.css";
 
 function Menu({wikiTitle="", selected=""}) {
@@ -13,6 +12,9 @@ function Menu({wikiTitle="", selected=""}) {
         localStorage.getItem("technoinc-theme") || "light"
     );
 
+    // List of categories bucket
+    const [categories, setCategories] = useState([]);
+
     // Function to switch to different theme
     const themeToggle = () => {
         setTheme(theme === "light" ? "dark" : "light");
@@ -23,6 +25,14 @@ function Menu({wikiTitle="", selected=""}) {
     const sidebarMenuClicked = () => setIsActive(isActive === "" ? "active" : "");
 
     const wikiTitleCheck = wikiTitle !== "" && <h6 id="wiki-title">{wikiTitle}</h6>;
+
+    // Request to fetch data from database
+    useEffect(() => {
+        fetch("https://technoinc-api.vercel.app/api/v1/categories")
+        .then(result => result.json())
+        .then(data => setCategories(data.categoryList))
+        .catch(error => console.error(error));
+    }, []);
 
     // Read the value of theme when changes
     useEffect(() => {
@@ -99,7 +109,7 @@ function Menu({wikiTitle="", selected=""}) {
                     </label>
                     <div className="list-box">
                         <ul>
-                            {categoryList.map((item, idx) =>
+                            {categories.map((item, idx) =>
                                 <a key={idx} href={`/category/${item}`}>
                                     <li className={selected === item ? "selected" : ""}>{item}</li>
                                 </a>
