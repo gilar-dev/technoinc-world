@@ -37,11 +37,11 @@ function CategoryPage() {
                 <p className="mt-2 text-[small]">Category Page</p>
             </div>
 
-            <div className="mx-[1em] flex justify-evenly flex-wrap gap-y-[1em]">
+            <div className="flex justify-evenly flex-wrap gap-y-[1em]">
                 {Array.isArray(data) && data.length > 0 && data.map((item, idx) => {
                     return (
-                        <Link key={idx} to={item.linkUrl} className="w-[45%] aspect-square cursor-pointer relative border border-[rgb(85,85,85)] md:w-75">
-                            <img src={item.imgUrl} alt={item.name} className="w-full h-full absolute" />
+                        <Link key={idx} to={item.linkUrl} className="group w-[45%] aspect-square overflow-hidden cursor-pointer relative border border-[rgb(85,85,85)] transition-[border] ease-in-out duration-500 hover:border-white md:w-75">
+                            <img src={item.imgUrl} alt={item.name} className="w-full h-full absolute group-hover:scale-[110%] transition-transform ease-in-out duration-500" />
                             <div className="w-full h-full absolute bg-linear-to-t from-black to-black/0"></div>
                             <p className="w-full p-[.5em] font-bold text-[.8em] text-center text-white absolute bottom-0 bg-linear-to-t from-black/50 to-black/0">{item.name}</p>
                         </Link>

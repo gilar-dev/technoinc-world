@@ -101,7 +101,7 @@ function Menu({wikiTitle="", selected=""}) {
                         <ul>
                             {categoryList.map((item, idx) =>
                                 <a key={idx} href={`/category/${item}`}>
-                                    <li className={selected === item && "selected"}>{item}</li>
+                                    <li className={selected === item ? "selected" : ""}>{item}</li>
                                 </a>
                             )}
                         </ul>

@@ -26,6 +26,7 @@
 }
 
 .menu-box a {
+    color: #fff;
     margin-left: auto;
 }
 
@@ -74,7 +75,7 @@
 .light #sidebar-close-btn,
 .light .sidebar-list,
 .light .list-box,
-.light .menu-panel a,
+.light .menu-panel .sidebar-menu a,
 .light .menu-panel p {
     color: #000;
     transition: color ease .5s;
@@ -86,7 +87,7 @@
 .dark #sidebar-close-btn,
 .dark .sidebar-list,
 .dark .list-box,
-.dark .menu-panel a,
+.dark .menu-panel .sidebar-menu a,
 .dark .menu-panel p {
     color: #fff;
     transition: color ease .5s;
