@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { categoryList } from "../main.jsx";
 import "../css/Menu.css";
 
-function Menu({wikiTitle = ""}) {
+function Menu({wikiTitle="", selected=""}) {
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
@@ -67,6 +67,9 @@ function Menu({wikiTitle = ""}) {
                     {wikiTitleCheck}
                     <h6 id="title" className="unchanged">TechnoInc MC Wiki</h6>
                 </div>
+                <a href="/contribution" title="Contribution">
+                    <i className="fa-solid fa-pen-to-square"></i>
+                </a>
             </div>
 
             <div
@@ -98,7 +101,7 @@ function Menu({wikiTitle = ""}) {
                         <ul>
                             {categoryList.map((item, idx) =>
                                 <a key={idx} href={`/category/${item}`}>
-                                    <li>{item}</li>
+                                    <li className={selected === item && "selected"}>{item}</li>
                                 </a>
                             )}
                         </ul>
@@ -133,7 +136,8 @@ function Menu({wikiTitle = ""}) {
 
 // Define the Menu props data type
 Menu.PropTypes = {
-    wikiTitle: PropTypes.string
+    wikiTitle: PropTypes.string,
+    selected: PropTypes.string
 }
 
 export default Menu;

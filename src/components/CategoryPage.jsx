@@ -30,7 +30,7 @@ function CategoryPage() {
 
     return (
         <>
-            <Menu wikiTitle={categoryName} />
+            <Menu wikiTitle={categoryName} selected={categoryName} />
 
             <div className="mt-4 mb-[6em] flex flex-col items-center">
                 <h2 className="highlight">{categoryName}</h2>
@@ -40,7 +40,7 @@ function CategoryPage() {
             <div className="mx-[1em] flex justify-evenly flex-wrap gap-[3em]">
                 {Array.isArray(data) && data.length > 0 && data.map((item, idx) => {
                     return (
-                        <Link key={idx} to={item.linkUrl} className="w-[40%] aspect-square cursor-pointer relative border border-[rgb(85,85,85)] md:w-75">
+                        <Link key={idx} to={item.linkUrl} className="w-[44%] aspect-square cursor-pointer relative border border-[rgb(85,85,85)] md:w-75">
                             <img src={item.imgUrl} alt={item.name} className="w-full h-full absolute" />
                             <div className="w-full h-full absolute bg-linear-to-t from-black to-black/0"></div>
                             <p className="w-full p-[.5em] font-bold text-[.8em] text-center text-white absolute bottom-0 bg-linear-to-t from-black/50 to-black/0">{item.name}</p>
