@@ -1,10 +1,10 @@
-.article-container {
-    padding: 1em;
-}
-
 .article-container .article-box,
 .article-container .category-box {
     margin-top: 5em;
+}
+
+.article-container .article-title {
+    margin-left: 1em;
 }
 
 .article-container .article-list,
@@ -13,12 +13,12 @@
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    gap: 1em;
+    row-gap: 1em;
 }
 
 .article-list .article-card,
 .category-list .category-card {
-    width: 44%;
+    width: 45%;
     aspect-ratio: 1 / 1;
     cursor: pointer;
     overflow: hidden;
