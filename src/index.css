@@ -66,5 +66,5 @@ a {
     position: absolute;
     bottom: 0;
     z-index: -1;
-    background-color: rgba(200, 200, 200, .5);
+    background-color: rgba(180, 180, 180, .5);
 }

@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../css/Menu.css";
 
-function Menu({wikiTitle="", selected=""}) {
+function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) {
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
@@ -77,7 +78,7 @@ function Menu({wikiTitle="", selected=""}) {
                     {wikiTitleCheck}
                     <h6 id="title" className="unchanged">TechnoInc MC Wiki</h6>
                 </div>
-                <a href="/contribution" title="Contribution">
+                <a href="/contribution" title="Contribution" style={{display: !contribution && "none"}}>
                     <i className="fa-solid fa-pen-to-square"></i>
                 </a>
             </div>
@@ -110,9 +111,9 @@ function Menu({wikiTitle="", selected=""}) {
                     <div className="list-box">
                         <ul>
                             {categories.map((item, idx) =>
-                                <a key={idx} href={`/category/${item}`}>
+                                <Link key={idx} replace={setReplace} to={`/category/${item}`} onClick={sidebarMenuClicked}>
                                     <li className={selected === item ? "selected" : ""}>{item}</li>
-                                </a>
+                                </Link>
                             )}
                         </ul>
                     </div>
@@ -147,7 +148,9 @@ function Menu({wikiTitle="", selected=""}) {
 // Define the Menu props data type
 Menu.PropTypes = {
     wikiTitle: PropTypes.string,
-    selected: PropTypes.string
+    selected: PropTypes.string,
+    setReplace: PropTypes.bool,
+    contribution: PropTypes.bool
 }
 
 export default Menu;

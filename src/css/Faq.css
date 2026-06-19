@@ -1,6 +1,7 @@
 .faq-container .story-box {
     margin: 10em 10px;
     padding: 3em;
+    overflow: hidden;
     border-left: 3px solid rgb(0, 175, 255);
     border-radius: 5px;
     color: #000;

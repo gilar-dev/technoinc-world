@@ -1,0 +1,11 @@
+{
+    "id": "uceero-org",
+    "title": "UCEERO",
+    "category": "Organization",
+    "wiki_content": [
+        {
+            "type": "image",
+            "img_url": "/assets/organizations/uceero-logo-org.png"
+        }
+    ]
+}
