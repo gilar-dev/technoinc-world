@@ -1,6 +1,6 @@
 import Menu from "./Menu";
 import Footer from "./Footer";
-import { addBlock } from "./AddBlock";
+import BlockContent from "./BlockContent";
 import { useState, useEffect } from "react";
 import "../css/DynamicPage.css";
 
@@ -17,10 +17,14 @@ function ContributionPage() {
     });
     const [schema, setSchema] = useState([]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
+    const handleInputChange = (index, property, target) => {
+        setSchema(prev => {
+            const updatedSchema = [...prev];
 
-        setTemplate(prev => ({ ...prev, [name]: value }));
+            updatedSchema[index][property] = target.value;
+
+            return updatedSchema;
+        });
     }
 
     const uploadArticle = () => {
@@ -29,66 +33,61 @@ function ContributionPage() {
         console.log(template, document.getElementById("image").value);
     }
 
-    const getContainer = () => document.getElementById("content-container");
-
     // Article content editor tools
-    const addNewContent = (type) => {
-        setSchema(prev => ([...prev, type]));
+    const addNewContent = (block) => {
+        setSchema(prev => ([...prev, block]));
     }
 
-    const moveContent = (element, direction) => {
+    // Function for moving content to up-down and reordering
+    const moveContent = (currentIndex, direction) => {
 
-        [...getContainer().children].forEach((e, idx) => {
-            if (element.closest(".content-box") === e) {
-                switch (direction) {
-                    case "up":
-                        getContainer().insertBefore(e, getContainer().children[idx-1]);
-                        break;
+        let targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
-                    case "down":
-                        if (getContainer().children[idx+1] === undefined) {
-                            getContainer().insertBefore(e, getContainer().children[0]);
-                        } else getContainer().insertBefore(getContainer().children[idx+1], e);
-                        break;
+        setSchema((prev) => {
+            const updatedSchema = [...prev];
+            const currentContent = updatedSchema[currentIndex];
 
-                    default:
-                        return null;
-                }
-            }
+            if (targetIndex < 0) targetIndex = updatedSchema.length - 1;
+            else if (targetIndex > updatedSchema.length - 1) targetIndex = 0;
+
+            updatedSchema[currentIndex] = updatedSchema[targetIndex];
+            updatedSchema[targetIndex] = currentContent;
+
+            return updatedSchema;
         });
     }
 
-    const deleteContent = (e) => {
-        [...getContainer().children].forEach((element, idx) => {
-            if (element === e.target.closest(".content-box")) {
-                setSchema(prev => ([...prev].toSpliced(idx, 1)));
-            }
-        });
+    const deleteContent = (index) => {
+        setSchema((prev) => ([...prev].toSpliced(index, 1)));
     }
 
-    const operationalButtons = (
+    const operationalButtons = (currentIndex) => (
         <div className="w-full flex justify-center gap-1
                         [&>button]:p-2 [&>button]:text-[1em] [&>button]:rounded-[5px] [&>button]:border-none [&>button]:text-white">
             <button
                 title="Delete content"
-                onClick={(e) => moveContent(e.target, "up")}
+                onClick={() => moveContent(currentIndex, "up")}
                 className="bg-[rgb(0,175,255)] hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 <i className="fa-solid fa-arrow-up"></i>
             </button>
             <button
                 title="Delete content"
-                onClick={(e) => moveContent(e.target, "down")}
+                onClick={() => moveContent(currentIndex, "down")}
                 className="bg-[rgb(0,175,255)] hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 <i className="fa-solid fa-arrow-down"></i>
             </button>
             <button
                 title="Delete content"
-                onClick={deleteContent}
+                onClick={() => deleteContent(currentIndex)}
                 className="ml-auto bg-[rgb(255,0,0)] hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">
                 <i className="fa-solid fa-trash"></i>
             </button>
         </div>
     );
+
+    useEffect(() => {
+        console.log(schema);
+    }, [schema]);
 
     return (
         <>
@@ -134,48 +133,15 @@ function ContributionPage() {
                 className="w-[40%] p-2 font-bold text-[1.2em] block rounded-[5px] text-white border-none bg-[rgb(0,175,255)] active:text-[rgb(0,175,255)] active:bg-white" />
         </div>
 
-        <div id="content-container" className="mt-[3em] p-[1em] flex flex-col gap-[2em] rounded-[10px] bg-[rgb(220,220,220)]">
-            {schema.map((block, idx) => {
-                switch (block) {
-                    case "heading-type":
-                        return (
-                            <div key={idx} className="content-box pl-1 pb-1 flex flex-col items-center gap-3 border-l-5 border-[rgb(0,175,255)]">
-                                <input
-                                    placeholder="Table title"
-                                    className="w-full text-[20px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent"></input>
-                                {operationalButtons}
-                            </div>
-                        )
-                        break;
-
-                    case "paragraph-type":
-                        return (
-                            <div key={idx} className="content-box pl-1 pb-1 flex flex-col items-center gap-3 border-l-5 border-[rgb(0,175,255)]">
-                                <input
-                                    type="text"
-                                    placeholder="Paragraph title"
-                                    className="w-full p-1 text-[1.3em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                                <textarea
-                                    placeholder="Paragraph content"
-                                    className="w-full h-25 p-1 resize-none outline-none border-none" />
-                                {operationalButtons}
-                            </div>
-                        )
-                        break;
-
-                    case "table-type":
-                        return (
-                            <div key={idx} className="content-box pl-1 pb-1 flex flex-col items-center gap-3 border-l-5 border-[rgb(0,175,255)]">
-                                <div className="flex border-black [&>input]:text-[15px] [&>input]:p-1 [&>input]:outline-none [&>input]:bg-transparent">
-                                    <input type="text" placeholder="Table head" className="font-bold" />
-                                    <input type="text" placeholder="Table data" />
-                                </div>
-                                {operationalButtons}
-                            </div>
-                        )
-                        break;
-                }
-            })}
+        <div id="content-container" className="mt-[3em] flex flex-col gap-[2em] rounded-[10px] bg-[rgb(220,220,220)]">
+            {schema.map((block, idx) => (
+                <BlockContent
+                    key={idx}
+                    index={idx}
+                    block={block}
+                    buttons={operationalButtons}
+                    onChangeHandler={handleInputChange} />  
+            ))}
         </div>
 
         <div
@@ -185,19 +151,41 @@ function ContributionPage() {
                         [&>button]:text-white [&>button]:bg-[rgb(0,175,255)] [&>button]:hover:bg-[rgb(0,155,235)]
                         [&>button]:active:text-[rgb(0,155,235)] [&>button]:active:bg-white">
 
-            <button title="Add new table heading" onClick={() => addNewContent("heading-type")}>
+            <button
+                title="Add new table heading"
+                onClick={() => addNewContent({
+                    type: "heading-type",
+                    restore: false,
+                    data: ""
+                })}>
                 <i className="fa-solid fa-heading"></i>
             </button>
 
-            <button title="Add new table content" onClick={() => addNewContent("table-type")}>
+            <button
+                title="Add new table content"
+                onClick={() => addNewContent({
+                    type: "table-type",
+                    restore: false,
+                    headData: "",
+                    contentData: ""
+                })}>
                 <i className="fa-solid fa-table-list"></i>
             </button>
 
-            <button title="Add new paragraph" onClick={() => addNewContent("paragraph-type")}>
+            <button
+                title="Add new paragraph"
+                onClick={() => addNewContent({
+                    type: "paragraph-type",
+                    restore: false,
+                    title: "",
+                    data: ""
+                })}>
                 <i className="fa-solid fa-paragraph"></i>
             </button>
 
-            <button title="Add new image" onClick={() => addParagraph("image-type")}>
+            <button
+                title="Add new image"
+                onClick={() => null}>
                 <i className="fa-solid fa-image"></i>
             </button>
         </div>
