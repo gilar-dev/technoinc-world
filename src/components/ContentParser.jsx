@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-function ContentParser({ data={} }) {
+function ContentParser({ data }) {
 
 }
 

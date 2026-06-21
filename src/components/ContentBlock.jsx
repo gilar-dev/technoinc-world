@@ -2,20 +2,17 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import "../css/DynamicPage.css";
 
-function BlockContent({ index, block, buttons, cloudStorage, onChangeHandler }) {
-
-    const [restore, setRestore] = useState(block.restore);
+function BlockContent({ index, block, buttons, onChangeHandler }) {
 
     switch (block.type) {
         case "heading-type":
             return (
                 <div className="content-box">
-                    <input
-                        type="text"
+                    <textarea
                         placeholder="Table title"
                         value={block.data}
                         onChange={(e) => onChangeHandler(index, "data", e.target.value)}
-                        className="w-full font-bold text-[20px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[20px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
                     {buttons(index)}
                 </div>
             );
@@ -25,20 +22,18 @@ function BlockContent({ index, block, buttons, cloudStorage, onChangeHandler }) 
             return (
                 <div className="content-box">
                     <div className="flex border-black [&>input]:text-[15px] [&>input]:p-1 [&>input]:outline-none [&>input]:bg-transparent">
-                        <input
-                            type="text"
+                        <textarea
                             placeholder="Table head"
                             value={block.headData}
                             onChange={(e) => onChangeHandler(index, "headData", e.target.value)}
-                            className="font-bold w-[45%]" />
-                        <input
-                            type="text"
+                            className="w-45 p-1 field-sizing-content resize-none font-['Montserrat'] font-bold" />
+                        <textarea
                             placeholder="Table data"
                             value={block.contentData}
                             onChange={(e) => onChangeHandler(index, "contentData", e.target.value)}
-                            className="w-[45%]" />
+                            className="w-45 p-1 field-sizing-content resize-none font-['Montserrat']" />
                     </div>
-                    {buttons(index)}
+                    {buttons(index, true)}
                 </div>  
             );
             break;
@@ -46,12 +41,11 @@ function BlockContent({ index, block, buttons, cloudStorage, onChangeHandler }) 
         case "paragraph-type":
             return (
                 <div className="content-box">
-                    <input
-                        type="text"
+                    <textarea
                         placeholder="Paragraph title"
                         value={block.title}
                         onChange={(e) => onChangeHandler(index, "title", e.target.value)}
-                        className="w-full p-1 text-[1.3em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                        className="w-full p-1 field-sizing-content resize-none font-['Montserrat'] text-[1.3em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
                     <textarea
                         placeholder="Paragraph content"
                         value={block.data}
@@ -73,11 +67,11 @@ function BlockContent({ index, block, buttons, cloudStorage, onChangeHandler }) 
                         type="file"
                         accept="image/*"
                         style={{display: "none"}}
-                        onChange={async (e) => {
+                        onChange={e => {
                             const selectedFile = e.target.files[0];
-                            const urlPath = URL.createObjectURL(selectedFile);
-
                             if (!selectedFile) return;
+
+                            const urlPath = URL.createObjectURL(selectedFile);
 
                             onChangeHandler(index, "url", urlPath);
                             onChangeHandler(index, "rawFile", selectedFile);
@@ -87,12 +81,11 @@ function BlockContent({ index, block, buttons, cloudStorage, onChangeHandler }) 
                         className="p-2 font-bold rounded-2xl bg-green-500 hover:bg-green-600 active:text-green-500 active:bg-white">
                             Choose image
                     </label>
-                    <input
-                        type="text"
+                    <textarea
                         placeholder="Add title"
                         value={block.title}
                         onChange={(e) => onChangeHandler(index, "title", e.target.value)}
-                        className="w-full text-2xl outline-none border-l-0 border-t-0 border-r-0 border-gray-400 bg-transparent" />
+                        className="w-full field-sizing-content resize-none font-['Montserrat'] text-2xl outline-none border-l-0 border-t-0 border-r-0 border-gray-400 bg-transparent" />
                     <textarea
                         type="text"
                         placeholder="Add image description"
@@ -113,7 +106,6 @@ BlockContent.propTypes = {
     index: PropTypes.number.isRequired,
     block: PropTypes.object.isRequired,
     buttons: PropTypes.func.isRequired,
-    cloudStorage: PropTypes.func.isRequired,
     onChangeHandler: PropTypes.func.isRequired
 }
 
