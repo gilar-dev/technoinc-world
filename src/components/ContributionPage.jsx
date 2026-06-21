@@ -3,15 +3,15 @@ import Footer from "./Footer";
 import ContentBlock from "./ContentBlock";
 import { useState, useEffect } from "react";
 import "../css/DynamicPage.css";
-import js from "@eslint/js";
 
 function ContributionPage() {
 
-    // Set template for writing wiki content
+    // Template for creating new article
     const [article, setArticle] = useState({
         id: "",
         title: "",
         category: "Civilization",
+        visited: 0,
         wikiContent: []
     });
 
@@ -65,20 +65,11 @@ function ContributionPage() {
             });
     
             const jsonResult = await response.json();
-            setSchema(prev => {
-                const updatedSchema = [...prev];
 
-                updatedSchema[index]["url"] = jsonResult.secure_url;
-                updatedSchema[index]["rawFile"] = "";
-
-                return updatedSchema;
-            });
-
-            console.log(jsonResult.secure_url);
-            return true;
+            return jsonResult.secure_url;
         } catch (error) {
             console.error(error);
-            return false;
+            return;
         }
     }
 
@@ -124,14 +115,41 @@ function ContributionPage() {
                 const imageContent = schema[i];
 
                 if (imageContent.type === "image-type") {
-                    const uploadProcess = await uploadToCloudStorage(i, imageContent.rawFile, article.category);
+                    const getCloudURL = await uploadToCloudStorage(i, imageContent.rawFile, article.category);
 
-                    if (!uploadProcess) return alert("Failed to upload to cloud storage");
+                    setSchema(prev => {
+                        const updatedSchema = [...prev];
+
+                        updatedSchema[i]["url"] = getCloudURL;
+                        updatedSchema[i]["rawFile"] = "";
+
+                        return updatedSchema;
+                    });
                 }
             }
         }
+        const finalArticle = {
+            id: article.id,
+            title: article.title,
+            category: article.category,
+            visited: 0,
+            wikiContent: [...schema]
+        }
 
-        console.log(schema);
+        console.log(finalArticle);
+
+        if (finalArticle) {
+            fetch("http://127.0.0.1:8000/api/v1/wiki/upload", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(finalArticle)
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+        }
     }
 
     // Add new content to list of content blocks
@@ -177,7 +195,7 @@ function ContributionPage() {
     // Template for operational buttons in content block
     const operationalButtons = (currentIndex, addButton=false) => (
         <div className="w-full flex justify-center items-center gap-1
-                        [&>button]:p-2 [&>button]:text-[1em] [&>button]:rounded-[5px] [&>button]:border-none [&>button]:text-white">
+                        [&>button]:p-2 [&>button]:text-[1em] [&>button]:rounded-[5px] [&>button]:border-none [&>button]:text-white [&>button]:cursor-pointer">
             <button
                 title="Move up"
                 onClick={() => moveContent(currentIndex, "up")}
@@ -269,6 +287,13 @@ function ContributionPage() {
                         hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white" />
         </div>
 
+        <div
+            style={{display: schema.length === 0 ? "block" : "none"}}
+            className="mt-[3em] mx-3 p-3 font-['Pixelify_Sans'] text-center flex flex-col items-center justify-center rounded-[10px] border-3 text-white border-purple-600 bg-purple-800/50">
+            <h1>The Story is All Yours!</h1>
+            <p>Click tools bellow to start creating your own story!</p>
+        </div>
+
         <div className="mt-[3em] flex flex-col gap-[2em] rounded-[10px] bg-[rgb(220,220,220)]
                         [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                         [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)] [&>.content-box]:has-[.delete-btn:hover]:bg-red-200">
@@ -287,7 +312,7 @@ function ContributionPage() {
                         sticky bottom-0 shadow-2xs shadow-black
                         [&>button]:p-[.2em] [&>button]:border-none [&>button]:text-3xl [&>button]:rounded-[5px]
                         [&>button]:text-white [&>button]:bg-[rgb(0,175,255)] [&>button]:hover:bg-[rgb(0,155,235)]
-                        [&>button]:active:text-[rgb(0,155,235)] [&>button]:active:bg-white">
+                        [&>button]:active:text-[rgb(0,155,235)] [&>button]:active:bg-white [&>button]:cursor-pointer">
 
             <button
                 title="Add new table heading"

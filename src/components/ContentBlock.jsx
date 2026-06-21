@@ -21,17 +21,17 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
         case "table-type":
             return (
                 <div className="content-box">
-                    <div className="flex border-black [&>input]:text-[15px] [&>input]:p-1 [&>input]:outline-none [&>input]:bg-transparent">
+                    <div className="flex border-black [&>textarea]:w-43">
                         <textarea
                             placeholder="Table head"
                             value={block.headData}
                             onChange={(e) => onChangeHandler(index, "headData", e.target.value)}
-                            className="w-45 p-1 field-sizing-content resize-none font-['Montserrat'] font-bold" />
+                            className="p-1 field-sizing-content resize-none font-['Montserrat'] font-bold" />
                         <textarea
                             placeholder="Table data"
                             value={block.contentData}
                             onChange={(e) => onChangeHandler(index, "contentData", e.target.value)}
-                            className="w-45 p-1 field-sizing-content resize-none font-['Montserrat']" />
+                            className="p-1 field-sizing-content resize-none font-['Montserrat']" />
                     </div>
                     {buttons(index, true)}
                 </div>  
@@ -78,7 +78,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                         }} />
                     <label
                         htmlFor={`image-input-${index}`}
-                        className="p-2 font-bold rounded-2xl bg-green-500 hover:bg-green-600 active:text-green-500 active:bg-white">
+                        className="p-2 font-bold rounded-2xl text-white bg-green-500 hover:bg-green-600 active:text-green-500 active:bg-white">
                             Choose image
                     </label>
                     <textarea
