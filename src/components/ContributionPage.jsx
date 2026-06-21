@@ -110,33 +110,31 @@ function ContributionPage() {
             }
         }
 
+        const cloneSchema = [...schema];
+
         if (containImage) {
-            for (let i = 0; i < schema.length; i++) {
-                const imageContent = schema[i];
+            for (let i = 0; i < cloneSchema.length; i++) {
+                const imageContent = cloneSchema[i];
 
                 if (imageContent.type === "image-type") {
                     const getCloudURL = await uploadToCloudStorage(i, imageContent.rawFile, article.category);
 
-                    setSchema(prev => {
-                        const updatedSchema = [...prev];
-
-                        updatedSchema[i]["url"] = getCloudURL;
-                        updatedSchema[i]["rawFile"] = "";
-
-                        return updatedSchema;
-                    });
+                    if (getCloudURL) {
+                        cloneSchema[i]["url"] = getCloudURL;
+                        cloneSchema[i]["rawFile"] = "";
+                    }
                 }
             }
+            setSchema(cloneSchema);
         }
+
         const finalArticle = {
             id: article.id,
             title: article.title,
             category: article.category,
             visited: 0,
-            wikiContent: [...schema]
+            wikiContent: cloneSchema
         }
-
-        console.log(finalArticle);
 
         if (finalArticle) {
             fetch("http://127.0.0.1:8000/api/v1/wiki/upload", {
