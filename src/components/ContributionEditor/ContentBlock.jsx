@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
-import "../css/DynamicPage.css";
+import BlockControls from "./BlockControls";
+import "../../css/DynamicPage.css";
 
 function BlockContent({ index, block, buttons, onChangeHandler }) {
-
+    
     switch (block.type) {
         case "heading-type":
             return (
@@ -13,7 +13,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                         value={block.data}
                         onChange={(e) => onChangeHandler(index, "data", e.target.value)}
                         className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[20px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                    {buttons(index)}
+                    <BlockControls currentIndex={index} operationalButtons={buttons} />
                 </div>
             );
             break;
@@ -24,16 +24,16 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                     <div className="flex border-black [&>textarea]:w-43">
                         <textarea
                             placeholder="Table head"
-                            value={block.headData}
-                            onChange={(e) => onChangeHandler(index, "headData", e.target.value)}
+                            value={block.head_data}
+                            onChange={(e) => onChangeHandler(index, "head_data", e.target.value)}
                             className="p-1 field-sizing-content resize-none font-['Montserrat'] font-bold" />
                         <textarea
                             placeholder="Table data"
-                            value={block.contentData}
-                            onChange={(e) => onChangeHandler(index, "contentData", e.target.value)}
+                            value={block.content_data}
+                            onChange={(e) => onChangeHandler(index, "content_data", e.target.value)}
                             className="p-1 field-sizing-content resize-none font-['Montserrat']" />
                     </div>
-                    {buttons(index, true)}
+                    <BlockControls currentIndex={index} addButton={true} operationalButtons={buttons} />
                 </div>  
             );
             break;
@@ -51,7 +51,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                         value={block.data}
                         onChange={(e) => onChangeHandler(index, "data", e.target.value)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none bg-transparent" />
-                    {buttons(index)}
+                    <BlockControls currentIndex={index} operationalButtons={buttons}/>
                 </div>
             );
             break;
@@ -61,6 +61,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                 <div className="content-box">
                     <img
                         src={block.url || null}
+                        alt={block.title}
                         className="w-full rounded-[5px]" />
                     <input
                         id={`image-input-${index}`}
@@ -74,7 +75,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                             const urlPath = URL.createObjectURL(selectedFile);
 
                             onChangeHandler(index, "url", urlPath);
-                            onChangeHandler(index, "rawFile", selectedFile);
+                            onChangeHandler(index, "raw_file", selectedFile);
                         }} />
                     <label
                         htmlFor={`image-input-${index}`}
@@ -92,7 +93,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                         value={block.description}
                         onChange={(e) => onChangeHandler(index, "description", e.target.value)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
-                    {buttons(index)}
+                    <BlockControls currentIndex={index} operationalButtons={buttons} />
                 </div>
             );
             break;
@@ -105,7 +106,7 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
 BlockContent.propTypes = {
     index: PropTypes.number.isRequired,
     block: PropTypes.object.isRequired,
-    buttons: PropTypes.func.isRequired,
+    buttons: PropTypes.object.isRequired,
     onChangeHandler: PropTypes.func.isRequired
 }
 

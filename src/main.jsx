@@ -8,7 +8,7 @@ import './index.css';
 import App from './App.jsx';
 import CategoryPage from "./components/CategoryPage.jsx";
 import WikiPage from './components/WikiPage.jsx';
-import ContributionPage from './components/ContributionPage.jsx';
+import ContributionPage from './components/ContributionEditor/ContributionPage.jsx';
 
 // Define main category list for the wiki
 export const categoryList = [
