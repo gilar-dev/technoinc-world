@@ -8,37 +8,56 @@ function CategoryPage() {
 
     // Get the id of dynamic route url
     const { categoryName } = useParams();
+    const getCategory = categoryName.split(":")[1];
     
     // Get data from database
     const [data, setData] = useState([]);
 
     // Get data based on the chosen category
     useEffect(() => {
-        fetch("/data/category.json")
-        .then(result => result.json())
-        .then(value => {
-            const getCategory = value.find(item => item.categoryName === categoryName);
-            setData(getCategory.list);
-        })
-        .catch(error => console.error(error));
+        const fetchData = async () => {
+            try {
+                let convertedName = getCategory.toLowerCase();
+
+                // Convert plural name to singular name
+                if (convertedName.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
+                else convertedName = convertedName.slice(0, convertedName.length - 1);
+
+                // Fetch request to backend
+                const response = await fetch(`https://technoinc-api.vercel.app/api/v1/wiki/${convertedName}/articles`);
+                const articles = await response.json();
+
+                setData(articles.articles);
+
+            } catch(error) {
+                console.error(error);
+            }
+        }
+
+        fetchData();
     }, [categoryName]);
 
     return (
         <>
-            <Menu wikiTitle={categoryName} selected={categoryName} setReplace={true} />
+            <Menu wikiTitle={getCategory} selected={getCategory} setReplace={true} />
 
             <div className="mt-4 mb-[6em] flex flex-col items-center">
-                <h2 className="highlight">{categoryName}</h2>
+                <h2 className="highlight">{getCategory}</h2>
                 <p className="mt-2 text-[small]">Category Page</p>
             </div>
 
             <div className="flex justify-evenly flex-wrap gap-y-[1em]">
+                <p
+                    style={{display: data.length === 0 ? "block" : "none"}}
+                    className="text-center">
+                    Seems like this category does not have articles yet.
+                </p>
                 {data.map((item, idx) => {
                     return (
-                        <Link key={idx} to={item.linkUrl} replace className="group w-[45%] aspect-square overflow-hidden cursor-pointer relative border border-[rgb(85,85,85)] transition-[border] ease-in-out duration-500 hover:border-white md:w-75">
-                            <img src={item.imgUrl} alt={item.name} className="w-full h-full absolute group-hover:scale-[110%] transition-transform ease-in-out duration-500" />
+                        <Link key={idx} to={`/wiki/${categoryName}/${item.id}`} className="group w-[45%] aspect-square overflow-hidden cursor-pointer relative border border-[rgb(85,85,85)] transition-[border] ease-in-out duration-500 hover:border-white md:w-75">
+                            <img src={item.cover} alt={item.title} className="w-full h-full absolute group-hover:scale-[110%] transition-transform ease-in-out duration-500" />
                             <div className="w-full h-full absolute bg-linear-to-t from-black to-black/0"></div>
-                            <p className="w-full p-[.5em] font-bold text-[.8em] text-center text-white absolute bottom-0 bg-linear-to-t from-black/50 to-black/0">{item.name}</p>
+                            <p className="w-full p-[.5em] font-bold text-[.8em] text-center text-white absolute bottom-0 bg-linear-to-t from-black/50 to-black/0">{item.title}</p>
                         </Link>
                     )
                 })

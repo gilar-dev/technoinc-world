@@ -44,6 +44,10 @@ a {
     text-decoration: none;
 }
 
+.box {
+    border-color: rgb(85, 85, 85);
+}
+
 .scroll-effect {
     opacity: 0;
     transform: translateY(100%);

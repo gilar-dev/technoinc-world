@@ -19,9 +19,9 @@ export const generateId = (title, category) => {
 }
 
 // Check if article id existence
-export const checkArticleId = async (articleId) => {
+export const checkArticleId = async (category, articleId) => {
     try {
-        const getId = await fetch(`http://127.0.0.1:8000/api/v1/wiki/${articleId}`);
+        const getId = await fetch(`https://technoinc-api.vercel.app/api/v1/wiki/${category}/${articleId}/exist`);
 
         if (!getId.ok) return console.error(getId);
             
@@ -35,7 +35,7 @@ export const checkArticleId = async (articleId) => {
 }
 
 // Upload selected image to cloud storage
-export const uploadToCloudStorage = async (index, rawFile, folder) => {
+export const uploadToCloudStorage = async (rawFile, folder) => {
     if (!rawFile) return;
 
     // Create a binary data package
@@ -60,17 +60,17 @@ export const uploadToCloudStorage = async (index, rawFile, folder) => {
 }
 
 // Validate all values of all inputs
-export const checkAllValues = async (schema, setSchema, article) => {
+export const checkAllValues = async (schema, setSchema, article, setArticle) => {
+
+    const checkId = await checkArticleId(article.category, article.id);
 
     if (article.title === "") return alert("Article title can't be empty");
-    if (schema.length === 0) return alert("You haven't add any content!");
-
-    const checkId = await checkArticleId(article.id);
     if (checkId) return alert("Article id is already exist!");
+    if (article.url === "") return alert("Article cover can't be empty!");
+    if (schema.length === 0) return alert("You haven't add any content!");
 
     // Check if article contains images
     let containsImage = false;
-    const allowUploads = false;
 
     for (let i = 0; i < schema.length; i++) {
             
@@ -103,16 +103,18 @@ export const checkAllValues = async (schema, setSchema, article) => {
         }
     }
 
+    // Upload article cover to cloud storage
+    const getCoverURL = await uploadToCloudStorage(article.raw_cover, "Cover");
     // Clone current schema contents to modified
     const cloneSchema = [...schema];
 
     // Start converting local url to cloud storage url
-    if (containsImage && allowUploads) {
+    if (containsImage) {
         for (let i = 0; i < cloneSchema.length; i++) {
             const imageContent = cloneSchema[i];
 
             if (imageContent.type === "image-type") {
-                const getCloudURL = await uploadToCloudStorage(i, imageContent.raw_file, article.category);
+                const getCloudURL = await uploadToCloudStorage(imageContent.raw_file, article.category);
 
                 if (getCloudURL) {
                     cloneSchema[i]["url"] = getCloudURL;
@@ -129,7 +131,8 @@ export const checkAllValues = async (schema, setSchema, article) => {
         id: article.id,
         title: article.title,
         category: article.category,
-        visited: article.visited,
+        cover: getCoverURL,
+        visited: 0,
         wiki_content: cloneSchema
     }
 
@@ -151,6 +154,14 @@ export const checkAllValues = async (schema, setSchema, article) => {
 
             console.log(result);
 
+            setArticle({
+                id: "",
+                title: "",
+                category: "Civilization",
+                cover: "",
+                raw_cover: "",
+                wiki_content: []
+            });
             setSchema([]);
             alert("Your article is sucessfully uploaded!");
 

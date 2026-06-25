@@ -180,7 +180,7 @@
 
 .sidebar-list:has(input[type="checkbox"]:checked) .list-box {
     opacity: 1;
-    max-height: 150px;
+    max-height: 400px;
 }
 
 .sidebar-list .list-box ul {

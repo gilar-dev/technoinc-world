@@ -27,14 +27,6 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
 
     const wikiTitleCheck = wikiTitle !== "" && <h6 id="wiki-title">{wikiTitle}</h6>;
 
-    // Request to fetch data from database
-    useEffect(() => {
-        fetch("https://technoinc-api.vercel.app/api/v1/categories")
-        .then(result => result.json())
-        .then(data => setCategories(data.categoryList))
-        .catch(error => console.error(error));
-    }, []);
-
     // Read the value of theme when changes
     useEffect(() => {
         localStorage.setItem("technoinc-theme", theme);
@@ -44,6 +36,11 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
 
     // Menu effect when the page is being scrolled
     useEffect(() => {
+        fetch("https://technoinc-api.vercel.app/api/v1/wiki/categories")
+        .then(result => result.json())
+        .then(data => setCategories(data.category_list))
+        .catch(error => console.error(error));
+
         const menuBox = document.querySelector(".menu-box");
         
         const scrollMovement = () => {
@@ -111,7 +108,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
                     <div className="list-box">
                         <ul>
                             {categories.map((item, idx) =>
-                                <Link key={idx} replace={setReplace} to={`/category/${item}`} onClick={sidebarMenuClicked}>
+                                <Link key={idx} replace={setReplace} to={`/wiki/Category:${item}`} onClick={sidebarMenuClicked}>
                                     <li className={selected === item ? "selected" : ""}>{item}</li>
                                 </Link>
                             )}

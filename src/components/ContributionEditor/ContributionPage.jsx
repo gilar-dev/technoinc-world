@@ -14,7 +14,8 @@ function ContributionPage() {
         id: "",
         title: "",
         category: "Civilization",
-        visited: 0,
+        cover: "",
+        raw_cover: "", // Temporary
         wiki_content: []
     });
 
@@ -80,6 +81,7 @@ function ContributionPage() {
             <textarea
                 type="text"
                 placeholder="Article title"
+                value={article.title}
                 onChange={e => setArticle(prev => (
                     {
                         ...prev,
@@ -118,14 +120,35 @@ function ContributionPage() {
                 </select>
             </div>
 
-            <input
-                type="submit"
-                value="Upload"
-                title="Upload article"
-                onClick={() => checkAllValues(schema, setSchema, article)}
-                className="w-[40%] p-2 font-bold text-[1.2em] block rounded-[5px]
-                            text-white border-none bg-[rgb(0,175,255)]
-                            hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white" />
+            <div className="flex flex-col items-center justify-center gap-3">
+                <h2 className="text-black/40">Article Cover</h2>
+                <img
+                    src={article.cover || null}
+                    className="w-full rounded-[5px]" />
+                <input
+                    id="article-cover"
+                    type="file"
+                    accept="image/*"
+                    style={{display: "none"}}
+                    onChange={(e) => {
+                        const selectedFile = e.target.files[0];
+                        if (!selectedFile) return;
+
+                        const preview = URL.createObjectURL(selectedFile);
+
+                        setArticle(prev => ({
+                            ...prev,
+                            cover: preview,
+                            raw_cover: selectedFile
+                        }));
+                    }} />
+                <label
+                    htmlFor="article-cover"
+                    className="p-3 font-bold self-start rounded-2xl text-white bg-[rgb(0,175,255)]
+                                hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
+                    Select Cover
+                </label>
+            </div>
         </div>
 
         <div
@@ -156,9 +179,18 @@ function ContributionPage() {
                     onChangeHandler={handleInputChange} />
             ))}
         </div>
+        
+        <button
+            title="Upload article"
+            style={{display: schema.length === 0 ? "none" : "block"}}
+            onClick={() => checkAllValues(schema, setSchema, article, setArticle)}
+            className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]
+                        text-white border-none bg-[rgb(0,175,255)]
+                        hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
+            Upload
+        </button>
 
         <ContentToolbar addNewContent={addNewContent} />
-
         <Footer />
         </>
     )
