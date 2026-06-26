@@ -1,3 +1,5 @@
+import API from "../../API.jsx";
+
 // Generate article id
 export const generateId = (title, category) => {
     const modifiedTitle = title
@@ -21,7 +23,7 @@ export const generateId = (title, category) => {
 // Check if article id existence
 export const checkArticleId = async (category, articleId) => {
     try {
-        const getId = await fetch(`https://technoinc-api.vercel.app/api/v1/wiki/${category}/${articleId}/exist`);
+        const getId = await fetch(`${API}/api/v1/wiki/${category}/${articleId}/exist`);
 
         if (!getId.ok) return console.error(getId);
             
@@ -60,7 +62,7 @@ export const uploadToCloudStorage = async (rawFile, folder) => {
 }
 
 // Validate all values of all inputs
-export const checkAllValues = async (schema, setSchema, article, setArticle) => {
+export const checkAllValues = async (schema, setSchema, article, setArticle, setLoading) => {
 
     const checkId = await checkArticleId(article.category, article.id);
 
@@ -138,11 +140,8 @@ export const checkAllValues = async (schema, setSchema, article, setArticle) => 
 
     // Make fetch request to backend then send it to database
     if (finalArticle) {
-        const local = "http://127.0.0.1:8000";
-        const vercel = "https://technoinc-api.vercel.app";
-
         try {
-            const processUploading = await fetch(`${vercel}/api/v1/wiki/upload`, {
+            const processUploading = await fetch(`${API}/api/v1/wiki/upload`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(finalArticle)
@@ -164,6 +163,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle) => 
             });
             setSchema([]);
             alert("Your article is sucessfully uploaded!");
+            setLoading(false);
 
         } catch (error) {
             console.error(error);

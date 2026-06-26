@@ -16,7 +16,9 @@ function Article() {
     return (
         <section className="article-container">
             <div className="article-box">
-                <h3 className="highlight article-title">Trending articles</h3>
+                <h3 className="article-title">
+                    <span className="highlight">Trending articles</span>
+                </h3>
                 <div className="article-list">
                     {arc?.trendingArticles.map((item, idx) =>
                         <Link key={idx} className="article-card" to={item.linkUrl}>
@@ -27,7 +29,9 @@ function Article() {
                 </div>
             </div>
             <div className="category-box">
-                <h3 className="highlight article-title">Popular categories</h3>
+                <h3 className="article-title">
+                    <span className="highlight">Popular categories</span>
+                </h3>
                 <div className="category-list">
                     {arc?.popularCategories.map((item, idx) =>
                         <Link key={idx} className="category-card" to={item.linkUrl}>

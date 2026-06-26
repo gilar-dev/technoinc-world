@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import API from "../API.jsx";
 import "../css/Menu.css";
 
 function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) {
@@ -36,7 +37,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
 
     // Menu effect when the page is being scrolled
     useEffect(() => {
-        fetch("https://technoinc-api.vercel.app/api/v1/wiki/categories")
+        fetch(`${API}/api/v1/wiki/categories`)
         .then(result => result.json())
         .then(data => setCategories(data.category_list))
         .catch(error => console.error(error));

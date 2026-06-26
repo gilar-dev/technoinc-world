@@ -2,6 +2,7 @@ import Menu from "./Menu.jsx";
 import Footer from "./Footer.jsx";
 import { useState, useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import API from "../API.jsx";
 import "../css/DynamicPage.css";
 
 function CategoryPage() {
@@ -12,11 +13,13 @@ function CategoryPage() {
     
     // Get data from database
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // Get data based on the chosen category
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 let convertedName = getCategory.toLowerCase();
 
                 // Convert plural name to singular name
@@ -24,9 +27,10 @@ function CategoryPage() {
                 else convertedName = convertedName.slice(0, convertedName.length - 1);
 
                 // Fetch request to backend
-                const response = await fetch(`https://technoinc-api.vercel.app/api/v1/wiki/${convertedName}/articles`);
+                const response = await fetch(`${API}/api/v1/wiki/${convertedName}/articles`);
                 const articles = await response.json();
 
+                setLoading(false);
                 setData(articles.articles);
 
             } catch(error) {
@@ -42,8 +46,16 @@ function CategoryPage() {
             <Menu wikiTitle={getCategory} selected={getCategory} setReplace={true} />
 
             <div className="mt-4 mb-[6em] flex flex-col items-center">
-                <h2 className="highlight">{getCategory}</h2>
+                <h2>
+                    <span className="highlight">{getCategory}</span>
+                </h2>
                 <p className="mt-2 text-[small]">Category Page</p>
+            </div>
+
+            <div
+                style={{display: loading ? "flex" : "none"}}
+                className="w-full min-h-[50vh] flex justify-center items-center">
+                <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
             </div>
 
             <div className="flex justify-evenly flex-wrap gap-y-[1em]">

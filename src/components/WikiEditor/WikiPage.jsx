@@ -3,6 +3,7 @@ import Footer from "../Footer";
 import ContentParser from "./ContentParser";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import API from "../../API.jsx";
 import "../../css/DynamicPage.css";
 
 function WikiPage() {
@@ -15,10 +16,12 @@ function WikiPage() {
     const [article, setArticle] = useState({});
     const [content, setContent] = useState([]);
     const [images, setImages] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         
         const fetchData = async () => {
+            setLoading(true);
             let convertedName = getCategory.toLowerCase();
 
             // Convert plural name to singular name
@@ -27,10 +30,11 @@ function WikiPage() {
 
             try {
                 // Fetch request to backend server
-                const response = await fetch(`https://technoinc-api.vercel.app/api/v1/wiki/${convertedName}/${contentId}`);
+                const response = await fetch(`${API}/api/v1/wiki/${convertedName}/${contentId}`);
                 const results = await response.json();
 
                 // Set state based on the results
+                setLoading(false);
                 setArticle(results.article);
                 setContent(results.article.wiki_content);
 
@@ -44,10 +48,18 @@ function WikiPage() {
 
     return (
         <>
-            <Menu wikiTitle={article.title} selected={categoryName} />
+            <Menu wikiTitle={article.title} selected={getCategory} />
+
+            <div
+                style={{display: loading ? "flex" : "none"}}
+                className="w-full min-h-[50vh] flex justify-center items-center">
+                <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
+            </div>
 
             <div className="mt-4 mb-[6em] flex flex-col items-center">
-                <h2 className="highlight">{article.title}</h2>
+                <h2 className="text-center">
+                    <span className="highlight">{article.title}</span>
+                </h2>
                 <p className="mt-2 text-[small]">{`${article.category} Page`}</p>
                 <div className="mt-3 flex justify-center items-center gap-1 [&>p]:text-[.7em]">
                     <p>VISITED</p>

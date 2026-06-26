@@ -24,7 +24,9 @@ function ContentParser({ index, content, block }) {
                     <div
                         style={{borderTop: sameCheck(prevBlock, "table-type") && "1px solid rgb(85,85,85)"}}
                         className="w-[80%]" />
-                    <h3 className="highlight">{block.data}</h3>
+                    <h3 className="text-center">
+                        <span className="highlight">{block.data}</span>
+                    </h3>
                 </div>
             );
             break;

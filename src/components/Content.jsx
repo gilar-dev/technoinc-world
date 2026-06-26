@@ -14,7 +14,7 @@ function Content() {
                 </p>
             </div>
 
-            <div className="category-box">
+            <div className="action-box">
                 <div className="box-list">
                     <span>
                         <i className="fa-solid fa-heart-crack"></i>
