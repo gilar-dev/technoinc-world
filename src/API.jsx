@@ -1,3 +1,3 @@
-const API = "https://tehnoinc-app.vercel.app";
+const API = "https://tehnoinc-api.vercel.app";
 
 export default API;
