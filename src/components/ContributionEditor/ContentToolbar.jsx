@@ -44,7 +44,6 @@ function ContentToolbar({ addNewContent }) {
                     type: "image-type",
                     url: "",
                     raw_file: "",
-                    title: "",
                     description: ""
                 })}>
                 <i className="fa-solid fa-image"></i>

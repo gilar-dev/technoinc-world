@@ -17,6 +17,8 @@ function CategoryPage() {
 
     // Get data based on the chosen category
     useEffect(() => {
+        setData([]);
+
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -58,12 +60,13 @@ function CategoryPage() {
                 <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
             </div>
 
+            <p
+                style={{display: data.length === 0 ? "block" : "none"}}
+                className="text-center">
+                Seems like this category does not have articles yet.
+            </p>
+            
             <div className="flex justify-evenly flex-wrap gap-y-[1em]">
-                <p
-                    style={{display: data.length === 0 ? "block" : "none"}}
-                    className="text-center">
-                    Seems like this category does not have articles yet.
-                </p>
                 {data.map((item, idx) => {
                     return (
                         <Link key={idx} to={`/wiki/${categoryName}/${item.id}`} className="group w-[45%] aspect-square overflow-hidden cursor-pointer relative border border-[rgb(85,85,85)] transition-[border] ease-in-out duration-500 hover:border-white md:w-75">

@@ -95,7 +95,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
                 break;
 
             case "image-type":
-                if (block.url === "" || block.title === "" || block.description === "") return alert(rejectionMessage);
+                if (block.url === "" || block.description === "") return alert(rejectionMessage);
                 // Set true if containsImage
                 containsImage = true;
                 break;
@@ -140,6 +140,8 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
 
     // Make fetch request to backend then send it to database
     if (finalArticle) {
+        setLoading(true);
+
         try {
             const processUploading = await fetch(`${API}/api/v1/wiki/upload`, {
                 method: "POST",

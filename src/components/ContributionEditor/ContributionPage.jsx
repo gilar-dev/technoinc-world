@@ -80,9 +80,9 @@ function ContributionPage() {
         <div
             style={{display: loading ? "flex" : "none"}}
             className="w-full h-screen flex justify-center items-center fixed z-1 bg-black/30">
-            <div className="w-[50%] p-3 flex flex-col items-center justify-center gap-y-5 bg-black/50">
+            <div className="w-[50%] p-3 flex flex-col items-center justify-center gap-y-5 rounded-[5px] bg-black/50">
                 <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
-                <h3 className="font-['Pixelify_Sans']">Uploading your article!</h3>
+                <h3 className="font-['Pixelify_Sans'] text-center text-white">Uploading your article!</h3>
             </div>
         </div>
 
@@ -193,10 +193,7 @@ function ContributionPage() {
         <button
             title="Upload article"
             style={{display: schema.length === 0 ? "none" : "block"}}
-            onClick={() => {
-                setLoading(true);
-                checkAllValues(schema, setSchema, article, setArticle, setLoading);
-            }}
+            onClick={() => checkAllValues(schema, setSchema, article, setArticle, setLoading)}
             className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                         text-white border-none bg-[rgb(0,175,255)]
                         hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">

@@ -83,11 +83,6 @@ function BlockContent({ index, block, buttons, onChangeHandler }) {
                             Choose image
                     </label>
                     <textarea
-                        placeholder="Add title"
-                        value={block.title}
-                        onChange={(e) => onChangeHandler(index, "title", e.target.value)}
-                        className="w-full field-sizing-content resize-none font-['Montserrat'] text-2xl outline-none border-l-0 border-t-0 border-r-0 border-gray-400 bg-transparent" />
-                    <textarea
                         type="text"
                         placeholder="Add image description"
                         value={block.description}

@@ -1,6 +1,7 @@
 import Menu from "../Menu";
 import Footer from "../Footer";
 import ContentParser from "./ContentParser";
+import ImageContainer from "./ImageContainer.jsx";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import API from "../../API.jsx";
@@ -16,7 +17,12 @@ function WikiPage() {
     const [article, setArticle] = useState({});
     const [content, setContent] = useState([]);
     const [images, setImages] = useState([]);
+
+    // Boolean state variables
     const [loading, setLoading] = useState(true);
+    const [imageContainer, setImageContainer] = useState(false);
+
+    const [showed, setShowed] = useState("");
 
     useEffect(() => {
         
@@ -33,10 +39,19 @@ function WikiPage() {
                 const response = await fetch(`${API}/api/v1/wiki/${convertedName}/${contentId}`);
                 const results = await response.json();
 
+                // Get all image contents
+                const getImages = results.article.wiki_content.filter(img => img.type === "image-type");
+                // Add cover image to list
+                getImages.unshift({
+                    url: results.article.cover,
+                    description: results.article.title
+                });
+
                 // Set state based on the results
                 setLoading(false);
-                setArticle(results.article);
+                setArticle({...results.article, wiki_content: []});
                 setContent(results.article.wiki_content);
+                setImages(getImages);
 
             } catch(error) {
                 console.error(error);
@@ -76,6 +91,10 @@ function WikiPage() {
                 <img
                     src={article.cover || null}
                     alt={article.title}
+                    onClick={() => {
+                        setShowed(article.cover);
+                        setImageContainer(true);
+                    }}
                     className="w-full" />
             </div>
 
@@ -85,10 +104,18 @@ function WikiPage() {
                         key={idx}
                         index={idx}
                         content={content}
-                        block={item} />
+                        block={item}
+                        setImageContainer={setImageContainer}
+                        setShowed={setShowed} />
                 ))}
             </div>
 
+            <ImageContainer
+                images={images}
+                showed={showed}
+                setShowed={setShowed}
+                display={imageContainer}
+                setDisplay={setImageContainer} />
             <Footer />
         </>
     );
