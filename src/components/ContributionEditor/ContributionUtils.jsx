@@ -87,7 +87,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
                 break;
 
             case "table-type":
-                if (block.headData === "" || block.contentData === "") return alert(rejectionMessage);
+                if (block.head_data === "" || block.content_data === "") return alert(rejectionMessage);
                 break;
 
             case "paragraph-type":
