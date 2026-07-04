@@ -1,10 +1,10 @@
 import Menu from "../Menu";
 import Footer from "../Footer";
 import ContentParser from "./ContentParser";
-import ImageContainer from "./ImageContainer.jsx";
+import ImageContainer from "./ImageContainer";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import API from "../../API.jsx";
+import API from "../../API";
 import "../../css/DynamicPage.css";
 
 function WikiPage() {
@@ -13,10 +13,11 @@ function WikiPage() {
     const { categoryName, contentId } = useParams();
     const getCategory = categoryName.split(":")[1];
     
-    // State variables
+    // Essential data variables
     const [article, setArticle] = useState({});
     const [content, setContent] = useState([]);
     const [images, setImages] = useState([]);
+    const [menuContent, setMenuContent] = useState([]);
 
     // Boolean state variables
     const [loading, setLoading] = useState(true);
@@ -47,14 +48,17 @@ function WikiPage() {
                     description: results.article.title
                 });
 
+                const getParagraph = results.article.wiki_content.filter(para => para.type === "paragraph-type");
+
                 // Set state based on the results
                 setLoading(false);
                 setArticle({...results.article, wiki_content: []});
                 setContent(results.article.wiki_content);
                 setImages(getImages);
+                setMenuContent(getParagraph);
 
             } catch(error) {
-                console.error(error);
+                console.log("Sorry, the article you're looking for is empty.");
             }
         }
 
@@ -63,7 +67,7 @@ function WikiPage() {
 
     return (
         <>
-            <Menu wikiTitle={article.title} selected={getCategory} />
+            <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent}  />
 
             <div
                 style={{display: loading ? "flex" : "none"}}
@@ -95,7 +99,7 @@ function WikiPage() {
                         setShowed(article.cover);
                         setImageContainer(true);
                     }}
-                    className="w-full" />
+                    className="w-full cursor-pointer" />
             </div>
 
             <div>
@@ -106,7 +110,8 @@ function WikiPage() {
                         content={content}
                         block={item}
                         setImageContainer={setImageContainer}
-                        setShowed={setShowed} />
+                        setShowed={setShowed}
+                        menuContent={menuContent} />
                 ))}
             </div>
 

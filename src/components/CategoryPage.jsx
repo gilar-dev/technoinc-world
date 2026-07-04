@@ -61,7 +61,7 @@ function CategoryPage() {
             </div>
 
             <p
-                style={{display: data.length === 0 ? "block" : "none"}}
+                style={{display: !loading && data.length === 0 ? "block" : "none"}}
                 className="text-center">
                 Seems like this category does not have articles yet.
             </p>

@@ -65,5 +65,5 @@ a {
 .highlight {
     padding: 0 5px;
     box-decoration-break: clone;
-    background: linear-gradient(to top, rgba(180, 180, 180, .5) 50%, rgba(0, 0, 0, 0) 0);
+    background: linear-gradient(to top, rgba(180, 180, 180, .7) 50%, rgba(0, 0, 0, 0) 0);
 }

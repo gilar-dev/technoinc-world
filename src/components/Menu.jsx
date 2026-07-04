@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import PropTypes, { func } from "prop-types";
 import API from "../API.jsx";
 import "../css/Menu.css";
 
-function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) {
+function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, search=false, setSearch, menuContent=[]}) {
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
@@ -27,13 +27,6 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
     const sidebarMenuClicked = () => setIsActive(isActive === "" ? "active" : "");
 
     const wikiTitleCheck = wikiTitle !== "" && <h6 id="wiki-title">{wikiTitle}</h6>;
-
-    // Read the value of theme when changes
-    useEffect(() => {
-        localStorage.setItem("technoinc-theme", theme);
-        document.body.classList.remove(theme === "light" ? "dark" : "light");
-        document.body.classList.add(theme);
-    }, [theme]);
 
     // Menu effect when the page is being scrolled
     useEffect(() => {
@@ -62,6 +55,13 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
         }
     }, []);
 
+    // Read the value of theme when changes
+    useEffect(() => {
+        localStorage.setItem("technoinc-theme", theme);
+        document.body.classList.remove(theme === "light" ? "dark" : "light");
+        document.body.classList.add(theme);
+    }, [theme]);
+
     return (
         <section className={`menu-panel ${theme}`}>
 
@@ -79,6 +79,18 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
                 <a href="/contribution" title="Contribution" style={{display: !contribution && "none"}}>
                     <i className="fa-solid fa-pen-to-square"></i>
                 </a>
+                <a
+                    title="Search article to modify"
+                    style={{display: contribution && "none" || search && "none"}}
+                    onClick={() => setSearch(true)}>
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                </a>
+                <a
+                    title="Close"
+                    style={{display: !search && "none"}}
+                    onClick={() => setSearch(false)}>
+                    <i className="fa-solid fa-xmark"></i>
+                </a>
             </div>
 
             <div
@@ -95,9 +107,10 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
                         id="sidebar-close-btn"
                         title="Close sidebar menu"
                         onClick={sidebarMenuClicked}>
-                        <i className="fa-solid fa-x"></i>
+                        <i className="fa-solid fa-xmark"></i>
                     </button>
                 </div>
+
                 <div className="sidebar-list">
                     <input id="list-category" className="sidebar-checkbox" type="checkbox"></input> 
                     <label className="list-title" htmlFor="list-category">
@@ -116,6 +129,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
                         </ul>
                     </div>
                 </div>
+
                 <div className="sidebar-list">
                     <input id="list-featured" className="sidebar-checkbox" type="checkbox"></input> 
                     <label className="list-title" htmlFor="list-featured">
@@ -137,6 +151,43 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true}) 
                         </ul>
                     </div>
                 </div>
+
+                <div
+                    style={{display: menuContent.length === 0 ? "none" : "block"}}
+                    className="sidebar-list">
+                    <input id="list-contents" className="sidebar-checkbox" type="checkbox"></input> 
+                    <label className="list-title" htmlFor="list-contents">
+                        <span className="title">Contents</span>
+                        <span className="dropdown-icon">
+                            <i className="fa-solid fa-angle-down"></i>
+                        </span>
+                    </label>
+                    <div className="list-box">
+                        <ul>
+                            {menuContent.map((content, index) => (
+                                <li
+                                    key={index}
+                                    className="content"
+                                    onClick={sidebarMenuClicked}>
+                                    <a
+                                        href={`#content${index + 1}`}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+
+                                            history.replaceState(null, "", `content${index + 1}`);
+
+                                            const target = document.getElementById(`content${index + 1}`);
+                                            if (target) {
+                                                target.scrollIntoView({ behavior: "smooth" });
+                                            }
+                                        }}>
+                                        {content.title}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
             </div>
 
         </section>
@@ -148,7 +199,10 @@ Menu.PropTypes = {
     wikiTitle: PropTypes.string,
     selected: PropTypes.string,
     setReplace: PropTypes.bool,
-    contribution: PropTypes.bool
+    contribution: PropTypes.bool,
+    search: PropTypes.bool,
+    setSearch: PropTypes.func,
+    menuContent: PropTypes.array
 }
 
 export default Menu;

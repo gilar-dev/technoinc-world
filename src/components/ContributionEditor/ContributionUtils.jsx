@@ -1,4 +1,4 @@
-import API from "../../API.jsx";
+import API from "../../API";
 
 // Generate article id
 export const generateId = (title, category) => {
@@ -66,10 +66,19 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
 
     const checkId = await checkArticleId(article.category, article.id);
 
-    if (article.title === "") return alert("Article title can't be empty");
-    if (checkId) return alert("Article id is already exist!");
-    if (article.url === "") return alert("Article cover can't be empty!");
-    if (schema.length === 0) return alert("You haven't add any content!");
+    if (article.title === "") {
+        setLoading(false);
+        return alert("Article title can't be empty");
+    } else if (checkId) {
+        setLoading(false);
+        return alert("Article id is already exist!");
+    } else if (article.url === "") {
+        setLoading(false);
+        return alert("Article cover can't be empty!");
+    } else if (schema.length === 0) {
+        setLoading(false);
+        return alert("You haven't add any content!");
+    }
 
     // Check if article contains images
     let containsImage = false;
@@ -87,7 +96,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
                 break;
 
             case "table-type":
-                if (block.headData === "" || block.contentData === "") return alert(rejectionMessage);
+                if (block.head_data === "" || block.content_data === "") return alert(rejectionMessage);
                 break;
 
             case "paragraph-type":
@@ -168,6 +177,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
             setLoading(false);
 
         } catch (error) {
+            setLoading(false);
             console.error(error);
         }
     }

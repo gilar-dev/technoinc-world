@@ -29,7 +29,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
             <span
                 style={{display: navigation ? "inline" : "none"}}
                 onClick={() => setDisplay(false)}
-                className="text-3xl absolute top-4 right-8 text-white">
+                className="text-3xl cursor-pointer absolute top-4 right-4 text-white">
                 <i className="fa-solid fa-xmark"></i>
             </span>
 
@@ -52,7 +52,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
                             if (images.length <= 1) return;
                             setShowed(!images[current.index - 1] ? images[images.length - 1].url : images[current.index - 1].url);
                         }}
-                        className="border border-black">
+                        className="cursor-pointer border border-black">
                         <i className="fa-solid fa-angle-left"></i>
                     </span>
                     <span
@@ -60,7 +60,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
                             if (images.length <= 1) return;
                             setShowed(!images[current.index + 1] ? images[0].url : images[current.index + 1].url);
                         }}
-                        className="border border-black">
+                        className="cursor-pointer border border-black">
                         <i className="fa-solid fa-angle-right"></i>
                     </span>
                 </div>

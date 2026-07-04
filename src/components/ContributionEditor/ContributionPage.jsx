@@ -2,6 +2,7 @@ import Menu from "../Menu";
 import Footer from "../Footer";
 import ContentBlock from "./ContentBlock";
 import ContentToolbar from "./ContentToolbar";
+import ModifyBox from "./ModifyBox";
 import { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { generateId, checkArticleId, uploadToCloudStorage, checkAllValues } from "./ContributionUtils";
@@ -21,6 +22,7 @@ function ContributionPage() {
 
     // Schema for making dynamic content block
     const [schema, setSchema] = useState([]);
+    const [search, setSearch] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (index, property, value) => {
@@ -75,7 +77,8 @@ function ContributionPage() {
 
     return (
         <>
-        <Menu wikiTitle="Contribution" contribution={false} />
+        <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} />
+        <ModifyBox search={search} />
 
         <div
             style={{display: loading ? "flex" : "none"}}
@@ -193,7 +196,10 @@ function ContributionPage() {
         <button
             title="Upload article"
             style={{display: schema.length === 0 ? "none" : "block"}}
-            onClick={() => checkAllValues(schema, setSchema, article, setArticle, setLoading)}
+            onClick={() => {
+                setLoading(true);
+                checkAllValues(schema, setSchema, article, setArticle, setLoading);
+            }}
             className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                         text-white border-none bg-[rgb(0,175,255)]
                         hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
