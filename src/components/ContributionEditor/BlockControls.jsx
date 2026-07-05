@@ -37,7 +37,7 @@ function BlockControls({ currentIndex, addButton=false, operationalButtons }) {
                 title="Delete content"
                 onClick={() => operationalButtons.deleteContent(currentIndex)}
                 className="delete-btn bg-[rgb(255,0,0)] hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">
-                <i className="fa-solid fa-trash"></i>
+                <i className="fa-solid fa-eraser"></i>
             </button>
         </div>
     );

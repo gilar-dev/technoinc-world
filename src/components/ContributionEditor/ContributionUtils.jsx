@@ -22,6 +22,9 @@ export const generateId = (title, category) => {
 
 // Check if article id existence
 export const checkArticleId = async (category, articleId) => {
+
+    if (articleId === "" || category === "") return;
+
     try {
         const getId = await fetch(`${API}/api/v1/wiki/${category}/${articleId}/exist`);
 

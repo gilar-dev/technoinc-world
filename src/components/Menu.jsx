@@ -24,7 +24,10 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
     }
 
     // Set the value of isActive for sidebar menu
-    const sidebarMenuClicked = () => setIsActive(isActive === "" ? "active" : "");
+    const sidebarMenuClicked = () => {
+        setIsActive(isActive === "" ? "active" : "");
+        document.body.style.overflow = isActive === "" ? "hidden" : "visible";
+    }
 
     const wikiTitleCheck = wikiTitle !== "" && <h6 id="wiki-title">{wikiTitle}</h6>;
 
@@ -69,7 +72,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
                 <button 
                     id="menu-btn"
                     title="Open sidebar menu"
-                    onClick={sidebarMenuClicked}>
+                    onClick={() => sidebarMenuClicked()}>
                     <i className="fa-solid fa-bars"></i>
                 </button>
                 <div>
@@ -95,7 +98,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
 
             <div
                 className="close-area-btn"
-                onClick={sidebarMenuClicked}>
+                onClick={() => sidebarMenuClicked()}>
             </div>
 
             <div className={`sidebar-menu ${isActive}`}>
@@ -106,7 +109,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
                     <button 
                         id="sidebar-close-btn"
                         title="Close sidebar menu"
-                        onClick={sidebarMenuClicked}>
+                        onClick={() => sidebarMenuClicked()}>
                         <i className="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -122,7 +125,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
                     <div className="list-box">
                         <ul>
                             {categories.map((item, idx) =>
-                                <Link key={idx} replace={setReplace} to={`/wiki/Category:${item}`} onClick={sidebarMenuClicked}>
+                                <Link key={idx} replace={setReplace} to={`/wiki/Category:${item}`} onClick={() => sidebarMenuClicked()}>
                                     <li className={selected === item ? "selected" : ""}>{item}</li>
                                 </Link>
                             )}
@@ -140,7 +143,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
                     </label>
                     <div className="list-box featured">
                         <ul>
-                            <li onClick={themeToggle}>
+                            <li onClick={() => themeToggle()}>
                                 <i className={`fa-solid ${theme === "light" ? "fa-sun" : "fa-moon"}`}></i>
                                 <p>Switch theme</p>
                             </li>
@@ -168,7 +171,7 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
                                 <li
                                     key={index}
                                     className="content"
-                                    onClick={sidebarMenuClicked}>
+                                    onClick={() => sidebarMenuClicked()}>
                                     <a
                                         href={`#content${index + 1}`}
                                         onClick={(e) => {

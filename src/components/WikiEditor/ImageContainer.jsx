@@ -20,7 +20,11 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
         }
     }, [showed]);
     
-    if (!display) return;
+    if (display) document.body.style.overflow = "hidden";
+    else {
+        document.body.style.overflow = "visible";
+        return;
+    }
 
     return (
         <div

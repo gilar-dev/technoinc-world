@@ -121,6 +121,7 @@ function WikiPage() {
                 setShowed={setShowed}
                 display={imageContainer}
                 setDisplay={setImageContainer} />
+                
             <Footer />
         </>
     );
