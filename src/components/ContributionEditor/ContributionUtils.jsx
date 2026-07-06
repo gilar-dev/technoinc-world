@@ -1,5 +1,56 @@
 import API from "../../API";
 
+// Handle value from article inputs
+export const handleInputChange = (index, property, value, setSchema) => {
+    setSchema(prev => {
+        const updatedSchema = [...prev];
+
+        updatedSchema[index][property] = value;
+
+        return updatedSchema;
+    });
+}
+
+// Add new content to list of content blocks
+export const addNewContent = (block, setSchema) => {
+    setSchema(prev => [...prev, block]);
+    scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+}
+
+// Add new table block for table-typed content only
+export const addNewTable = (index, block, setSchema) => {
+    setSchema(prev => [...prev].toSpliced(index + 1, 0, block));
+}
+
+// Move content to up-down and reordering
+export const moveContent = (currentIndex, direction, schema=[], setSchema) => {
+    if (schema.length <= 1) return;
+
+    // Get the targeted index
+    let targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+    setSchema((prev) => {
+        // Store current schema and content
+        const updatedSchema = [...prev];
+        const currentContent = updatedSchema[currentIndex];
+
+        // Check if index out of range
+        if (targetIndex < 0) targetIndex = updatedSchema.length - 1;
+        else if (targetIndex > updatedSchema.length - 1) targetIndex = 0;
+
+        // Reordering contents by swaping contents
+        updatedSchema[currentIndex] = updatedSchema[targetIndex];
+        updatedSchema[targetIndex] = currentContent;
+
+        return updatedSchema;
+    });
+}
+
+// Delete content from list of content blocks
+export const deleteContent = (index, setSchema) => {
+    setSchema((prev) => ([...prev].toSpliced(index, 1)));
+}
+
 // Generate article id
 export const generateId = (title, category) => {
     const modifiedTitle = title
@@ -18,6 +69,36 @@ export const generateId = (title, category) => {
     };
 
     return modifiedTitle + "-" + idNames[category];
+}
+
+// Get article category from category shortcut
+export const getCategory = (cat, plural=false) => {
+
+    if (plural) {
+        const pluralNames = {
+            char: "Characters",
+            civ: "Civilizations",
+            ide: "Ideologies",
+            lore: "Lores",
+            org: "Organizations",
+            party: "Parties",
+            town: "Towns"
+        }
+
+        return pluralNames[cat];
+    }
+
+    const categories = {
+        char: "Character",
+        civ: "Civilization",
+        ide: "Ideology",
+        lore: "Lore",
+        org: "Organization",
+        party: "Party",
+        town: "Town"
+    }
+
+    return categories[cat];
 }
 
 // Check if article id existence
@@ -155,7 +236,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
         setLoading(true);
 
         try {
-            const processUploading = await fetch(`${API}/api/v1/wiki/upload`, {
+            const processUploading = await fetch(`${API}/api/v1/contribution/upload`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(finalArticle)
@@ -176,12 +257,59 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
                 wiki_content: []
             });
             setSchema([]);
-            alert("Your article is sucessfully uploaded!");
             setLoading(false);
+            alert("Your article is sucessfully uploaded!");
+
+            const splitedId = article.id.split("-");
+            window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}/${article.id}`);
 
         } catch (error) {
             setLoading(false);
             console.error(error);
         }
+    }
+}
+
+// Sterilized user input to prevent XSS probability
+export const sterilizedWord = (word) => {
+
+    if (!word) return "";
+
+    const replaced = word.toLowerCase().trim()
+        .replace(/&/g, "&amp")
+        .replace(/</g, "&lt")
+        .replace(/>/g, "&gt")
+        .replace(/"/g, "&quot")
+        .replace(/'/g, "&#x27")
+        .replace(/\//g, "&#x2f")
+
+    return replaced.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
+
+// Update article after edited
+export const updateArticle = async (category, id, schema) => {
+    // Create final article data before updating
+    const finalArticleUpdate = {
+        id: id,
+        wiki_content: [...schema]
+    }
+
+    try {
+        // Fetch request to backend API endpoint to update
+        const response = await fetch(`${API}/api/v1/contribution/update/${category}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(finalArticleUpdate)
+        })
+        const results = await response.json();
+
+        alert("Successfully updated article!")
+        return true;
+
+    } catch (error) {
+        console.error(error);
+        return false;
     }
 }

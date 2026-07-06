@@ -20,7 +20,8 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
     // Function to switch to different theme
     const themeToggle = () => {
         setTheme(theme === "light" ? "dark" : "light");
-        setIsActive(isActive === "active" ? "" : "active")
+        setIsActive(isActive === "active" ? "" : "active");
+        document.body.style.overflow = isActive === "" ? "hidden" : "visible";
     }
 
     // Set the value of isActive for sidebar menu

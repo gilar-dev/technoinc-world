@@ -5,7 +5,7 @@ import ContentToolbar from "./ContentToolbar";
 import ModifyBox from "./ModifyBox";
 import { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import { generateId, checkArticleId, uploadToCloudStorage, checkAllValues } from "./ContributionUtils";
+import { handleInputChange, generateId, checkArticleId, uploadToCloudStorage, checkAllValues } from "./ContributionUtils";
 import "../../css/DynamicPage.css";
 
 function ContributionPage() {
@@ -24,56 +24,6 @@ function ContributionPage() {
     const [schema, setSchema] = useState([]);
     const [search, setSearch] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    const handleInputChange = (index, property, value) => {
-        setSchema(prev => {
-            const updatedSchema = [...prev];
-
-            updatedSchema[index][property] = value;
-
-            return updatedSchema;
-        });
-    }
-
-    // Add new content to list of content blocks
-    const addNewContent = (block) => {
-        setSchema(prev => [...prev, block]);
-        scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-    }
-
-    // Add new table block for table-typed content only
-    const addNewTable = (index, block) => {
-        setSchema(prev => [...prev].toSpliced(index + 1, 0, block));
-    }
-
-    // Move content to up-down and reordering
-    const moveContent = (currentIndex, direction) => {
-        if (schema.length <= 1) return;
-
-        // Get the targeted index
-        let targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-
-        setSchema((prev) => {
-            // Store current schema and content
-            const updatedSchema = [...prev];
-            const currentContent = updatedSchema[currentIndex];
-
-            // Check if index out of range
-            if (targetIndex < 0) targetIndex = updatedSchema.length - 1;
-            else if (targetIndex > updatedSchema.length - 1) targetIndex = 0;
-
-            // Reordering contents by swaping contents
-            updatedSchema[currentIndex] = updatedSchema[targetIndex];
-            updatedSchema[targetIndex] = currentContent;
-
-            return updatedSchema;
-        });
-    }
-
-    // Delete content from list of content blocks
-    const deleteContent = (index) => {
-        setSchema((prev) => ([...prev].toSpliced(index, 1)));
-    }
 
     return (
         <>
@@ -183,11 +133,8 @@ function ContributionPage() {
                     key={idx}
                     index={idx}
                     block={block}
-                    buttons={{
-                        moveContent: moveContent,
-                        addNewTable: addNewTable,
-                        deleteContent: deleteContent
-                    }}
+                    schema={schema}
+                    setSchema={setSchema}
                     cloudStorage={uploadToCloudStorage}
                     onChangeHandler={handleInputChange} />
             ))}
@@ -206,7 +153,7 @@ function ContributionPage() {
             Upload
         </button>
 
-        <ContentToolbar addNewContent={addNewContent} />
+        <ContentToolbar setSchema={setSchema} />
         <Footer />
         </>
     )

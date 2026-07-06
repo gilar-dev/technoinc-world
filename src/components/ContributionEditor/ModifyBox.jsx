@@ -1,5 +1,8 @@
+import ContributionEditPage from "./ContributionEditPage";
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { sterilizedWord } from "./ContributionUtils";
 import API from "../../API";
 
 function ModifyBox({ search }) {
@@ -7,21 +10,6 @@ function ModifyBox({ search }) {
     const [input, setInput] = useState("");
     const [data, setData] = useState([]);
     const [specific, setSpecific] = useState([]);
-
-    const sterilizedWord = (word) => {
-
-        if (!word) return "";
-
-        const replaced = word.toLowerCase().trim()
-            .replace(/&/g, "&amp")
-            .replace(/</g, "&lt")
-            .replace(/>/g, "&gt")
-            .replace(/"/g, "&quot")
-            .replace(/'/g, "&#x27")
-            .replace(/\//g, "&#x2f")
-
-        return replaced.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -68,6 +56,9 @@ function ModifyBox({ search }) {
             </div>
 
             <div className="h-[85%] py-3 overflow-auto">
+
+                <p className={`mx-3 ${specific.length > 0 ? "block" : "hidden"}`}>Found Match ({specific.length})</p>
+
                 {specific.map((item, index) => (
                     <div
                         key={index}
@@ -80,22 +71,25 @@ function ModifyBox({ search }) {
                                 className="w-full h-full group-hover:scale-[110%] transition-transform duration-75 ease-in-out"/>
                         </div>
 
-                        <div className="w-[60%] relative min-[1200px]:w-[70%]">
+                        <div className="w-[60%] flex flex-col min-[1200px]:w-[70%]">
                             <h4 dangerouslySetInnerHTML={{__html:
                                 item.title.replace(new RegExp(`(${sterilizedWord(input)})`, "gi"), word => (
                                     `<span style="background-color: blue;">${word}</span>`
                                 ))
                             }}></h4>
                             <p className="text-[.9em]">{item.id}</p>
-                            <p className="text-[.9em] text-white/50">{item.category}</p>
+                            <p className="text-[.9em] flex items-center gap-1 text-white/50">{item.category} | {item.visited} <i className="fa-regular fa-eye"></i></p>
 
-                            <div className="flex items-center gap-5 absolute bottom-0 right-0
+                            <div className="mt-auto flex items-center gap-5 self-end
                                             [&>button]:cursor-pointer [&>button]:text-[1.3em] [&>button]:border-none [&>button]:bg-transparent">
-                                <button
+                                <Link
                                     title="Edit"
+                                    to={`/contribution/edit/${item.id}`}
+                                    replace
+                                    onClick={() => document.body.style.overflow = "visible"}
                                     className="text-white">
                                     <i className="fa-solid fa-pen"></i>
-                                </button>
+                                </Link>
                                 <button
                                     title="Delete"
                                     className="text-red-500">

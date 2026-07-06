@@ -1,6 +1,7 @@
+import { addNewContent } from "./ContributionUtils";
 import PropTypes from "prop-types";
 
-function ContentToolbar({ addNewContent }) {
+function ContentToolbar({ setSchema }) {
 
     return (
         <div className="mt-[3em] mx-[1em] p-[1em] flex gap-[1em] overflow-auto rounded-[10px]
@@ -14,7 +15,7 @@ function ContentToolbar({ addNewContent }) {
                 onClick={() => addNewContent({
                     type: "heading-type",
                     data: ""
-                })}>
+                }, setSchema)}>
                 <i className="fa-solid fa-heading"></i>
             </button>
 
@@ -24,7 +25,7 @@ function ContentToolbar({ addNewContent }) {
                     type: "table-type",
                     head_data: "",
                     content_data: ""
-                })}>
+                }, setSchema)}>
                 <i className="fa-solid fa-table-list"></i>
             </button>
 
@@ -34,7 +35,7 @@ function ContentToolbar({ addNewContent }) {
                     type: "paragraph-type",
                     title: "",
                     data: ""
-                })}>
+                }, setSchema)}>
                 <i className="fa-solid fa-paragraph"></i>
             </button>
 
@@ -45,7 +46,7 @@ function ContentToolbar({ addNewContent }) {
                     url: "",
                     raw_file: "",
                     description: ""
-                })}>
+                }, setSchema)}>
                 <i className="fa-solid fa-image"></i>
             </button>
         </div>
@@ -53,7 +54,7 @@ function ContentToolbar({ addNewContent }) {
 }
 
 ContentToolbar.propTypes = {
-    addNewContent: PropTypes.func.isRequired
+    setSchema: PropTypes.func.isRequired
 }
 
 export default ContentToolbar;
