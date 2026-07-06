@@ -71,7 +71,7 @@ function ModifyBox({ search }) {
                                 className="w-full h-full group-hover:scale-[110%] transition-transform duration-75 ease-in-out"/>
                         </div>
 
-                        <div className="w-[60%] flex flex-col min-[1200px]:w-[70%]">
+                        <div className="w-[60%] flex flex-col text-white min-[1200px]:w-[70%]">
                             <h4 dangerouslySetInnerHTML={{__html:
                                 item.title.replace(new RegExp(`(${sterilizedWord(input)})`, "gi"), word => (
                                     `<span style="background-color: blue;">${word}</span>`
