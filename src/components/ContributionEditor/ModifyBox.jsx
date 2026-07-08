@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { sterilizedWord } from "./ContributionUtils";
-import API from "../../API";
 
 function ModifyBox({ search }) {
 
@@ -13,6 +12,9 @@ function ModifyBox({ search }) {
 
     useEffect(() => {
         const fetchData = async () => {
+
+            const API = import.meta.env.VITE_API;
+            
             try {
                 const response = await fetch(`${API}/api/v1/wiki/articles`);
                 const results = await response.json();
@@ -43,6 +45,7 @@ function ModifyBox({ search }) {
                     value={input}
                     onChange={e => {
                         setInput(e.target.value);
+
                         const filter = data.filter(item => item.title.toLowerCase().includes(e.target.value.toLowerCase()));
                         setSpecific(filter);
                     }}
@@ -87,14 +90,9 @@ function ModifyBox({ search }) {
                                     to={`/contribution/edit/${item.id}`}
                                     replace
                                     onClick={() => document.body.style.overflow = "visible"}
-                                    className="text-white">
-                                    <i className="fa-solid fa-pen"></i>
+                                    className="p-1 rounded-[3px] border-b-2 border-white text-white hover:bg-white/30">
+                                    Edit Article
                                 </Link>
-                                <button
-                                    title="Delete"
-                                    className="text-red-500">
-                                    <i className="fa-solid fa-trash"></i>
-                                </button>
                             </div>
                         </div>
                     </div>

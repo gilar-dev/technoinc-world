@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes, { func } from "prop-types";
-import API from "../API.jsx";
 import "../css/Menu.css";
 
 function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, search=false, setSearch, menuContent=[]}) {
@@ -21,19 +20,20 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
     const themeToggle = () => {
         setTheme(theme === "light" ? "dark" : "light");
         setIsActive(isActive === "active" ? "" : "active");
-        document.body.style.overflow = isActive === "" ? "hidden" : "visible";
     }
 
     // Set the value of isActive for sidebar menu
     const sidebarMenuClicked = () => {
         setIsActive(isActive === "" ? "active" : "");
-        document.body.style.overflow = isActive === "" ? "hidden" : "visible";
     }
 
     const wikiTitleCheck = wikiTitle !== "" && <h6 id="wiki-title">{wikiTitle}</h6>;
 
     // Menu effect when the page is being scrolled
     useEffect(() => {
+        
+        const API = import.meta.env.VITE_API;
+
         fetch(`${API}/api/v1/wiki/categories`)
         .then(result => result.json())
         .then(data => setCategories(data.category_list))

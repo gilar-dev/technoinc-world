@@ -2,7 +2,6 @@ import Menu from "./Menu.jsx";
 import Footer from "./Footer.jsx";
 import { useState, useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import API from "../API.jsx";
 import "../css/DynamicPage.css";
 
 function CategoryPage() {
@@ -20,6 +19,9 @@ function CategoryPage() {
         setData([]);
 
         const fetchData = async () => {
+
+            const API = import.meta.env.VITE_API;
+            
             try {
                 setLoading(true);
                 let convertedName = getCategory.toLowerCase();

@@ -4,7 +4,6 @@ import ContentParser from "./ContentParser";
 import ImageContainer from "./ImageContainer";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import API from "../../API";
 import "../../css/DynamicPage.css";
 
 function WikiPage() {
@@ -30,6 +29,7 @@ function WikiPage() {
         const fetchData = async () => {
             setLoading(true);
             let convertedName = getCategory.toLowerCase();
+            const API = import.meta.env.VITE_API;
 
             // Convert plural name to singular name
             if (convertedName.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");

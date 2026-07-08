@@ -1,4 +1,4 @@
-import API from "../../API";
+const API = import.meta.env.VITE_API;
 
 // Handle value from article inputs
 export const handleInputChange = (index, property, value, setSchema) => {
@@ -74,28 +74,14 @@ export const generateId = (title, category) => {
 // Get article category from category shortcut
 export const getCategory = (cat, plural=false) => {
 
-    if (plural) {
-        const pluralNames = {
-            char: "Characters",
-            civ: "Civilizations",
-            ide: "Ideologies",
-            lore: "Lores",
-            org: "Organizations",
-            party: "Parties",
-            town: "Towns"
-        }
-
-        return pluralNames[cat];
-    }
-
     const categories = {
-        char: "Character",
-        civ: "Civilization",
-        ide: "Ideology",
-        lore: "Lore",
-        org: "Organization",
-        party: "Party",
-        town: "Town"
+        char:  !plural ? "Character"    : "Characters",
+        civ:   !plural ? "Civilization" : "Civilizations",
+        ide:   !plural ? "Ideology"     : "Ideologies",
+        lore:  !plural ? "Lore"         : "Lores",
+        org:   !plural ? "Organization" : "Organizations",
+        party: !plural ? "Party"        : "Parties",
+        town:  !plural ? "Town"         : "Towns"
     }
 
     return categories[cat];
@@ -128,17 +114,18 @@ export const uploadToCloudStorage = async (rawFile, folder) => {
     const dataPackage = new FormData();
     dataPackage.append("file", rawFile);
     dataPackage.append("folder", folder);
-    dataPackage.append("upload_preset", "technoinc_preset");
+    dataPackage.append("upload_preset", import.meta.env.VITE_CLOUDINARY_PRESET);
 
     try {
-        const response = await fetch("https://api.cloudinary.com/v1_1/dqxtu5f0a/upload", {
+        const response = await fetch(`${API}/api/v1/cloudinary/upload`, {
             method: "POST",
             body: dataPackage
         });
     
-        const jsonResult = await response.json();
+        const result = await response.json();
+        console.log(result);
 
-        return jsonResult.secure_url;
+        return result;
 
     } catch (error) {
         console.error(error);
@@ -148,24 +135,15 @@ export const uploadToCloudStorage = async (rawFile, folder) => {
 // Validate all values of all inputs
 export const checkAllValues = async (schema, setSchema, article, setArticle, setLoading) => {
 
-    const checkId = await checkArticleId(article.category, article.id);
-
-    if (article.title === "") {
-        setLoading(false);
-        return alert("Article title can't be empty");
-    } else if (checkId) {
-        setLoading(false);
-        return alert("Article id is already exist!");
-    } else if (article.url === "") {
-        setLoading(false);
-        return alert("Article cover can't be empty!");
-    } else if (schema.length === 0) {
-        setLoading(false);
-        return alert("You haven't add any content!");
-    }
-
     // Check if article contains images
     let containsImage = false;
+    // Check article id existence
+    const checkId = await checkArticleId(article.category, article.id);
+
+    if (article.title === "") return alert("Article title can't be empty");
+    if (checkId) return alert("Article id is already exist!");
+    if (article.cover === "") return alert("Article cover can't be empty!");
+    if (schema.length === 0) return alert("You haven't add any content!");
 
     for (let i = 0; i < schema.length; i++) {
             
@@ -212,7 +190,8 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
                 const getCloudURL = await uploadToCloudStorage(imageContent.raw_file, article.category);
 
                 if (getCloudURL) {
-                    cloneSchema[i]["url"] = getCloudURL;
+                    cloneSchema[i]["url"] = getCloudURL.secure_url;
+                    cloneSchema[i]["public_id"] = getCloudURL.public_id;
                     delete cloneSchema[i]["raw_file"];
                 }
             }
@@ -226,14 +205,14 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
         id: article.id,
         title: article.title,
         category: article.category,
-        cover: getCoverURL,
+        cover: getCoverURL.secure_url,
+        public_id: getCoverURL.public_id,
         visited: 0,
         wiki_content: cloneSchema
     }
 
     // Make fetch request to backend then send it to database
     if (finalArticle) {
-        setLoading(true);
 
         try {
             const processUploading = await fetch(`${API}/api/v1/contribution/upload`, {
@@ -243,10 +222,6 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
             });
 
             if (!processUploading.ok) return console.error(processUploading);
-                
-            const result = await processUploading.json();
-
-            console.log(result);
 
             setArticle({
                 id: "",
@@ -257,14 +232,14 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
                 wiki_content: []
             });
             setSchema([]);
-            setLoading(false);
             alert("Your article is sucessfully uploaded!");
 
             const splitedId = article.id.split("-");
             window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}/${article.id}`);
 
+            return true;
+
         } catch (error) {
-            setLoading(false);
             console.error(error);
         }
     }

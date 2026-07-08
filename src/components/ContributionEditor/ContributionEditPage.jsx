@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { handleInputChange, getCategory, uploadToCloudStorage, updateArticle } from "./ContributionUtils";
 import PropTypes from "prop-types";
-import API from "../../API";
 import "../../css/DynamicPage.css";
 
 function ContributionEditPage() {
@@ -18,15 +17,18 @@ function ContributionEditPage() {
 
     useEffect(() => {
         const fetchData = async () => {
+            const API = import.meta.env.VITE_API;
             const category = getCategory(splitedId[splitedId.length - 1]).toLowerCase();
 
             try {
                 // Get article from category & article is
                 const response = await fetch(`${API}/api/v1/wiki/${category}/${contentId}`)
-                const results = await response.json();
+                const result = await response.json();
+                const articleFront = { ...result.article };
+                delete articleFront["wiki_content"];
 
-                setData(results.article);
-                setSchema(results.article.wiki_content);
+                setData(articleFront);
+                setSchema(result.article.wiki_content);
 
             } catch (error) {
                 console.error(error);

@@ -44,6 +44,7 @@ function ContentToolbar({ setSchema }) {
                 onClick={() => addNewContent({
                     type: "image-type",
                     url: "",
+                    public_id: "",
                     raw_file: "",
                     description: ""
                 }, setSchema)}>

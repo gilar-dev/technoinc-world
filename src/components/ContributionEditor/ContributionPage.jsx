@@ -14,8 +14,9 @@ function ContributionPage() {
     const [article, setArticle] = useState({
         id: "",
         title: "",
-        category: "Civilization",
+        category: "Civilization", // Default value
         cover: "",
+        public_id: "",
         raw_cover: "", // Temporary
         wiki_content: []
     });
@@ -143,9 +144,11 @@ function ContributionPage() {
         <button
             title="Upload article"
             style={{display: schema.length === 0 ? "none" : "block"}}
-            onClick={() => {
+            onClick={async () => {
                 setLoading(true);
-                checkAllValues(schema, setSchema, article, setArticle, setLoading);
+
+                const validate = await checkAllValues(schema, setSchema, article, setArticle, setLoading);
+                if (!validate) setLoading(false);
             }}
             className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                         text-white border-none bg-[rgb(0,175,255)]
