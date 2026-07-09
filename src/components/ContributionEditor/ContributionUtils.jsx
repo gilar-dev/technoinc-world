@@ -136,7 +136,7 @@ export const uploadToCloudStorage = async (rawFile, folder) => {
 export const checkAllValues = async (schema, setSchema, article, setArticle, setLoading) => {
 
     // Check if article contains images
-    let containsImage = false;
+    let containImages = false;
     // Check article id existence
     const checkId = await checkArticleId(article.category, article.id);
 
@@ -168,7 +168,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
             case "image-type":
                 if (block.url === "" || block.description === "") return alert(rejectionMessage);
                 // Set true if containsImage
-                containsImage = true;
+                containImages = true;
                 break;
 
             default:
@@ -182,7 +182,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
     const cloneSchema = [...schema];
 
     // Start converting local url to cloud storage url
-    if (containsImage) {
+    if (containImages) {
         for (let i = 0; i < cloneSchema.length; i++) {
             const imageContent = cloneSchema[i];
 
@@ -286,5 +286,40 @@ export const updateArticle = async (category, id, schema) => {
     } catch (error) {
         console.error(error);
         return false;
+    }
+}
+
+export const deleteArticle = async (coverPublicId, schema) => {
+    
+    const imagePublicIds = [coverPublicId];
+
+    for (let i = 0; i < schema.length; i++) {
+
+        const block = schema[i];
+        if (block.type === "image-type") imagePublicIds.push(block.public_id);
+    }
+
+    if (imagePublicIds.length > 0) {
+
+        const publicIdsJSON = { public_ids: imagePublicIds }
+        console.log(publicIdsJSON);
+
+        try {
+            const response = await fetch(`${API}/api/v1/cloudinary/delete`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(publicIdsJSON)
+            });
+            const result = await response.json();
+
+            if (!response.ok) throw Error("Something went wrong");
+
+            console.log(result);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
