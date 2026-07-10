@@ -123,7 +123,6 @@ export const uploadToCloudStorage = async (rawFile, folder) => {
         });
     
         const result = await response.json();
-        console.log(result);
 
         return result;
 
@@ -289,7 +288,8 @@ export const updateArticle = async (category, id, schema) => {
     }
 }
 
-export const deleteArticle = async (coverPublicId, schema) => {
+// Delete cloud storage assets based on article images
+export const deleteCloudAssets = async (coverPublicId, schema) => {
     
     const imagePublicIds = [coverPublicId];
 
@@ -299,7 +299,7 @@ export const deleteArticle = async (coverPublicId, schema) => {
         if (block.type === "image-type") imagePublicIds.push(block.public_id);
     }
 
-    if (imagePublicIds.length > 0) {
+    if (imagePublicIds.length) {
 
         const publicIdsJSON = { public_ids: imagePublicIds }
         console.log(publicIdsJSON);
@@ -314,12 +314,28 @@ export const deleteArticle = async (coverPublicId, schema) => {
             });
             const result = await response.json();
 
-            if (!response.ok) throw Error("Something went wrong");
+            if (!response.ok) throw new Error("Something went wrong");
 
             console.log(result);
 
         } catch (error) {
             console.error(error);
         }
+    }
+}
+
+// Delete the article wiki
+export const deleteArticleWiki = async (category, article_id) => {
+    try {
+        const response = await fetch(`${API}/api/v1/wiki/${category}/${article_id}`, {
+            method: "DELETE"
+        })
+
+        if (!response.ok) throw new Error(`Error: ${response}`);
+
+        return true;
+
+    } catch (error) {
+        console.error(error);
     }
 }

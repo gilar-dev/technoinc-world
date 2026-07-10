@@ -26,6 +26,12 @@ function ContributionPage() {
     const [search, setSearch] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const light = "light" === localStorage.getItem("technoinc-theme");
+
+    useEffect(() => {
+        document.body.style.overflow = loading ? "hidden" : "visible";
+    }, [loading]);
+
     return (
         <>
         <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} />
@@ -40,8 +46,9 @@ function ContributionPage() {
             </div>
         </div>
 
-        <div className="mt-[3em] p-[1em] flex flex-col gap-[2em] rounded-[10px] border-t-10
-                        shadow-2xs shadow-black border-[rgb(0,175,255)] bg-[rgb(220,220,220)]">
+        <div className={`mt-[3em] p-[1em] flex flex-col gap-[2em] rounded-[10px] border-t-10
+                        shadow-2xs shadow-black border-[rgb(0,175,255)]
+                        ${light ? "bg-white/50" : "bg-gray-700/50"}`}>
             <textarea
                 type="text"
                 placeholder="Article title"

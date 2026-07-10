@@ -3,12 +3,16 @@ import PropTypes from "prop-types";
 
 function ContentToolbar({ setSchema }) {
 
+    const light = "light" === localStorage.getItem("technoinc-theme");
+
     return (
-        <div className="mt-[3em] mx-[1em] p-[1em] flex gap-[1em] overflow-auto rounded-[10px]
-                        bg-[rgb(220,220,220)] sticky bottom-0 shadow-2xs shadow-black
-                        [&>button]:p-[.2em] [&>button]:border-none [&>button]:text-3xl [&>button]:rounded-[5px]
-                        [&>button]:text-white [&>button]:bg-[rgb(0,175,255)] [&>button]:hover:bg-[rgb(0,155,235)]
-                        [&>button]:active:text-[rgb(0,155,235)] [&>button]:active:bg-white [&>button]:cursor-pointer">
+        <div className={`mt-[3em] mx-[1em] p-[1em] flex gap-[1em] overflow-auto rounded-[10px]
+                        ${light ? "bg-white/70 [&>button]:border-black [&>button]:text-black [&>button]:bg-white/70"
+                                : "bg-gray-700/50 [&>button]:border-white [&>button]:text-white [&>button]:bg-gray-700"}
+                        sticky bottom-0 shadow-2xs shadow-black
+                        [&>button]:p-[.2em] [&>button]:text-3xl [&>button]:rounded-[5px]
+                        [&>button]:border [&>button]:hover:bg-gray-300
+                        [&>button]:cursor-pointer [&>button]:transition-colors [&>button]:duration-150 [&>button]:ease-in-out`}>
             
             <button
                 title="Add new table heading"

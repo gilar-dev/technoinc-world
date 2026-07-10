@@ -4,20 +4,27 @@ import ContentToolbar from "./ContentToolbar";
 import Footer from "../Footer";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { handleInputChange, getCategory, uploadToCloudStorage, updateArticle, deleteArticle } from "./ContributionUtils";
+import { handleInputChange, getCategory, uploadToCloudStorage, updateArticle, deleteCloudAssets, deleteArticleWiki } from "./ContributionUtils";
 import PropTypes from "prop-types";
 import "../../css/DynamicPage.css";
 
 function ContributionEditPage() {
 
     const { contentId } = useParams();
-    const splitedId = contentId.split("-");
+    const splitedId = contentId.split("-"); // Split text with '-' separator
+
+    // 'true' if current theme is light, else 'false'
+    const light = "light" === localStorage.getItem("technoinc-theme");
+
+    // Set state variables
     const [data, setData] = useState({});
     const [schema, setSchema] = useState([]);
     const [deleteInput, setDeleteInput] = useState("");
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const [deleteContainer, setDeleteContainer] = useState(false);
 
     useEffect(() => {
+        // Get wiki article from db
         const fetchData = async () => {
             const API = import.meta.env.VITE_API;
             const category = getCategory(splitedId[splitedId.length - 1]).toLowerCase();
@@ -42,6 +49,7 @@ function ContributionEditPage() {
 
     useEffect(() => {
         setDeleteInput("")
+        // Set body overflow property
         document.body.style.overflow = deleteContainer ? "hidden" : "visible";
     }, [deleteContainer]);
 
@@ -107,14 +115,20 @@ function ContributionEditPage() {
             Delete
         </button>
 
-        <div className={`w-full h-full ${deleteContainer ? "flex" : "hidden"} justify-center items-center fixed top-0 z-100 bg-red-300/30`}>
-            <div className="max-w-[90%] min-h-[5em] p-7 relative rounded-[10px] border border-white bg-white shadow-2xs shadow-black">
+        <div className={`w-full h-full ${deleteContainer ? "flex" : "hidden"} justify-center items-center fixed top-0 z-100 bg-blue-300/30`}>
+            <div className={`max-w-[90%] min-h-[5em] p-7 relative rounded-[10px] shadow-2xs shadow-black1
+                            ${light ? "text-black bg-white" : "text-white bg-gray-800"}`}>
                 <span
                     onClick={() => setDeleteContainer(false)}
                     className="text-[1.3em] absolute top-1 right-1">
                     <i className="fa-solid fa-xmark"></i>
                 </span>
-                <h2>Delete Article?</h2>
+                <h2 className="inline-flex items-center gap-3">
+                    <span className={`p-2 text-[.6em] rounded-full ${light ? "text-red-400 bg-red-500/30" : "text-white bg-red-800"}`}>
+                        <i className="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                    Delete Article?
+                </h2>
                 <p className="mt-5 font-medium text-[.9em]">Are you sure you want to delete this article?</p>
                 <p className="mt-5 text-[.9em]">Type <strong>"{contentId}"</strong> to confirm your action</p>
                 <input
@@ -124,17 +138,26 @@ function ContributionEditPage() {
                     onChange={(e) => setDeleteInput(e.target.value)}
                     className="w-full mt-5 p-2 outline-blue-500 rounded-[5px]" />
                 <div className="w-full mt-5 flex justify-end items-center gap-3
-                                [&>button]:p-2 [&>button]:cursor-pointer [&>button]:font-bold [&>button]:outline-none [&>button]:rounded-[5px]
+                                [&>button]:p-2 [&>button]:font-bold [&>button]:outline-none [&>button]:rounded-[5px]
                                 [&>button]:border-solid [&>button]:text-white">
                     <button
                         onClick={() => setDeleteContainer(false)}
-                        className="border-gray-300 bg-gray-500">Cancel</button>
+                        className="border-gray-300 bg-gray-500 transition-colors duration-150 ease-in-out hover:bg-gray-400">Cancel</button>
                     <button
-                        onClick={() => {
+                        onClick={async () => {
                             if (deleteInput !== contentId) return;
-                            deleteArticle(data.public_id, schema);
+                            if (deleteLoading) return;
+
+                            setDeleteLoading(true);
+                            await deleteCloudAssets(data.public_id, schema);
+                            await deleteArticleWiki(getCategory(splitedId[splitedId.length - 1]).toLowerCase(), contentId);
+
+                            setDeleteLoading(false);
+                            setDeleteContainer(false);
+                            window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}`);
                         }}
-                        className={`border-gray-300 bg-gray-300 ${deleteInput === contentId && "border-red-700 bg-red-500"} transition-colors duration-75 ease-in-out`}>Delete Article</button>
+                        className={`${deleteInput !== contentId && "cursor-not-allowed"} border-gray-300 bg-gray-300
+                                    ${deleteInput === contentId && "border-red-700 bg-red-500 hover:bg-red-400"} transition-colors duration-150 ease-in-out`}>Delete Article</button>
                 </div>
             </div>
         </div>
