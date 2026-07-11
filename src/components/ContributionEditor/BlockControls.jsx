@@ -4,18 +4,18 @@ import PropTypes from "prop-types";
 function BlockControls({ currentIndex, addButton=false, schema, setSchema }) {
     return (
         <div className="w-full flex justify-center items-center gap-1
-                        [&>button]:p-2 [&>button]:text-[1em] [&>button]:rounded-[5px] [&>button]:border-none
-                        [&>button]:text-white [&>button]:cursor-pointer">
+                        [&>button]:p-2 [&>button]:text-[1em] [&>button]:rounded-[5px] [&>button]:border-2
+                        [&>button]:text-white [&>button]:cursor-pointer [&_button]:transition-colors [&_button]:duration-150 [&_button]:ease-in-out">
             <button
                 title="Move up"
                 onClick={() => moveContent(currentIndex, "up", schema={schema}, setSchema)}
-                className="bg-[rgb(0,175,255)] hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
+                className="border-[rgb(0,175,255)] bg-[rgb(0,175,255)]/50 hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 <i className="fa-solid fa-arrow-up"></i>
             </button>
             <button
                 title="Move down"
                 onClick={() => moveContent(currentIndex, "down", schema={schema}, setSchema)}
-                className="bg-[rgb(0,175,255)] hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
+                className="border-[rgb(0,175,255)] bg-[rgb(0,175,255)]/50 hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 <i className="fa-solid fa-arrow-down"></i>
             </button>
             <button
@@ -26,7 +26,7 @@ function BlockControls({ currentIndex, addButton=false, schema, setSchema }) {
                     head_data: "",
                     content_data: ""
                 }, setSchema)}
-                className="bg-green-500 hover:bg-green-600 active:text-green-500 active:bg-white">
+                className="border-green-500 bg-green-500/50 hover:bg-green-600 active:text-green-500 active:bg-white">
                 <i className="fa-solid fa-plus"></i>
             </button>
 
@@ -37,7 +37,7 @@ function BlockControls({ currentIndex, addButton=false, schema, setSchema }) {
             <button
                 title="Delete content"
                 onClick={() => deleteContent(currentIndex, setSchema)}
-                className="delete-btn bg-[rgb(255,0,0)] hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">
+                className="delete-btn border-[rgb(255,0,0)] bg-[rgb(255,0,0)]/50 hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">
                 <i className="fa-solid fa-eraser"></i>
             </button>
         </div>

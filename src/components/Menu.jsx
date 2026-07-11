@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes, { func } from "prop-types";
 import "../css/Menu.css";
 
-function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, search=false, setSearch, menuContent=[]}) {
+function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, search=false, setSearch, menuContent=[], setLight }) {
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
@@ -64,7 +64,12 @@ function Menu({wikiTitle="", selected="", setReplace=false, contribution=true, s
         localStorage.setItem("technoinc-theme", theme);
         document.body.classList.remove(theme === "light" ? "dark" : "light");
         document.body.classList.add(theme);
+        if (setLight) setLight("light" === theme);
     }, [theme]);
+
+    useEffect(() => {
+        document.body.style.overflow = isActive === "active" ? "hidden" : "visible";
+    }, [isActive]);
 
     return (
         <section className={`menu-panel ${theme}`}>
@@ -206,7 +211,8 @@ Menu.PropTypes = {
     contribution: PropTypes.bool,
     search: PropTypes.bool,
     setSearch: PropTypes.func,
-    menuContent: PropTypes.array
+    menuContent: PropTypes.array,
+    setLight: PropTypes.func
 }
 
 export default Menu;

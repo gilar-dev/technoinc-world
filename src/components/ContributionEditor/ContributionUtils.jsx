@@ -262,10 +262,43 @@ export const sterilizedWord = (word) => {
 
 // Update article after edited
 export const updateArticle = async (category, id, schema) => {
+
+    const images = schema.filter(img => img.type === "image-type");
+    const cloneSchema = [...schema];
+
+    if (images.length > 0) {
+
+        const imagesToDelete = [];
+        for (let i = 0; i < images.length; i++) {
+            
+            if (Object.keys(images[i]).includes("prev_url") && images[i]?.prev_url !== "") imagesToDelete.push(images[i]);
+        }
+
+        for (let i = 0; i < cloneSchema.length; i++) {
+
+            const block = cloneSchema[i];
+            if (block.type === "image-type" && block?.prev_url !== "" || block.type === "image-type" && !Object.keys(block).includes("prev_url")) {
+
+                const getCloudURL = await uploadToCloudStorage(block.raw_file, id);
+
+                if (getCloudURL) {
+                    cloneSchema[i]["url"] = getCloudURL.secure_url;
+                    cloneSchema[i]["public_id"] = getCloudURL.public_id;
+                    delete cloneSchema[i]["raw_file"];
+                    delete cloneSchema[i]["prev_url"];
+                    console.log(getCloudURL);
+                }
+            }
+        }
+
+        deleteCloudAssets("", imagesToDelete);
+        console.log(imagesToDelete);
+    }
+
     // Create final article data before updating
     const finalArticleUpdate = {
         id: id,
-        wiki_content: [...schema]
+        wiki_content: cloneSchema
     }
 
     try {
@@ -289,20 +322,18 @@ export const updateArticle = async (category, id, schema) => {
 }
 
 // Delete cloud storage assets based on article images
-export const deleteCloudAssets = async (coverPublicId, schema) => {
+export const deleteCloudAssets = async (coverPublicId="", assets) => {
     
-    const imagePublicIds = [coverPublicId];
+    const imagePublicIds = [];
+    if (coverPublicId !== "") imagePublicIds.push(coverPublicId);
 
-    for (let i = 0; i < schema.length; i++) {
-
-        const block = schema[i];
-        if (block.type === "image-type") imagePublicIds.push(block.public_id);
+    for (let i = 0; i < assets.length; i++) {
+        imagePublicIds.push(assets[i].public_id);
     }
 
-    if (imagePublicIds.length) {
+    if (imagePublicIds.length > 0) {
 
         const publicIdsJSON = { public_ids: imagePublicIds }
-        console.log(publicIdsJSON);
 
         try {
             const response = await fetch(`${API}/api/v1/cloudinary/delete`, {

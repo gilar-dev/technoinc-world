@@ -74,12 +74,14 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
 
                             const urlPath = URL.createObjectURL(selectedFile);
 
+                            if (block?.prev_url === "") onChangeHandler(index, "prev_url", block.url, setSchema);
+
                             onChangeHandler(index, "url", urlPath, setSchema);
                             onChangeHandler(index, "raw_file", selectedFile, setSchema);
                         }} />
                     <label
                         htmlFor={`image-input-${index}`}
-                        className="p-2 font-bold rounded-2xl text-white bg-green-500 hover:bg-green-600 active:text-green-500 active:bg-white">
+                        className="p-2 font-bold rounded-2xl border hover:bg-gray-500/70 active:bg-white transition-colors duration-150 ease-in-out">
                             Choose image
                     </label>
                     <textarea

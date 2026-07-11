@@ -13,17 +13,26 @@ function ContributionEditPage() {
     const { contentId } = useParams();
     const splitedId = contentId.split("-"); // Split text with '-' separator
 
-    // 'true' if current theme is light, else 'false'
-    const light = "light" === localStorage.getItem("technoinc-theme");
-
     // Set state variables
     const [data, setData] = useState({});
     const [schema, setSchema] = useState([]);
     const [deleteInput, setDeleteInput] = useState("");
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [deleteContainer, setDeleteContainer] = useState(false);
+    const [light, setLight] = useState("light" === localStorage.getItem("technoinc-theme"));
 
     useEffect(() => {
+        const modifiedSchema = (rawData) => {
+            for (let i = 0; i < rawData.length; i++) {
+                
+                if (rawData[i].type === "image-type") {
+                    rawData[i] = { ...rawData[i], raw_file: "", prev_url: "" }
+                }
+            }
+
+            return rawData;
+        }
+
         // Get wiki article from db
         const fetchData = async () => {
             const API = import.meta.env.VITE_API;
@@ -37,7 +46,7 @@ function ContributionEditPage() {
                 delete articleFront["wiki_content"];
 
                 setData(articleFront);
-                setSchema(result.article.wiki_content);
+                setSchema(modifiedSchema(result.article.wiki_content));
 
             } catch (error) {
                 console.error(error);
@@ -55,7 +64,7 @@ function ContributionEditPage() {
 
     return (
         <>
-        <Menu wikiTitle="Contribution" />
+        <Menu wikiTitle="Contribution" setLight={setLight} />
 
         <div className="w-full p-3 flex justify-between items-center fixed text-white bg-yellow-600">
             <p className="font-bold">Edit Mode</p>
@@ -64,21 +73,25 @@ function ContributionEditPage() {
             </Link>
         </div>
 
-        <div className="w-full mt-[5em] p-3 flex flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black bg-[rgb(220,220,220)]">
+        <div className={`w-full mt-[5em] p-3 flex flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
+                        ${light ? "bg-white/70" : "text-white bg-gray-700/50"}`}>
             <img
                 src={data.cover || null}
                 alt={data.title}
-                className="w-[80%]" />
+                className="w-[80%] border border-white" />
             <h3>{data.title}</h3>
             <p>{data.id}</p>
             <p className="text-[.8em]">{data.category}</p>
         </div>
 
-        <div className="mt-[3em] flex flex-col gap-[2em] rounded-[10px] bg-[rgb(220,220,220)]
+        <div className={`mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                         [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                         [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                         [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
-                        [&>.content-box]:has-[.delete-btn:hover]:bg-red-200">
+                        [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
+                        [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
+                        ${light ? "bg-white/70 [&_span]:text-black/20"
+                                : "bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700"}`}>
             {schema.map((block, idx) => (
                 <ContentBlock
                     key={idx}
@@ -103,15 +116,16 @@ function ContributionEditPage() {
             }}
             className="w-[40%] mt-5 mx-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                         text-white border-none bg-yellow-600
-                        hover:bg-yellow-500 active:text-yellow-600 active:bg-white">
+                        hover:bg-yellow-500 active:text-yellow-600 active:bg-white
+                        transition-colors duration-150 ease-in-out">
             Update
         </button>
 
         <button
             title="Delete article"
             onClick={() => setDeleteContainer(true)}
-            className="w-[40%] mt-5 mx-auto p-3 font-bold text-[1em] block outline-none rounded-[5px] border-none text-white bg-red-500
-                        hover:bg-red-600 active:text-red-500 active:bg-white">
+            className="w-[40%] mt-5 mx-auto p-3 font-bold text-[1em] block outline-none rounded-[5px] border border-red-500 text-white bg-red-500/50
+                        hover:bg-red-600 active:text-red-500 active:bg-white transition-colors duration-150 ease-in-out">
             Delete
         </button>
 
@@ -162,7 +176,7 @@ function ContributionEditPage() {
             </div>
         </div>
 
-        <ContentToolbar setSchema={setSchema} />
+        <ContentToolbar setSchema={setSchema} light={light} />
         <Footer />
         </>
     );

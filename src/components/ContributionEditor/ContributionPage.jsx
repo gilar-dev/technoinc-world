@@ -25,8 +25,7 @@ function ContributionPage() {
     const [schema, setSchema] = useState([]);
     const [search, setSearch] = useState(false);
     const [loading, setLoading] = useState(false);
-
-    const light = "light" === localStorage.getItem("technoinc-theme");
+    const [light, setLight] = useState("light" === localStorage.getItem("technoinc-theme"));
 
     useEffect(() => {
         document.body.style.overflow = loading ? "hidden" : "visible";
@@ -34,7 +33,7 @@ function ContributionPage() {
 
     return (
         <>
-        <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} />
+        <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} setLight={setLight} />
         <ModifyBox search={search} />
 
         <div
@@ -48,7 +47,7 @@ function ContributionPage() {
 
         <div className={`mt-[3em] p-[1em] flex flex-col gap-[2em] rounded-[10px] border-t-10
                         shadow-2xs shadow-black border-[rgb(0,175,255)]
-                        ${light ? "bg-white/50" : "bg-gray-700/50"}`}>
+                        ${light ? "bg-white/70" : "bg-gray-700/50 [&>textarea,&>input,&>div>h3,&>div>h2]:text-white"}`}>
             <textarea
                 type="text"
                 placeholder="Article title"
@@ -80,7 +79,8 @@ function ContributionPage() {
                             category: e.target.value
                         }
                     ))}
-                    className="w-full pl-2.5 font-bold outline-none rounded-2xl border-none [&>option]:font-bold">
+                    className={`w-full pl-2.5 font-bold outline-none rounded-2xl border-none [&>option]:font-bold
+                                ${!light && "text-white bg-gray-700 [&>option]:text-white [&>option]:bg-gray-700"}`}>
                     <option value="Civilization">Civilization</option>
                     <option value="Character">Character</option>
                     <option value="Ideology">Ideology</option>
@@ -115,8 +115,10 @@ function ContributionPage() {
                     }} />
                 <label
                     htmlFor="article-cover"
-                    className="p-3 font-bold self-start rounded-2xl text-white bg-[rgb(0,175,255)]
-                                hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
+                    className={`p-3 font-bold self-start rounded-2xl border-2 text-black
+                                hover:bg-gray-400/70 active:text-[rgb(0,175,255)] active:bg-white
+                                transition-colors duration-150 ease-in-out
+                                ${!light && "text-white border-gray-500"}`}>
                     Select Cover
                 </label>
             </div>
@@ -131,11 +133,14 @@ function ContributionPage() {
             <p>Click tools bellow to start creating your own story!</p>
         </div>
 
-        <div className="mt-[3em] flex flex-col gap-[2em] rounded-[10px] bg-[rgb(220,220,220)]
+        <div className={`mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                         [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                         [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                         [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
-                        [&>.content-box]:has-[.delete-btn:hover]:bg-red-200">
+                        [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
+                        [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
+                        ${light ? "bg-white/70 [&_span]:text-black/20"
+                                : "bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700"}`}>
             {schema.map((block, idx) => (
                 <ContentBlock
                     key={idx}
@@ -163,7 +168,7 @@ function ContributionPage() {
             Upload
         </button>
 
-        <ContentToolbar setSchema={setSchema} />
+        <ContentToolbar setSchema={setSchema} light={light} />
         <Footer />
         </>
     )
