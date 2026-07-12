@@ -12,7 +12,7 @@ function Footer({ effect="" }) {
                 </a>
             </span>
             <span className={effect}>
-                <a href="https://www.linkedin.com/in/gilar-hafizh-indarto-b1891941a?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" title="Instagram">
+                <a href="https://www.linkedin.com/in/gilar-hafizh-indarto-b1891941a?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" title="LinkedIn">
                     <i className="fa-brands fa-linkedin"></i>
                 </a>
             </span>
