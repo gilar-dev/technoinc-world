@@ -1,6 +1,7 @@
 import Menu from "../Menu";
 import ContentBlock from "./ContentBlock"; 
 import ContentToolbar from "./ContentToolbar";
+import NotFound from "../NotFound";
 import Footer from "../Footer";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -16,6 +17,7 @@ function ContributionEditPage() {
     // Set state variables
     const [data, setData] = useState({}); // Article informations
     const [schema, setSchema] = useState([]); // Array of article schema to be edited
+    const [isExist, setIsExist] = useState(false); // Check if article id is exist
     const [toDelete, setToDelete] = useState([]); // Array of assets to be deleted
     const [deleteInput, setDeleteInput] = useState(""); // Confirmation before deleting
     const [deleteLoading, setDeleteLoading] = useState(false); // Loading after pressing delete button
@@ -49,11 +51,12 @@ function ContributionEditPage() {
                 const articleFront = { ...result.article };
                 delete articleFront["wiki_content"];
 
+                setIsExist(true);
                 setData(articleFront);
                 setSchema(modifiedSchema(result.article.wiki_content));
 
             } catch (error) {
-                console.error(error);
+                setIsExist(false);
             }
         }
 
@@ -70,14 +73,17 @@ function ContributionEditPage() {
         <>
         <Menu wikiTitle="Contribution" setLight={setLight} />
 
-        <div className="w-full p-3 flex justify-between items-center fixed text-white bg-yellow-600">
+        <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-0 text-white bg-yellow-600">
             <p className="font-bold">Edit Mode</p>
             <Link title="Exit edit mode" to="/contribution" replace className="cursor-pointer text-white">
                 <i className="fa-solid fa-xmark"></i>
             </Link>
         </div>
 
-        <div className={`w-full mt-[5em] p-3 flex flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
+        {!isExist && <NotFound />}
+
+        <div className={`w-full p-3 flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
+                        ${isExist ? "flex" : "hidden"}
                         ${light ? "bg-white/70" : "text-white bg-gray-700/50"}`}>
             <img
                 src={data.cover || null}
@@ -114,9 +120,6 @@ function ContributionEditPage() {
         <button
             title="Update article"
             onClick={async () => {
-                console.log(toDelete);
-                return;
-
                 const update = await updateArticle(getCategory(splitedId[splitedId.length - 1]).toLowerCase(), data.id, schema);
 
                 if (update) {
@@ -134,8 +137,9 @@ function ContributionEditPage() {
         <button
             title="Delete article"
             onClick={() => setDeleteContainer(true)}
-            className="w-[40%] mt-5 mx-auto p-3 font-bold text-[1em] block outline-none rounded-[5px] border border-red-500 text-white bg-red-500/50
-                        hover:bg-red-600 active:text-red-500 active:bg-white transition-colors duration-150 ease-in-out">
+            className={`w-[40%] mt-5 mx-auto p-3 font-bold text-[1em] block outline-none rounded-[5px] border border-red-500 text-white bg-red-500/50
+                        hover:bg-red-600 active:text-red-500 active:bg-white transition-colors duration-150 ease-in-out
+                        ${isExist ? "block" : "hidden"}`}>
             Delete
         </button>
 
@@ -186,7 +190,7 @@ function ContributionEditPage() {
             </div>
         </div>
 
-        <ContentToolbar setSchema={setSchema} light={light} />
+        {isExist && <ContentToolbar setSchema={setSchema} light={light} />}
         <Footer />
         </>
     );

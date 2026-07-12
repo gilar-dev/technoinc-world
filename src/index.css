@@ -15,7 +15,10 @@
 }
 
 body {
+    min-height: 100vh;
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
 body.light {

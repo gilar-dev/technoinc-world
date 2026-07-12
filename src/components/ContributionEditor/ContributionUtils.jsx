@@ -84,7 +84,7 @@ export const getCategory = (cat, plural=false) => {
         town:  !plural ? "Town"         : "Towns"
     }
 
-    return categories[cat];
+    return categories[cat] === undefined ? " " : categories[cat];
 }
 
 // Check if article id existence

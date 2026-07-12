@@ -1,5 +1,5 @@
-import "../css/Footer.css";
 import PropTypes from "prop-types";
+import "../css/Footer.css";
 
 function Footer({ effect="" }) {
 
@@ -9,6 +9,11 @@ function Footer({ effect="" }) {
             <span className={effect}>
                 <a href="https://www.instagram.com/_glrin?igsh=MW5vMWhlMXZqZmJvNA==" target="_blank" title="Instagram">
                     <i className="fa-brands fa-instagram"></i>
+                </a>
+            </span>
+            <span className={effect}>
+                <a href="https://www.linkedin.com/in/gilar-hafizh-indarto-b1891941a?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" title="Instagram">
+                    <i className="fa-brands fa-linkedin"></i>
                 </a>
             </span>
             <span className={effect}>

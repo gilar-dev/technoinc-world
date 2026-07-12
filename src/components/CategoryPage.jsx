@@ -49,7 +49,7 @@ function CategoryPage() {
     return (
         <>
             <Menu wikiTitle={getCategory} selected={getCategory} setReplace={true} />
-
+            
             <div className="mt-4 mb-[6em] flex flex-col items-center">
                 <h2>
                     <span className="highlight">{getCategory}</span>
@@ -59,13 +59,11 @@ function CategoryPage() {
 
             <Loading show={loading} position="static" />
 
-            <p
-                style={{display: !loading && data.length === 0 ? "block" : "none"}}
-                className="text-center">
+            <p className={`text-center ${!loading && data.length === 0 ? "block" : "hidden"}`}>
                 Seems like this category does not have articles yet.
             </p>
             
-            <div className="flex justify-evenly flex-wrap gap-y-[1em]">
+            <div className="basis-1 flex justify-evenly flex-wrap gap-y-[1em]">
                 {data.map((item, idx) => {
                     return (
                         <Link key={idx} to={`/wiki/${categoryName}/${item.id}`} className="group w-[45%] aspect-square overflow-hidden cursor-pointer relative border border-[rgb(85,85,85)] transition-[border] ease-in-out duration-500 hover:border-white md:w-75">
