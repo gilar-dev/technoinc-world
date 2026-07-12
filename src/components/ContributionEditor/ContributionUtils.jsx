@@ -23,7 +23,7 @@ export const addNewTable = (index, block, setSchema) => {
 }
 
 // Move content to up-down and reordering
-export const moveContent = (currentIndex, direction, schema=[], setSchema) => {
+export const moveContent = (currentIndex, direction, schema=[1], setSchema) => {
     if (schema.length <= 1) return;
 
     // Get the targeted index
@@ -270,29 +270,28 @@ export const updateArticle = async (category, id, schema) => {
 
         const imagesToDelete = [];
         for (let i = 0; i < images.length; i++) {
-            
-            if (Object.keys(images[i]).includes("prev_url") && images[i]?.prev_url !== "") imagesToDelete.push(images[i]);
+
+            if (images[i]?.prev_url !== undefined && images[i]?.prev_url !== "") imagesToDelete.push(images[i]);
         }
 
-        for (let i = 0; i < cloneSchema.length; i++) {
+        deleteCloudAssets("", imagesToDelete);
 
-            const block = cloneSchema[i];
-            if (block.type === "image-type" && block?.prev_url !== "" || block.type === "image-type" && !Object.keys(block).includes("prev_url")) {
+        const category = id.split("-");
+        for (let i = 0; i < schema.length; i++) {
 
-                const getCloudURL = await uploadToCloudStorage(block.raw_file, id);
+            const image = schema[i];
+            if (image.type === "image-type" && image?.prev_url !== undefined && image?.prev_url !== "") {
+
+                const getCloudURL = await uploadToCloudStorage(image.raw_file, getCategory(category[category.length - 1]));
 
                 if (getCloudURL) {
                     cloneSchema[i]["url"] = getCloudURL.secure_url;
                     cloneSchema[i]["public_id"] = getCloudURL.public_id;
                     delete cloneSchema[i]["raw_file"];
                     delete cloneSchema[i]["prev_url"];
-                    console.log(getCloudURL);
                 }
             }
         }
-
-        deleteCloudAssets("", imagesToDelete);
-        console.log(imagesToDelete);
     }
 
     // Create final article data before updating

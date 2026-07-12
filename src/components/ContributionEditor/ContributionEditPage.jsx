@@ -14,25 +14,29 @@ function ContributionEditPage() {
     const splitedId = contentId.split("-"); // Split text with '-' separator
 
     // Set state variables
-    const [data, setData] = useState({});
-    const [schema, setSchema] = useState([]);
-    const [deleteInput, setDeleteInput] = useState("");
-    const [deleteLoading, setDeleteLoading] = useState(false);
-    const [deleteContainer, setDeleteContainer] = useState(false);
+    const [data, setData] = useState({}); // Article informations
+    const [schema, setSchema] = useState([]); // Array of article schema to be edited
+    const [toDelete, setToDelete] = useState([]); // Array of assets to be deleted
+    const [deleteInput, setDeleteInput] = useState(""); // Confirmation before deleting
+    const [deleteLoading, setDeleteLoading] = useState(false); // Loading after pressing delete button
+    const [deleteContainer, setDeleteContainer] = useState(false); // Show delete confirmation container
+
+    // Get the site main theme from browser local storage
     const [light, setLight] = useState("light" === localStorage.getItem("technoinc-theme"));
 
-    useEffect(() => {
-        const modifiedSchema = (rawData) => {
-            for (let i = 0; i < rawData.length; i++) {
-                
-                if (rawData[i].type === "image-type") {
-                    rawData[i] = { ...rawData[i], raw_file: "", prev_url: "" }
-                }
-            }
+    // Modify image type content from db
+    const modifiedSchema = (rawData) => {
+        for (let i = 0; i < rawData.length; i++) {
 
-            return rawData;
+            if (rawData[i].type === "image-type") {
+                rawData[i] = { ...rawData[i], raw_file: "", prev_url: "" }
+            }
         }
 
+        return rawData;
+    }
+
+    useEffect(() => {
         // Get wiki article from db
         const fetchData = async () => {
             const API = import.meta.env.VITE_API;
@@ -91,7 +95,8 @@ function ContributionEditPage() {
                         [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
                         [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
                         ${light ? "bg-white/70 [&_span]:text-black/20"
-                                : "bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700"}`}>
+                                : `bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white
+                                   [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white`}`}>
             {schema.map((block, idx) => (
                 <ContentBlock
                     key={idx}
@@ -100,24 +105,29 @@ function ContributionEditPage() {
                     schema={schema}
                     setSchema={setSchema}
                     cloudStorage={uploadToCloudStorage}
-                    onChangeHandler={handleInputChange} />
+                    onChangeHandler={handleInputChange}
+                    editMode={true}
+                    setToDelete={setToDelete} />
             ))}
         </div>
 
         <button
             title="Update article"
-            style={{display: schema.length === 0 ? "none" : "block"}}
             onClick={async () => {
+                console.log(toDelete);
+                return;
+
                 const update = await updateArticle(getCategory(splitedId[splitedId.length - 1]).toLowerCase(), data.id, schema);
 
                 if (update) {
                     window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}/${contentId}`);
                 }
             }}
-            className="w-[40%] mt-5 mx-auto p-2 font-bold text-[1.2em] block rounded-[5px]
+            className={`${schema.length === 0 ? "hidden" : "block"}
+                        w-[40%] mt-5 mx-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                         text-white border-none bg-yellow-600
                         hover:bg-yellow-500 active:text-yellow-600 active:bg-white
-                        transition-colors duration-150 ease-in-out">
+                        transition-colors duration-150 ease-in-out`}>
             Update
         </button>
 

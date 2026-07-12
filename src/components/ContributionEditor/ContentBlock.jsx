@@ -2,9 +2,11 @@ import PropTypes from "prop-types";
 import BlockControls from "./BlockControls";
 import "../../css/DynamicPage.css";
 
-function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
+function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMode=false, setToDelete }) {
     
     switch (block.type) {
+
+        // Heading type content
         case "heading-type":
             return (
                 <div className="content-box">
@@ -13,11 +15,12 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
                         value={block.data}
                         onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
                         className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[20px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                    <BlockControls currentIndex={index} setSchema={setSchema} />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>
             );
             break;
 
+        // Table type content
         case "table-type":
             return (
                 <div className="content-box">
@@ -33,11 +36,12 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
                             onChange={(e) => onChangeHandler(index, "content_data", e.target.value, setSchema)}
                             className="p-1 field-sizing-content resize-none font-['Montserrat']" />
                     </div>
-                    <BlockControls currentIndex={index} addButton={true} setSchema={setSchema} />
+                    <BlockControls currentIndex={index} addButton={true} schema={schema} setSchema={setSchema} />
                 </div>  
             );
             break;
 
+        // Paragraph type content
         case "paragraph-type":
             return (
                 <div className="content-box">
@@ -51,11 +55,12 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
                         value={block.data}
                         onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none bg-transparent" />
-                    <BlockControls currentIndex={index} setSchema={setSchema} />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>
             );
             break;
 
+        // Image type content
         case "image-type":
             return (
                 <div className="content-box">
@@ -72,8 +77,10 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
                             const selectedFile = e.target.files[0];
                             if (!selectedFile) return;
 
+                            // Set the image path to accessable on browser
                             const urlPath = URL.createObjectURL(selectedFile);
 
+                            // If true, current block has a value already
                             if (block?.prev_url === "") onChangeHandler(index, "prev_url", block.url, setSchema);
 
                             onChangeHandler(index, "url", urlPath, setSchema);
@@ -84,13 +91,25 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler }) {
                         className="p-2 font-bold rounded-2xl border hover:bg-gray-500/70 active:bg-white transition-colors duration-150 ease-in-out">
                             Choose image
                     </label>
+                    <button
+                        title="Restore previous"
+                        onClick={() => {
+                            // Restore the default image if it's changed
+                            onChangeHandler(index, "url", block?.prev_url, setSchema);
+                            onChangeHandler(index, "prev_url", "", setSchema);
+                        }}
+                        className={`${block?.prev_url !== undefined && block?.prev_url !== "" ? "block" : "hidden"}
+                                    my-3 p-3 rounded-full border-none bg-transparent transition-colors duration-150 ease-in-out
+                                    hover:bg-gray-500/30`}>
+                        <i className="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
                     <textarea
                         type="text"
                         placeholder="Add image description"
                         value={block.description}
                         onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
-                    <BlockControls currentIndex={index} setSchema={setSchema} />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} editMode={true} setToDelete={setToDelete} />
                 </div>
             );
             break;
@@ -105,7 +124,9 @@ ContentBlock.propTypes = {
     block: PropTypes.object.isRequired,
     schema: PropTypes.array.isRequired,
     setSchema: PropTypes.func.isRequired,
-    onChangeHandler: PropTypes.func.isRequired
+    onChangeHandler: PropTypes.func.isRequired,
+    editMode: PropTypes.bool,
+    setToDelete: PropTypes.func
 }
 
 export default ContentBlock;

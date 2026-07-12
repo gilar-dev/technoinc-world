@@ -1,3 +1,4 @@
+import Loading from "./Loading";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes, { func } from "prop-types";
@@ -7,6 +8,7 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // Define the website theme color
     const [theme, setTheme] = useState(
@@ -33,22 +35,34 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
     useEffect(() => {
         
         const API = import.meta.env.VITE_API;
-
-        fetch(`${API}/api/v1/wiki/categories`)
-        .then(result => result.json())
-        .then(data => setCategories(data.category_list))
-        .catch(error => console.error(error));
-
         const menuBox = document.querySelector(".menu-box");
+
+        for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
+            inputBox.checked = true; 
+        }
+
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+
+                const response = await fetch(`${API}/api/v1/wiki/categories`);
+                const result = await response.json();
+
+                setCategories(result.category_list);
+                setLoading(false);
+                 
+            } catch (error) {
+                setLoading(false);
+                console.error(error);
+            }
+        }
         
         const scrollMovement = () => {
             if (window.scrollY === 0) menuBox.style.padding = ".7em";
             else menuBox.style.padding = ".5em";
         }
 
-        for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
-            inputBox.checked = true; 
-        }
+        fetchData();
     
         // Add event listener to component
         window.addEventListener("scroll", scrollMovement);
@@ -129,6 +143,9 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
                         </span>
                     </label>
                     <div className="list-box">
+
+                        <Loading show={loading} />
+
                         <ul>
                             {categories.map((item, idx) =>
                                 <Link key={idx} replace={setReplace} to={`/wiki/Category:${item}`} onClick={() => sidebarMenuClicked()}>

@@ -3,6 +3,7 @@ import Footer from "./Footer.jsx";
 import { useState, useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import "../css/DynamicPage.css";
+import Loading from "./Loading.jsx";
 
 function CategoryPage() {
 
@@ -56,11 +57,7 @@ function CategoryPage() {
                 <p className="mt-2 text-[small]">Category Page</p>
             </div>
 
-            <div
-                style={{display: loading ? "flex" : "none"}}
-                className="w-full min-h-[50vh] flex justify-center items-center">
-                <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
-            </div>
+            <Loading show={loading} position="static" />
 
             <p
                 style={{display: !loading && data.length === 0 ? "block" : "none"}}

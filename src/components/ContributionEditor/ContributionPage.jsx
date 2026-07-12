@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { handleInputChange, generateId, checkArticleId, uploadToCloudStorage, checkAllValues } from "./ContributionUtils";
 import "../../css/DynamicPage.css";
+import Loading from "../Loading";
 
 function ContributionPage() {
 
@@ -35,15 +36,7 @@ function ContributionPage() {
         <>
         <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} setLight={setLight} />
         <ModifyBox search={search} />
-
-        <div
-            style={{display: loading ? "flex" : "none"}}
-            className="w-full h-screen flex justify-center items-center fixed z-1 bg-black/30">
-            <div className="w-[50%] p-3 flex flex-col items-center justify-center gap-y-5 rounded-[5px] bg-black/50">
-                <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
-                <h3 className="font-['Pixelify_Sans'] text-center text-white">Uploading your article!</h3>
-            </div>
-        </div>
+        <Loading show={loading} />
 
         <div className={`mt-[3em] p-[1em] flex flex-col gap-[2em] rounded-[10px] border-t-10
                         shadow-2xs shadow-black border-[rgb(0,175,255)]
@@ -140,7 +133,8 @@ function ContributionPage() {
                         [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
                         [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
                         ${light ? "bg-white/70 [&_span]:text-black/20"
-                                : "bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700"}`}>
+                                : `bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white
+                                   [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white`}`}>
             {schema.map((block, idx) => (
                 <ContentBlock
                     key={idx}
