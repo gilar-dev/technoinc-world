@@ -12,17 +12,17 @@ import ContributionPage from './components/ContributionEditor/ContributionPage';
 import ContributionEditPage from './components/ContributionEditor/ContributionEditPage';
 
 // Create root and start rendering the website
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/contribution" element={<ContributionPage />} />
-        <Route path="/contribution/edit/:contentId" element={<ContributionEditPage />} />
-        <Route path="/wiki/:categoryName" element={<CategoryPage />} />
-        <Route path="/wiki/:categoryName/:contentId" element={<WikiPage />} />
-        <Route path="*" element={<App />} />
-      </Routes>
+        <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/contribution" element={<ContributionPage />} />
+            <Route path="/contribution/edit/:contentId" element={<ContributionEditPage />} />
+            <Route path="/wiki/:categoryName" element={<CategoryPage />} />
+            <Route path="/wiki/:categoryName/:contentId" element={<WikiPage />} />
+            <Route path="*" element={<App />} />
+        </Routes>
     </BrowserRouter>
   </StrictMode>
 );

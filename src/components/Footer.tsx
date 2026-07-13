@@ -1,7 +1,10 @@
-import PropTypes from "prop-types";
 import "../css/Footer.css";
 
-function Footer({ effect="" }) {
+interface propTypes {
+    effect?: string
+}
+
+function Footer({ effect="" }: propTypes) {
 
     return (
         <footer>
@@ -23,10 +26,6 @@ function Footer({ effect="" }) {
             </span>
         </footer>
     );
-}
-
-Footer.propTypes = {
-    effect: PropTypes.string
 }
 
 export default Footer;

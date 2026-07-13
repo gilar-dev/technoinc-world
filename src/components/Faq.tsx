@@ -2,9 +2,9 @@ import { useState } from "react";
 import "../css/Faq.css";
 
 function Faq() {
-    const [selectedValue, setSelectedValue] = useState(null);
+    const [selectedValue, setSelectedValue] = useState<null | string>(null);
 
-    const showAnswer = value => {
+    const showAnswer = (value: string) => {
         setSelectedValue(selectedValue === value ? null : value);
     }
 

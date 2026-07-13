@@ -1,7 +1,12 @@
 const API = import.meta.env.VITE_API;
 
 // Handle value from article inputs
-export const handleInputChange = (index, property, value, setSchema) => {
+export const handleInputChange = (
+    index: number,
+    property: string,
+    value: Record<string, any>,
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>
+) => {
     setSchema(prev => {
         const updatedSchema = [...prev];
 
@@ -12,18 +17,30 @@ export const handleInputChange = (index, property, value, setSchema) => {
 }
 
 // Add new content to list of content blocks
-export const addNewContent = (block, setSchema) => {
+export const addNewContent = (
+    block: Record<string, any>,
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>
+) => {
     setSchema(prev => [...prev, block]);
     scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 }
 
 // Add new table block for table-typed content only
-export const addNewTable = (index, block, setSchema) => {
+export const addNewTable = (
+    index: number,
+    block: Record<string, any>,
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>
+) => {
     setSchema(prev => [...prev].toSpliced(index + 1, 0, block));
 }
 
 // Move content to up-down and reordering
-export const moveContent = (currentIndex, direction, schema=[1], setSchema) => {
+export const moveContent = (
+    currentIndex: number,
+    direction: string,
+    schema: Record<string, any>[] | [] = [],
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>
+) => {
     if (schema.length <= 1) return;
 
     // Get the targeted index
@@ -47,18 +64,24 @@ export const moveContent = (currentIndex, direction, schema=[1], setSchema) => {
 }
 
 // Delete content from list of content blocks
-export const deleteContent = (index, setSchema) => {
+export const deleteContent = (
+    index: number,
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>
+) => {
     setSchema((prev) => ([...prev].toSpliced(index, 1)));
 }
 
 // Generate article id
-export const generateId = (title, category) => {
+export const generateId = (
+    title: string,
+    category: string
+) => {
     const modifiedTitle = title
     .replaceAll(" ", "-")
     .replaceAll("'", "")
     .toLowerCase();
 
-    const idNames = {
+    const idNames: Record<string, any> = {
         Civilization: "civ" ,
         Character: "char" ,
         Ideology: "ide" ,
@@ -72,9 +95,12 @@ export const generateId = (title, category) => {
 }
 
 // Get article category from category shortcut
-export const getCategory = (cat, plural=false) => {
+export const getCategory = (
+    cat: string,
+    plural: boolean = false
+) => {
 
-    const categories = {
+    const categories: Record<string, any> = {
         char:  !plural ? "Character"    : "Characters",
         civ:   !plural ? "Civilization" : "Civilizations",
         ide:   !plural ? "Ideology"     : "Ideologies",
@@ -88,7 +114,10 @@ export const getCategory = (cat, plural=false) => {
 }
 
 // Check if article id existence
-export const checkArticleId = async (category, articleId) => {
+export const checkArticleId = async (
+    category: string,
+    articleId: string
+) => {
 
     if (articleId === "" || category === "") return;
 
@@ -107,7 +136,10 @@ export const checkArticleId = async (category, articleId) => {
 }
 
 // Upload selected image to cloud storage
-export const uploadToCloudStorage = async (rawFile, folder) => {
+export const uploadToCloudStorage = async (
+    rawFile: File,
+    folder: string
+) => {
     if (!rawFile) return;
 
     // Create a binary data package
@@ -132,7 +164,13 @@ export const uploadToCloudStorage = async (rawFile, folder) => {
 }
 
 // Validate all values of all inputs
-export const checkAllValues = async (schema, setSchema, article, setArticle, setLoading) => {
+export const checkAllValues = async (
+    schema: Record<string, any>[],
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>,
+    article: Record<string, any>,
+    setArticle: React.Dispatch<React.SetStateAction<Record<string, any>>>,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+) => {
 
     // Check if article contains images
     let containImages = false;
@@ -245,7 +283,7 @@ export const checkAllValues = async (schema, setSchema, article, setArticle, set
 }
 
 // Sterilized user input to prevent XSS probability
-export const sterilizedWord = (word) => {
+export const sterilizedWord = (word: string) => {
 
     if (!word) return "";
 
@@ -261,7 +299,11 @@ export const sterilizedWord = (word) => {
 }
 
 // Update article after edited
-export const updateArticle = async (category, id, schema) => {
+export const updateArticle = async (
+    category: string,
+    id: string,
+    schema: Record<string, any>[]
+) => {
 
     const images = schema.filter(img => img.type === "image-type");
     const cloneSchema = [...schema];
@@ -321,7 +363,7 @@ export const updateArticle = async (category, id, schema) => {
 }
 
 // Delete cloud storage assets based on article images
-export const deleteCloudAssets = async (coverPublicId="", assets) => {
+export const deleteCloudAssets = async (coverPublicId: string="", assets: any[]) => {
     
     const imagePublicIds = [];
     if (coverPublicId !== "") imagePublicIds.push(coverPublicId);
@@ -355,7 +397,7 @@ export const deleteCloudAssets = async (coverPublicId="", assets) => {
 }
 
 // Delete the article wiki
-export const deleteArticleWiki = async (category, article_id) => {
+export const deleteArticleWiki = async (category: string, article_id: string) => {
     try {
         const response = await fetch(`${API}/api/v1/wiki/${category}/${article_id}`, {
             method: "DELETE"

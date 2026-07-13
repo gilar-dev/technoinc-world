@@ -1,16 +1,18 @@
-import ContributionEditPage from "./ContributionEditPage";
 import Loading from "../Loading";
-import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { sterilizedWord } from "./ContributionUtils";
 
-function ModifyBox({ search }) {
+interface propTypes {
+    search?: boolean;
+}
 
-    const [input, setInput] = useState(""); // User article search input
-    const [data, setData] = useState([]); // Get all articles from db
-    const [specific, setSpecific] = useState([]); // Set only specific article matches with input
-    const [loading, setLoading] = useState(false);
+function ModifyBox({ search }: propTypes) {
+
+    const [input, setInput] = useState<string>(""); // User article search input
+    const [data, setData] = useState<any[]>([]); // Get all articles from db
+    const [specific, setSpecific] = useState<any[]>([]); // Set only specific article matches with input
+    const [loading, setLoading] = useState<boolean>(false);
 
     // Get all articles from db when loaded
     useEffect(() => {
@@ -26,7 +28,7 @@ function ModifyBox({ search }) {
                 const result = await response.json();
 
                 setData(result.data);
-                setSpecific(result.data.filter(item => item.title.toLowerCase().includes(input.toLowerCase())));
+                setSpecific(result.data.filter((item: any) => item.title.toLowerCase().includes(input.toLowerCase())));
                 setLoading(false);
 
             } catch (error) {
@@ -89,7 +91,7 @@ function ModifyBox({ search }) {
 
                         <div className="w-[60%] flex flex-col text-white min-[1200px]:w-[70%]">
                             <h4 dangerouslySetInnerHTML={{__html:
-                                item.title.replace(new RegExp(`(${sterilizedWord(input)})`, "gi"), word => (
+                                item.title.replace(new RegExp(`(${sterilizedWord(input)})`, "gi"), (word: any) => (
                                     `<span style="background-color: blue;">${word}</span>`
                                 ))
                             }}></h4>
@@ -113,10 +115,6 @@ function ModifyBox({ search }) {
             </div>
         </div>
     );
-}
-
-ModifyBox.propTypes = {
-    search: PropTypes.bool
 }
 
 export default ModifyBox;

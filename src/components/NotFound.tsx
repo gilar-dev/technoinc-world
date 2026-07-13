@@ -1,7 +1,10 @@
-import PropTypes from "prop-types";
 import "../css/DynamicPage.css";
 
-function NotFound({ message="" }) {
+interface propTypes {
+    message?: string
+}
+
+function NotFound({ message="" }: propTypes) {
 
     return (
         <div className="flex-1 flex flex-col items-center gap-3">
@@ -10,10 +13,6 @@ function NotFound({ message="" }) {
                                : message}</p>
         </div>
     );
-}
-
-NotFound.propTypes = {
-    message: PropTypes.string
 }
 
 export default NotFound;

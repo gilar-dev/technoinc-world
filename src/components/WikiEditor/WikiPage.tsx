@@ -1,4 +1,5 @@
 import Menu from "../Menu";
+import Loading from "../Loading";
 import Footer from "../Footer";
 import ContentParser from "./ContentParser";
 import ImageContainer from "./ImageContainer";
@@ -10,19 +11,19 @@ function WikiPage() {
 
     // get the category name and content id
     const { categoryName, contentId } = useParams();
-    const getCategory = categoryName.split(":")[1];
+    const getCategory: string = (categoryName as string).split(":")[1];
     
     // Essential data variables
-    const [article, setArticle] = useState({});
-    const [content, setContent] = useState([]);
-    const [images, setImages] = useState([]);
-    const [menuContent, setMenuContent] = useState([]);
+    const [article, setArticle] = useState<Record<string, any>>({});
+    const [content, setContent] = useState<Record<string, any>[]>([]);
+    const [images, setImages] = useState<Record<string, any>[]>([]);
+    const [menuContent, setMenuContent] = useState<Record<string, any>[]>([]);
 
     // Boolean state variables
-    const [loading, setLoading] = useState(true);
-    const [imageContainer, setImageContainer] = useState(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [imageContainer, setImageContainer] = useState<boolean>(false);
 
-    const [showed, setShowed] = useState("");
+    const [showed, setShowed] = useState<string>("");
 
     useEffect(() => {
         
@@ -41,14 +42,14 @@ function WikiPage() {
                 const results = await response.json();
 
                 // Get all image contents
-                const getImages = results.article.wiki_content.filter(img => img.type === "image-type");
+                const getImages = results.article.wiki_content.filter((img: any) => img.type === "image-type");
                 // Add cover image to list
                 getImages.unshift({
                     url: results.article.cover,
                     description: results.article.title
                 });
 
-                const getParagraph = results.article.wiki_content.filter(para => para.type === "paragraph-type");
+                const getParagraph = results.article.wiki_content.filter((para: any) => para.type === "paragraph-type");
 
                 // Set state based on the results
                 setLoading(false);
@@ -68,12 +69,7 @@ function WikiPage() {
     return (
         <>
             <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent}  />
-
-            <div
-                style={{display: loading ? "flex" : "none"}}
-                className="w-full min-h-[50vh] flex justify-center items-center">
-                <div className="w-[20%] aspect-square bg-[url('/assets/icons/loading-pixel.gif')] bg-center bg-cover bg-no-repeat"></div>
-            </div>
+            <Loading show={loading} position={"static"} />
 
             <div className="mt-4 mb-[6em] flex flex-col items-center">
                 <h2 className="text-center">

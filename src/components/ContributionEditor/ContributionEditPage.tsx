@@ -6,28 +6,27 @@ import Footer from "../Footer";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { handleInputChange, getCategory, uploadToCloudStorage, updateArticle, deleteCloudAssets, deleteArticleWiki } from "./ContributionUtils";
-import PropTypes from "prop-types";
 import "../../css/DynamicPage.css";
 
 function ContributionEditPage() {
 
     const { contentId } = useParams();
-    const splitedId = contentId.split("-"); // Split text with '-' separator
+    const splitedId: string[] = (contentId as string).split("-"); // Split text with '-' separator
 
     // Set state variables
-    const [data, setData] = useState({}); // Article informations
-    const [schema, setSchema] = useState([]); // Array of article schema to be edited
-    const [isExist, setIsExist] = useState(false); // Check if article id is exist
-    const [toDelete, setToDelete] = useState([]); // Array of assets to be deleted
-    const [deleteInput, setDeleteInput] = useState(""); // Confirmation before deleting
-    const [deleteLoading, setDeleteLoading] = useState(false); // Loading after pressing delete button
-    const [deleteContainer, setDeleteContainer] = useState(false); // Show delete confirmation container
+    const [data, setData] = useState<Record<string, any>>({}); // Article informations
+    const [schema, setSchema] = useState<Record<string, any>[]>([]); // Array of article schema to be edited
+    const [isExist, setIsExist] = useState<boolean>(false); // Check if article id is exist
+    const [toDelete, setToDelete] = useState<Record<string, any>[]>([]); // Array of assets to be deleted
+    const [deleteInput, setDeleteInput] = useState<string>(""); // Confirmation before deleting
+    const [deleteLoading, setDeleteLoading] = useState<boolean>(false); // Loading after pressing delete button
+    const [deleteContainer, setDeleteContainer] = useState<boolean>(false); // Show delete confirmation container
 
     // Get the site main theme from browser local storage
     const [light, setLight] = useState("light" === localStorage.getItem("technoinc-theme"));
 
     // Modify image type content from db
-    const modifiedSchema = (rawData) => {
+    const modifiedSchema = (rawData: Record<string, any>[]) => {
         for (let i = 0; i < rawData.length; i++) {
 
             if (rawData[i].type === "image-type") {
@@ -110,7 +109,6 @@ function ContributionEditPage() {
                     block={block}
                     schema={schema}
                     setSchema={setSchema}
-                    cloudStorage={uploadToCloudStorage}
                     onChangeHandler={handleInputChange}
                     editMode={true}
                     setToDelete={setToDelete} />
@@ -194,10 +192,6 @@ function ContributionEditPage() {
         <Footer />
         </>
     );
-}
-
-ContributionEditPage.propTypes = {
-    article: PropTypes.string.isRequired
 }
 
 export default ContributionEditPage;

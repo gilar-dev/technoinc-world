@@ -1,17 +1,25 @@
-import PropTypes from "prop-types";
-import { useEffect } from "react";
+import React from "react";
 import "../../css/DynamicPage.css";
 
-function ContentParser({ index, content, block, setImageContainer, setShowed, menuContent=[] }) {
+interface propTypes {
+    index: number;
+    content: Record<string, any>[];
+    block: Record<string, any>;
+    setImageContainer: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowed: React.Dispatch<React.SetStateAction<string>>;
+    menuContent: Record<string, any>[];
+}
+
+function ContentParser({ index, content, block, setImageContainer, setShowed, menuContent=[] }: propTypes) {
 
     const prevBlock = content[index - 1];
     const nextBlock = content[index + 1];
 
-    const sameCheck = (block, type) => {
+    const sameCheck = (block: Record<string, any>, type: string) => {
         return block?.type === type ? true : false;
     }
 
-    const differCheck = (block, type) => {
+    const differCheck = (block: Record<string, any>, type: string) => {
         if (!block) return true;
         return block?.type !== type ? true : false;
     }
@@ -19,12 +27,11 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
     switch(block.type) {
         case "heading-type":
             return (
-                <div
-                    style={{borderTop: index !== 0 && "1px solid rgb(85,85,85)"}}
-                    className="box mx-3 py-3 flex flex-col items-center justify-center gap-2 border-l border-r">
+                <div className={`box mx-3 py-3 flex flex-col items-center justify-center gap-2 border-l border-r
+                                ${index !== 0 && "border-t border-t-[rgb(85,85,85)]"}`}>
                     <div
-                        style={{borderTop: sameCheck(prevBlock, "table-type") && "1px solid rgb(85,85,85)"}}
-                        className="w-[80%]" />
+                        className={`w-[80%]
+                                    ${sameCheck(prevBlock, "table-type") && "border-t border-t-[rgb(85,85,85)]"}`} />
                     <h3 className="text-center">
                         <span className="highlight">{block.data}</span>
                     </h3>
@@ -34,11 +41,8 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
 
         case "table-type":
             return (
-                <div
-                    style={{
-                        borderBottom: differCheck(nextBlock, "table-type") && "1px solid rgb(85,85,85)"
-                    }}
-                    className={"box mx-3 flex p-3 border-l border-r"}>
+                <div className={`box mx-3 flex p-3 border-l border-r
+                                ${differCheck(nextBlock, "table-type") && "border-b border-b-[rgb(85,85,85)]"}`}>
                     <h4 className="w-full uppercase text-[.8em]">{block.head_data}</h4>
                     <p className="w-full font-normal text-[.9em]">{block.content_data}</p>
                 </div>
@@ -92,15 +96,6 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
         default:
             return null;
     }
-}
-
-ContentParser.propTypes = {
-    index: PropTypes.number.isRequired,
-    content: PropTypes.array.isRequired,
-    block: PropTypes.object.isRequired,
-    setImageContainer: PropTypes.func.isRequired,
-    setShowed: PropTypes.func.isRequired,
-    menuContent: PropTypes.array
 }
 
 export default ContentParser;

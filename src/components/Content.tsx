@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "../css/Content.css";
 
 function Content() {

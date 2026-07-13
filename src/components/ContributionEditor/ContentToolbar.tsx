@@ -1,8 +1,11 @@
-import { useState } from "react";
 import { addNewContent } from "./ContributionUtils";
-import PropTypes from "prop-types";
 
-function ContentToolbar({ setSchema, light }) {
+interface propTypes {
+    light: boolean;
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+function ContentToolbar({ light, setSchema }: propTypes) {
 
     return (
         <div className={`mt-[3em] mx-[1em] p-[1em] flex gap-[1em] overflow-auto rounded-[10px]
@@ -54,11 +57,6 @@ function ContentToolbar({ setSchema, light }) {
             </button>
         </div>
     );
-}
-
-ContentToolbar.propTypes = {
-    setSchema: PropTypes.func.isRequired,
-    light: PropTypes.bool
 }
 
 export default ContentToolbar;

@@ -1,19 +1,25 @@
-import Menu from "./Menu.jsx";
-import Footer from "./Footer.jsx";
+import Menu from "./Menu";
+import Loading from "./Loading";
+import Footer from "./Footer";
 import { useState, useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "../css/DynamicPage.css";
-import Loading from "./Loading.jsx";
+
+interface dataTypes {
+    title: string,
+    id: string,
+    cover: string
+}
 
 function CategoryPage() {
 
     // Get the id of dynamic route url
     const { categoryName } = useParams();
-    const getCategory = categoryName.split(":")[1];
+    const getCategory = categoryName?.split(":")[1];
     
     // Get data from database
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<Array<dataTypes>>([]);
+    const [loading, setLoading] = useState<boolean>(true);
 
     // Get data based on the chosen category
     useEffect(() => {
@@ -25,11 +31,11 @@ function CategoryPage() {
             
             try {
                 setLoading(true);
-                let convertedName = getCategory.toLowerCase();
+                let convertedName = getCategory?.toLowerCase();
 
                 // Convert plural name to singular name
-                if (convertedName.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
-                else convertedName = convertedName.slice(0, convertedName.length - 1);
+                if (convertedName?.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
+                else convertedName = convertedName?.slice(0, convertedName.length - 1);
 
                 // Fetch request to backend
                 const response = await fetch(`${API}/api/v1/wiki/${convertedName}/articles`);

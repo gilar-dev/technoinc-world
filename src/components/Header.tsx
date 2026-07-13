@@ -5,8 +5,8 @@ function Header() {
 
     // A transform effect when do content is loaded 
     useEffect(() => {
-        const titleImg = document.getElementById("title-img");
-        const logoTitleText = document.querySelector(".logo-title-text");
+        const titleImg: HTMLElement = document.getElementById("title-img")!;
+        const logoTitleText: HTMLElement = document.querySelector(".logo-title-text")!;
 
         titleImg.style.transform = "translateY(0)";
         titleImg.style.opacity = "1";

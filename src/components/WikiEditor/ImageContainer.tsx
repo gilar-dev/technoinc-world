@@ -1,11 +1,18 @@
-import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import "../../css/DynamicPage.css";
 
-function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
+interface propTypes {
+    images: Record<string, any>[];
+    showed: string;
+    display: boolean;
+    setShowed: React.Dispatch<React.SetStateAction<string>>;
+    setDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-    const [navigation, setNavigation] = useState(true);
-    const [current, setCurrent] = useState({});
+function ImageContainer({ images, showed, setShowed, display, setDisplay }: propTypes) {
+
+    const [navigation, setNavigation] = useState<boolean>(true);
+    const [current, setCurrent] = useState<Record<string, any>>({});
     
     useEffect(() => {
         
@@ -40,10 +47,10 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
             <div
                 onClick={() => setNavigation(!navigation)}
                 className="h-screen flex justify-center items-center">
-                <img
-                    src={showed || null}
+                {showed && <img
+                    src={showed}
                     alt={images[current.index]?.description}
-                    className="w-full max-h-[65vh]" />
+                    className="w-full max-h-[65vh]" />}
             </div>
 
 
@@ -87,14 +94,6 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }) {
             </div>
         </div>
     );
-}
-
-ImageContainer.propTypes = {
-    images: PropTypes.array.isRequired,
-    showed: PropTypes.string.isRequired,
-    setShowed: PropTypes.func.isRequired,
-    display: PropTypes.bool.isRequired,
-    setDisplay: PropTypes.func.isRequired
 }
 
 export default ImageContainer;

@@ -4,15 +4,14 @@ import ContentBlock from "./ContentBlock";
 import ContentToolbar from "./ContentToolbar";
 import ModifyBox from "./ModifyBox";
 import { useState, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
-import { handleInputChange, generateId, checkArticleId, uploadToCloudStorage, checkAllValues } from "./ContributionUtils";
+import { handleInputChange, generateId, checkAllValues } from "./ContributionUtils";
 import "../../css/DynamicPage.css";
 import Loading from "../Loading";
 
 function ContributionPage() {
 
     // Template for creating new article
-    const [article, setArticle] = useState({
+    const [article, setArticle] = useState<Record<string, any>>({
         id: "",
         title: "",
         category: "Civilization", // Default value
@@ -23,10 +22,10 @@ function ContributionPage() {
     });
 
     // Schema for making dynamic content block
-    const [schema, setSchema] = useState([]);
-    const [search, setSearch] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [light, setLight] = useState("light" === localStorage.getItem("technoinc-theme"));
+    const [schema, setSchema] = useState<any[]>([]);
+    const [search, setSearch] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
     useEffect(() => {
         document.body.style.overflow = loading ? "hidden" : "visible";
@@ -42,7 +41,6 @@ function ContributionPage() {
                         shadow-2xs shadow-black border-[rgb(0,175,255)]
                         ${light ? "bg-white/70" : "bg-gray-700/50 [&>textarea,&>input,&>div>h3,&>div>h2]:text-white"}`}>
             <textarea
-                type="text"
                 placeholder="Article title"
                 value={article.title}
                 onChange={e => setArticle(prev => (
@@ -86,21 +84,21 @@ function ContributionPage() {
 
             <div className="flex flex-col items-center justify-center gap-3">
                 <h2 className="text-black/40">Article Cover</h2>
-                <img
-                    src={article.cover || null}
-                    className="w-full rounded-[5px]" />
+                {article.cover && <img
+                    src={article.cover}
+                    className="w-full rounded-[5px]" />}
                 <input
                     id="article-cover"
                     type="file"
                     accept="image/*"
                     style={{display: "none"}}
                     onChange={(e) => {
-                        const selectedFile = e.target.files[0];
+                        const selectedFile = (e.target as HTMLInputElement).files?.[0];
                         if (!selectedFile) return;
 
                         const preview = URL.createObjectURL(selectedFile);
 
-                        setArticle(prev => ({
+                        setArticle((prev: any) => ({
                             ...prev,
                             cover: preview,
                             raw_cover: selectedFile
@@ -142,7 +140,6 @@ function ContributionPage() {
                     block={block}
                     schema={schema}
                     setSchema={setSchema}
-                    cloudStorage={uploadToCloudStorage}
                     onChangeHandler={handleInputChange} />
             ))}
         </div>

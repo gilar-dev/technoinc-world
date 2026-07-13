@@ -1,8 +1,17 @@
-import PropTypes from "prop-types";
 import BlockControls from "./BlockControls";
 import "../../css/DynamicPage.css";
 
-function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMode=false, setToDelete }) {
+interface propTypes {
+    index: number;
+    block: Record<string, any>;
+    schema: any[];
+    editMode?: boolean;
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>;
+    setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
+    onChangeHandler: (index: number, key: string, target: any, func: React.Dispatch<React.SetStateAction<any[]>>) => void;
+}
+
+function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMode=false, setToDelete }: propTypes) {
     
     switch (block.type) {
 
@@ -74,7 +83,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                         accept="image/*"
                         style={{display: "none"}}
                         onChange={e => {
-                            const selectedFile = e.target.files[0];
+                            const selectedFile = e.target.files?.[0];
                             if (!selectedFile) return;
 
                             // Set the image path to accessable on browser
@@ -104,7 +113,6 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                         <i className="fa-solid fa-arrow-rotate-left"></i>
                     </button>
                     <textarea
-                        type="text"
                         placeholder="Add image description"
                         value={block.description}
                         onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
@@ -117,16 +125,6 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
         default:
             return null;
     }
-}
-
-ContentBlock.propTypes = {
-    index: PropTypes.number.isRequired,
-    block: PropTypes.object.isRequired,
-    schema: PropTypes.array.isRequired,
-    setSchema: PropTypes.func.isRequired,
-    onChangeHandler: PropTypes.func.isRequired,
-    editMode: PropTypes.bool,
-    setToDelete: PropTypes.func
 }
 
 export default ContentBlock;

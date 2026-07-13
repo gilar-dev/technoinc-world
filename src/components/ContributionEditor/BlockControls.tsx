@@ -1,7 +1,15 @@
 import { addNewTable, moveContent, deleteContent } from "./ContributionUtils";
-import PropTypes from "prop-types";
 
-function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete }) {
+interface propTypes {
+    currentIndex: number;
+    addButton?: boolean;
+    editMode?: boolean;
+    schema: Record<string, any>[];
+    setSchema: React.Dispatch<React.SetStateAction<any[]>>;
+    setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete }: propTypes) {
 
     return (
         <div className="w-full flex justify-center items-center gap-1
@@ -32,13 +40,13 @@ function BlockControls({ currentIndex, addButton=false, editMode=false, schema, 
             </button>
 
             <span className="ml-auto mr-auto font-bold text-black/20">
-                {currentIndex + 1}
+                {currentIndex as number + 1}
             </span>
 
             <button
                 title="Delete content"
                 onClick={() => {
-                    if (editMode) setToDelete(prev => [...prev, schema[currentIndex]]);
+                    if (editMode) setToDelete?.((prev: any) => [...prev, schema[currentIndex as number]]);
                     deleteContent(currentIndex, setSchema);
                 }}
                 className="delete-btn border-[rgb(255,0,0)] bg-[rgb(255,0,0)]/50 hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">
@@ -46,15 +54,6 @@ function BlockControls({ currentIndex, addButton=false, editMode=false, schema, 
             </button>
         </div>
     );
-}
-
-BlockControls.propTypes = {
-    currentIndex: PropTypes.number.isRequired,
-    addButton: PropTypes.bool.isRequired,
-    editMode: PropTypes.bool,
-    schema: PropTypes.array.isRequired,
-    setSchema: PropTypes.func.isRequired,
-    setToDelete: PropTypes.func
 }
 
 export default BlockControls;

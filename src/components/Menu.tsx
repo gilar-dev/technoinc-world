@@ -1,10 +1,29 @@
 import Loading from "./Loading";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import PropTypes, { func } from "prop-types";
 import "../css/Menu.css";
 
-function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, search=false, setSearch, menuContent=[], setLight }) {
+interface MenuProps {
+    wikiTitle?: string,
+    selected?: string,
+    setReplace?: boolean,
+    contribution?: boolean,
+    search?: boolean,
+    menuContent?: Array<Object>,
+    setSearch?: (search: boolean) => void,
+    setLight?: (light: boolean) => void
+}
+
+function Menu({
+    wikiTitle="",
+    selected="",
+    setReplace=false,
+    contribution=true,
+    search=false,
+    menuContent=[],
+    setSearch,
+    setLight
+}: MenuProps) {
 
     // Set the status of sidebar menu
     const [isActive, setIsActive] = useState("");
@@ -38,7 +57,7 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
         const menuBox = document.querySelector(".menu-box");
 
         for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
-            inputBox.checked = true; 
+            (inputBox as HTMLInputElement).checked = true; 
         }
 
         const fetchData = async () => {
@@ -58,8 +77,8 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
         }
         
         const scrollMovement = () => {
-            if (window.scrollY === 0) menuBox.style.padding = ".7em";
-            else menuBox.style.padding = ".5em";
+            if (window.scrollY === 0) (menuBox as HTMLElement).style.padding = ".7em";
+            else (menuBox as HTMLElement).style.padding = ".5em";
         }
 
         fetchData();
@@ -99,19 +118,19 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
                     {wikiTitleCheck}
                     <h6 id="title" className="unchanged">TechnoInc MC Wiki</h6>
                 </div>
-                <a href="/contribution" title="Contribution" style={{display: !contribution && "none"}}>
+                <a href="/contribution" title="Contribution" style={{display: !contribution ? "none" : "block"}}>
                     <i className="fa-solid fa-pen-to-square"></i>
                 </a>
                 <a
                     title="Search article to modify"
-                    style={{display: contribution && "none" || search && "none"}}
-                    onClick={() => setSearch(true)}>
+                    style={{display: contribution || search ? "none" : "block"}}
+                    onClick={() => setSearch?.(true)}>
                     <i className="fa-solid fa-magnifying-glass"></i>
                 </a>
                 <a
                     title="Close"
-                    style={{display: !search && "none"}}
-                    onClick={() => setSearch(false)}>
+                    style={{display: !search ? "none" : "block"}}
+                    onClick={() => setSearch?.(false)}>
                     <i className="fa-solid fa-xmark"></i>
                 </a>
             </div>
@@ -207,7 +226,7 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
                                                 target.scrollIntoView({ behavior: "smooth" });
                                             }
                                         }}>
-                                        {content.title}
+                                        {(content as HTMLElement).title}
                                     </a>
                                 </li>
                             ))}
@@ -218,18 +237,6 @@ function Menu({ wikiTitle="", selected="", setReplace=false, contribution=true, 
 
         </section>
     );
-}
-
-// Define the Menu props data type
-Menu.PropTypes = {
-    wikiTitle: PropTypes.string,
-    selected: PropTypes.string,
-    setReplace: PropTypes.bool,
-    contribution: PropTypes.bool,
-    search: PropTypes.bool,
-    setSearch: PropTypes.func,
-    menuContent: PropTypes.array,
-    setLight: PropTypes.func
 }
 
 export default Menu;
