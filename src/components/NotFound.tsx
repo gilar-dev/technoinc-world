@@ -1,13 +1,14 @@
+import { ReactElement } from "react";
 import "../css/DynamicPage.css";
 
 interface propTypes {
-    message?: string
+    message?: string;
 }
 
-function NotFound({ message="" }: propTypes) {
+function NotFound({ message="" }: propTypes): ReactElement {
 
     return (
-        <div className="flex-1 flex flex-col items-center gap-3">
+        <div className="mt-[5em] flex-1 flex flex-col items-center gap-3">
             <h2>Sorry...</h2>
             <p>{message === "" ? "The article you're looking for is not found." 
                                : message}</p>

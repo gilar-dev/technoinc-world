@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { addNewContent } from "./ContributionUtils";
 
 interface propTypes {
@@ -5,7 +6,7 @@ interface propTypes {
     setSchema: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-function ContentToolbar({ light, setSchema }: propTypes) {
+function ContentToolbar({ light, setSchema }: propTypes): ReactElement {
 
     return (
         <div className={`mt-[3em] mx-[1em] p-[1em] flex gap-[1em] overflow-auto rounded-[10px]

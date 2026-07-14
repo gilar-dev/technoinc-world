@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import { addNewTable, moveContent, deleteContent } from "./ContributionUtils";
 
 interface propTypes {
@@ -9,7 +10,7 @@ interface propTypes {
     setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete }: propTypes) {
+function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete }: propTypes): ReactElement {
 
     return (
         <div className="w-full flex justify-center items-center gap-1

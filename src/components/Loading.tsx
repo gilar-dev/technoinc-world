@@ -1,11 +1,12 @@
+import { ReactElement } from "react";
 import "../css/DynamicPage.css";
 
 interface propTypes {
-    show?: boolean,
-    position?: "static" | "relative" | "absolute"
+    show?: boolean;
+    position?: "static" | "relative" | "absolute";
 }
 
-function Loading({ show=false, position="absolute" }:propTypes) {
+function Loading({ show=false, position="absolute" }:propTypes): ReactElement {
 
     return (
         <div className={`w-full h-full mt-5 justify-center items-center top-0

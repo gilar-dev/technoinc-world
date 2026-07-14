@@ -6,9 +6,9 @@ export const handleInputChange = (
     property: string,
     value: Record<string, any>,
     setSchema: React.Dispatch<React.SetStateAction<any[]>>
-) => {
+): any => {
     setSchema(prev => {
-        const updatedSchema = [...prev];
+        const updatedSchema: Record<string, any>[] = [...prev];
 
         updatedSchema[index][property] = value;
 
@@ -20,7 +20,7 @@ export const handleInputChange = (
 export const addNewContent = (
     block: Record<string, any>,
     setSchema: React.Dispatch<React.SetStateAction<any[]>>
-) => {
+): void => {
     setSchema(prev => [...prev, block]);
     scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 }
@@ -30,7 +30,7 @@ export const addNewTable = (
     index: number,
     block: Record<string, any>,
     setSchema: React.Dispatch<React.SetStateAction<any[]>>
-) => {
+): void => {
     setSchema(prev => [...prev].toSpliced(index + 1, 0, block));
 }
 
@@ -40,16 +40,16 @@ export const moveContent = (
     direction: string,
     schema: Record<string, any>[] | [] = [],
     setSchema: React.Dispatch<React.SetStateAction<any[]>>
-) => {
+): any => {
     if (schema.length <= 1) return;
 
     // Get the targeted index
-    let targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    let targetIndex: number = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
     setSchema((prev) => {
         // Store current schema and content
-        const updatedSchema = [...prev];
-        const currentContent = updatedSchema[currentIndex];
+        const updatedSchema: Record<string, any>[] = [...prev];
+        const currentContent: Record<string, any> = updatedSchema[currentIndex];
 
         // Check if index out of range
         if (targetIndex < 0) targetIndex = updatedSchema.length - 1;
@@ -67,7 +67,7 @@ export const moveContent = (
 export const deleteContent = (
     index: number,
     setSchema: React.Dispatch<React.SetStateAction<any[]>>
-) => {
+): void => {
     setSchema((prev) => ([...prev].toSpliced(index, 1)));
 }
 
@@ -75,8 +75,8 @@ export const deleteContent = (
 export const generateId = (
     title: string,
     category: string
-) => {
-    const modifiedTitle = title
+): string => {
+    const modifiedTitle: string = title
     .replaceAll(" ", "-")
     .replaceAll("'", "")
     .toLowerCase();
@@ -98,7 +98,7 @@ export const generateId = (
 export const getCategory = (
     cat: string,
     plural: boolean = false
-) => {
+): string => {
 
     const categories: Record<string, any> = {
         char:  !plural ? "Character"    : "Characters",
@@ -117,16 +117,16 @@ export const getCategory = (
 export const checkArticleId = async (
     category: string,
     articleId: string
-) => {
+): Promise<boolean | void> => {
 
     if (articleId === "" || category === "") return;
 
     try {
-        const getId = await fetch(`${API}/api/v1/wiki/${category}/${articleId}/exist`);
+        const getId: Response = await fetch(`${API}/api/v1/wiki/${category}/${articleId}/exist`);
 
         if (!getId.ok) return console.error(getId);
             
-        const result = await getId.json();
+        const result: Record<string, any> = await getId.json();
 
         return result.is_exist;
 
@@ -139,22 +139,22 @@ export const checkArticleId = async (
 export const uploadToCloudStorage = async (
     rawFile: File,
     folder: string
-) => {
+): Promise<Record<string, any> | void> => {
     if (!rawFile) return;
 
     // Create a binary data package
-    const dataPackage = new FormData();
+    const dataPackage: FormData = new FormData();
     dataPackage.append("file", rawFile);
     dataPackage.append("folder", folder);
     dataPackage.append("upload_preset", import.meta.env.VITE_CLOUDINARY_PRESET);
 
     try {
-        const response = await fetch(`${API}/api/v1/cloudinary/upload`, {
+        const response: Response = await fetch(`${API}/api/v1/cloudinary/upload`, {
             method: "POST",
             body: dataPackage
         });
     
-        const result = await response.json();
+        const result: Record<string, any> = await response.json();
 
         return result;
 
@@ -170,22 +170,22 @@ export const checkAllValues = async (
     article: Record<string, any>,
     setArticle: React.Dispatch<React.SetStateAction<Record<string, any>>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>
-) => {
+): Promise<any> => {
 
     // Check if article contains images
-    let containImages = false;
+    let containImages: boolean = false;
     // Check article id existence
-    const checkId = await checkArticleId(article.category, article.id);
+    const checkId: boolean = await checkArticleId(article.category, article.id) as boolean;
 
     if (article.title === "") return alert("Article title can't be empty");
     if (checkId) return alert("Article id is already exist!");
     if (article.cover === "") return alert("Article cover can't be empty!");
     if (schema.length === 0) return alert("You haven't add any content!");
 
-    for (let i = 0; i < schema.length; i++) {
+    for (let i: number = 0; i < schema.length; i++) {
             
-        const block = schema[i];
-        const rejectionMessage = "These can't be empty at content " + (i + 1);
+        const block: Record<string, any> = schema[i];
+        const rejectionMessage: string = "These can't be empty at content " + (i + 1);
 
         // Check the type of block
         switch (block.type) {
@@ -214,17 +214,17 @@ export const checkAllValues = async (
     }
 
     // Upload article cover to cloud storage
-    const getCoverURL = await uploadToCloudStorage(article.raw_cover, "Cover");
+    const getCoverURL: Record<string, any> = await uploadToCloudStorage(article.raw_cover, "Cover") as Record<string, any>;
     // Clone current schema contents to modified
-    const cloneSchema = [...schema];
+    const cloneSchema: Record<string, any>[] = [...schema];
 
     // Start converting local url to cloud storage url
     if (containImages) {
-        for (let i = 0; i < cloneSchema.length; i++) {
-            const imageContent = cloneSchema[i];
+        for (let i: number = 0; i < cloneSchema.length; i++) {
+            const imageContent: Record<string, any> = cloneSchema[i];
 
             if (imageContent.type === "image-type") {
-                const getCloudURL = await uploadToCloudStorage(imageContent.raw_file, article.category);
+                const getCloudURL: Record<string, any> = await uploadToCloudStorage(imageContent.raw_file, article.category) as Record<string, any>;
 
                 if (getCloudURL) {
                     cloneSchema[i]["url"] = getCloudURL.secure_url;
@@ -238,7 +238,7 @@ export const checkAllValues = async (
     }
 
     // Create final article data
-    const finalArticle = {
+    const finalArticle: Record<string, any> = {
         id: article.id,
         title: article.title,
         category: article.category,
@@ -252,7 +252,7 @@ export const checkAllValues = async (
     if (finalArticle) {
 
         try {
-            const processUploading = await fetch(`${API}/api/v1/contribution/upload`, {
+            const processUploading: Response = await fetch(`${API}/api/v1/contribution/upload`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(finalArticle)
@@ -271,7 +271,7 @@ export const checkAllValues = async (
             setSchema([]);
             alert("Your article is sucessfully uploaded!");
 
-            const splitedId = article.id.split("-");
+            const splitedId: string[] = article.id.split("-");
             window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}/${article.id}`);
 
             return true;
@@ -283,7 +283,7 @@ export const checkAllValues = async (
 }
 
 // Sterilized user input to prevent XSS probability
-export const sterilizedWord = (word: string) => {
+export const sterilizedWord = (word: string): string => {
 
     if (!word) return "";
 
@@ -303,28 +303,28 @@ export const updateArticle = async (
     category: string,
     id: string,
     schema: Record<string, any>[]
-) => {
+): Promise<any> => {
 
-    const images = schema.filter(img => img.type === "image-type");
-    const cloneSchema = [...schema];
+    const images: Record<string, any>[] = schema.filter(img => img.type === "image-type");
+    const cloneSchema: Record<string, any>[] = [...schema];
 
     if (images.length > 0) {
 
-        const imagesToDelete = [];
-        for (let i = 0; i < images.length; i++) {
+        const imagesToDelete: Record<string, any>[] = [];
+        for (let i: number = 0; i < images.length; i++) {
 
-            if (images[i]?.prev_url !== undefined && images[i]?.prev_url !== "") imagesToDelete.push(images[i]);
+            if (images[i].prev_url !== undefined && images[i]?.prev_url !== "") imagesToDelete.push(images[i]);
         }
 
         deleteCloudAssets("", imagesToDelete);
 
-        const category = id.split("-");
-        for (let i = 0; i < schema.length; i++) {
+        const category: string[] = id.split("-");
+        for (let i: number = 0; i < schema.length; i++) {
 
             const image = schema[i];
             if (image.type === "image-type" && image?.prev_url !== undefined && image?.prev_url !== "") {
 
-                const getCloudURL = await uploadToCloudStorage(image.raw_file, getCategory(category[category.length - 1]));
+                const getCloudURL: Record<string, any> = await uploadToCloudStorage(image.raw_file, getCategory(category[category.length - 1])) as Record<string, any>;
 
                 if (getCloudURL) {
                     cloneSchema[i]["url"] = getCloudURL.secure_url;
@@ -337,21 +337,21 @@ export const updateArticle = async (
     }
 
     // Create final article data before updating
-    const finalArticleUpdate = {
+    const finalArticleUpdate: Record<string, any> = {
         id: id,
         wiki_content: cloneSchema
     }
 
     try {
         // Fetch request to backend API endpoint to update
-        const response = await fetch(`${API}/api/v1/contribution/update/${category}`, {
+        const response: Response = await fetch(`${API}/api/v1/contribution/update/${category}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(finalArticleUpdate)
         })
-        const results = await response.json();
+        const results: Record<string, any> = await response.json();
 
         alert("Successfully updated article!")
         return true;
@@ -363,9 +363,9 @@ export const updateArticle = async (
 }
 
 // Delete cloud storage assets based on article images
-export const deleteCloudAssets = async (coverPublicId: string="", assets: any[]) => {
+export const deleteCloudAssets = async (coverPublicId: string="", assets: Record<string, any>[]): Promise<any> => {
     
-    const imagePublicIds = [];
+    const imagePublicIds: string[] = [];
     if (coverPublicId !== "") imagePublicIds.push(coverPublicId);
 
     for (let i = 0; i < assets.length; i++) {
@@ -374,21 +374,21 @@ export const deleteCloudAssets = async (coverPublicId: string="", assets: any[])
 
     if (imagePublicIds.length > 0) {
 
-        const publicIdsJSON = { public_ids: imagePublicIds }
+        const publicIdsJSON: Record<string, any> = { public_ids: imagePublicIds }
 
         try {
-            const response = await fetch(`${API}/api/v1/cloudinary/delete`, {
+            const response: Response = await fetch(`${API}/api/v1/cloudinary/delete`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(publicIdsJSON)
             });
-            const result = await response.json();
+            const result: Record<string, any> = await response.json();
 
-            if (!response.ok) throw new Error("Something went wrong");
+            if (!response.ok) return;
 
-            console.log(result);
+            return result;
 
         } catch (error) {
             console.error(error);
@@ -397,9 +397,9 @@ export const deleteCloudAssets = async (coverPublicId: string="", assets: any[])
 }
 
 // Delete the article wiki
-export const deleteArticleWiki = async (category: string, article_id: string) => {
+export const deleteArticleWiki = async (category: string, article_id: string): Promise<any> => {
     try {
-        const response = await fetch(`${API}/api/v1/wiki/${category}/${article_id}`, {
+        const response: Response = await fetch(`${API}/api/v1/wiki/${category}/${article_id}`, {
             method: "DELETE"
         })
 

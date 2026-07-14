@@ -1,10 +1,11 @@
+import { ReactElement } from "react";
 import "../css/Footer.css";
 
 interface propTypes {
-    effect?: string
+    effect?: string;
 }
 
-function Footer({ effect="" }: propTypes) {
+function Footer({ effect="" }: propTypes): ReactElement {
 
     return (
         <footer>

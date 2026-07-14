@@ -1,21 +1,21 @@
 import Menu from "./Menu";
 import Loading from "./Loading";
 import Footer from "./Footer";
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect, ReactElement } from "react";
+import { Link, Params, useParams } from "react-router-dom";
 import "../css/DynamicPage.css";
 
 interface dataTypes {
-    title: string,
-    id: string,
-    cover: string
+    title: string;
+    id: string;
+    cover: string;
 }
 
-function CategoryPage() {
+function CategoryPage(): ReactElement {
 
     // Get the id of dynamic route url
-    const { categoryName } = useParams();
-    const getCategory = categoryName?.split(":")[1];
+    const { categoryName }: Params<string> = useParams();
+    const getCategory: string = (categoryName as string).split(":")[1];
     
     // Get data from database
     const [data, setData] = useState<Array<dataTypes>>([]);
@@ -25,21 +25,21 @@ function CategoryPage() {
     useEffect(() => {
         setData([]);
 
-        const fetchData = async () => {
+        const fetchData = async (): Promise<void> => {
 
-            const API = import.meta.env.VITE_API;
+            const API: string = import.meta.env.VITE_API;
             
             try {
                 setLoading(true);
-                let convertedName = getCategory?.toLowerCase();
+                let convertedName: string = getCategory.toLowerCase();
 
                 // Convert plural name to singular name
                 if (convertedName?.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
                 else convertedName = convertedName?.slice(0, convertedName.length - 1);
 
                 // Fetch request to backend
-                const response = await fetch(`${API}/api/v1/wiki/${convertedName}/articles`);
-                const articles = await response.json();
+                const response: Response = await fetch(`${API}/api/v1/wiki/${convertedName}/articles`);
+                const articles: Record<string, any> = await response.json();
 
                 setLoading(false);
                 setData(articles.articles);

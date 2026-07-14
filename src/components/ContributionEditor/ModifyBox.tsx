@@ -1,13 +1,13 @@
 import Loading from "../Loading";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { sterilizedWord } from "./ContributionUtils";
 
 interface propTypes {
-    search?: boolean;
+    search: boolean;
 }
 
-function ModifyBox({ search }: propTypes) {
+function ModifyBox({ search }: propTypes): ReactElement {
 
     const [input, setInput] = useState<string>(""); // User article search input
     const [data, setData] = useState<any[]>([]); // Get all articles from db
@@ -16,16 +16,16 @@ function ModifyBox({ search }: propTypes) {
 
     // Get all articles from db when loaded
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async (): Promise<void> => {
 
-            const API = import.meta.env.VITE_API;
+            const API: string = import.meta.env.VITE_API;
             
             try {
                 setLoading(true)
 
-                const response = await fetch(`${API}/api/v1/wiki/articles`);
+                const response: Response = await fetch(`${API}/api/v1/wiki/articles`);
 
-                const result = await response.json();
+                const result: Record<string, any> = await response.json();
 
                 setData(result.data);
                 setSpecific(result.data.filter((item: any) => item.title.toLowerCase().includes(input.toLowerCase())));

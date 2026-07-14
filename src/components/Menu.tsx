@@ -1,6 +1,6 @@
 import Loading from "./Loading";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactElement } from "react";
 import "../css/Menu.css";
 
 interface MenuProps {
@@ -23,11 +23,11 @@ function Menu({
     menuContent=[],
     setSearch,
     setLight
-}: MenuProps) {
+}: MenuProps): ReactElement {
 
     // Set the status of sidebar menu
-    const [isActive, setIsActive] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [isActive, setIsActive] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
 
     // Define the website theme color
     const [theme, setTheme] = useState(
@@ -35,7 +35,7 @@ function Menu({
     );
 
     // List of categories bucket
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState<string[]>([]);
 
     // Function to switch to different theme
     const themeToggle = () => {
@@ -53,8 +53,8 @@ function Menu({
     // Menu effect when the page is being scrolled
     useEffect(() => {
         
-        const API = import.meta.env.VITE_API;
-        const menuBox = document.querySelector(".menu-box");
+        const API: string = import.meta.env.VITE_API;
+        const menuBox: Element = document.querySelector(".menu-box") as Element;
 
         for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
             (inputBox as HTMLInputElement).checked = true; 
@@ -64,8 +64,8 @@ function Menu({
             try {
                 setLoading(true);
 
-                const response = await fetch(`${API}/api/v1/wiki/categories`);
-                const result = await response.json();
+                const response: Response = await fetch(`${API}/api/v1/wiki/categories`);
+                const result: Record<string, any> = await response.json();
 
                 setCategories(result.category_list);
                 setLoading(false);

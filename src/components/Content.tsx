@@ -1,6 +1,7 @@
+import { ReactElement } from "react";
 import "../css/Content.css";
 
-function Content() {
+function Content(): ReactElement {
 
     return (
         <section className="technoinc-def">

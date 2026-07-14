@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { ReactElement, useEffect } from "react";
 import "../css/Header.css";
 
-function Header() {
+function Header(): ReactElement {
 
     // A transform effect when do content is loaded 
     useEffect(() => {

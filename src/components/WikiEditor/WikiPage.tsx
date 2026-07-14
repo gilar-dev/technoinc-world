@@ -1,16 +1,17 @@
 import Menu from "../Menu";
 import Loading from "../Loading";
+import NotFound from "../NotFound";
 import Footer from "../Footer";
 import ContentParser from "./ContentParser";
 import ImageContainer from "./ImageContainer";
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Activity, useState, useEffect, ReactElement } from "react";
+import { Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
 
-function WikiPage() {
+function WikiPage(): ReactElement {
 
     // get the category name and content id
-    const { categoryName, contentId } = useParams();
+    const { categoryName, contentId }: Params<string> = useParams();
     const getCategory: string = (categoryName as string).split(":")[1];
     
     // Essential data variables
@@ -21,6 +22,7 @@ function WikiPage() {
 
     // Boolean state variables
     const [loading, setLoading] = useState<boolean>(true);
+    const [isExist, setIsExist] = useState<boolean | undefined>(undefined);
     const [imageContainer, setImageContainer] = useState<boolean>(false);
 
     const [showed, setShowed] = useState<string>("");
@@ -29,8 +31,9 @@ function WikiPage() {
         
         const fetchData = async () => {
             setLoading(true);
-            let convertedName = getCategory.toLowerCase();
-            const API = import.meta.env.VITE_API;
+
+            let convertedName: string = getCategory.toLowerCase();
+            const API: string = import.meta.env.VITE_API;
 
             // Convert plural name to singular name
             if (convertedName.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
@@ -38,20 +41,21 @@ function WikiPage() {
 
             try {
                 // Fetch request to backend server
-                const response = await fetch(`${API}/api/v1/wiki/${convertedName}/${contentId}`);
-                const results = await response.json();
+                const response: Response = await fetch(`${API}/api/v1/wiki/${convertedName}/${contentId}`);
+                const results: Record<string, any> = await response.json();
 
                 // Get all image contents
-                const getImages = results.article.wiki_content.filter((img: any) => img.type === "image-type");
+                const getImages: Record<string, any>[] = results.article.wiki_content.filter((img: any) => img.type === "image-type");
                 // Add cover image to list
                 getImages.unshift({
                     url: results.article.cover,
                     description: results.article.title
                 });
 
-                const getParagraph = results.article.wiki_content.filter((para: any) => para.type === "paragraph-type");
+                const getParagraph: Record<string, any>[] = results.article.wiki_content.filter((para: any) => para.type === "paragraph-type");
 
                 // Set state based on the results
+                setIsExist(true);
                 setLoading(false);
                 setArticle({...results.article, wiki_content: []});
                 setContent(results.article.wiki_content);
@@ -59,7 +63,8 @@ function WikiPage() {
                 setMenuContent(getParagraph);
 
             } catch(error) {
-                console.log("Sorry, the article you're looking for is empty.");
+                setIsExist(false);
+                setLoading(false);
             }
         }
 
@@ -70,8 +75,12 @@ function WikiPage() {
         <>
             <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent}  />
             <Loading show={loading} position={"static"} />
+            <Activity mode={!isExist && isExist !== undefined ? "visible" : "hidden"}>
+                <NotFound />
+            </Activity>
 
-            <div className="mt-4 mb-[6em] flex flex-col items-center">
+            <div className={`mt-4 mb-[6em] flex-col items-center
+                            ${isExist ? "flex" : "hidden"}`}>
                 <h2 className="text-center">
                     <span className="highlight">{article.title}</span>
                 </h2>
@@ -82,12 +91,12 @@ function WikiPage() {
                 </div>
             </div>
 
-            <div
-                style={{
-                    borderBottom: content[0]?.type.includes("heading-type") && "0px" ||
-                    content[0]?.type.includes("table-type") && "0px"
-                }}
-                className="box mx-3 p-5 border">
+            <div className={`box mx-3 p-5 border
+                            ${isExist ? "block" : "hidden"}
+                            ${
+                                content[0]?.type.includes("heading-type") && "border-b-0" ||
+                                content[0]?.type.includes("table-type") && "border-b-0"
+                            }`}>
                 <img
                     src={article.cover || null}
                     alt={article.title}

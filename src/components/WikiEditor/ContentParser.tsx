@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactElement } from "react";
 import "../../css/DynamicPage.css";
 
 interface propTypes {
@@ -10,21 +10,22 @@ interface propTypes {
     menuContent: Record<string, any>[];
 }
 
-function ContentParser({ index, content, block, setImageContainer, setShowed, menuContent=[] }: propTypes) {
+function ContentParser({ index, content, block, setImageContainer, setShowed, menuContent=[] }: propTypes): ReactElement {
 
-    const prevBlock = content[index - 1];
-    const nextBlock = content[index + 1];
+    const prevBlock: Record<string, any> = content[index - 1];
+    const nextBlock: Record<string, any> = content[index + 1];
 
-    const sameCheck = (block: Record<string, any>, type: string) => {
+    const sameCheck = (block: Record<string, any>, type: string): boolean => {
         return block?.type === type ? true : false;
     }
 
-    const differCheck = (block: Record<string, any>, type: string) => {
+    const differCheck = (block: Record<string, any>, type: string): boolean => {
         if (!block) return true;
         return block?.type !== type ? true : false;
     }
 
     switch(block.type) {
+        
         case "heading-type":
             return (
                 <div className={`box mx-3 py-3 flex flex-col items-center justify-center gap-2 border-l border-r
@@ -37,7 +38,6 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                     </h3>
                 </div>
             );
-            break;
 
         case "table-type":
             return (
@@ -47,7 +47,6 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                     <p className="w-full font-normal text-[.9em]">{block.content_data}</p>
                 </div>
             );
-            break;
 
         case "paragraph-type":
             if (menuContent.length === 0) return (
@@ -57,7 +56,7 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                 </div>
             );
             
-            for (let i = 0; i < menuContent.length; i++) {
+            for (let i: number = 0; i < menuContent.length; i++) {
                 if (block === menuContent[i]) {
                     return (
                         <div
@@ -69,7 +68,7 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                     );
                 }
             }
-            break;
+            return (<></>);
 
         case "image-type":
             return (
@@ -91,10 +90,10 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                     <p className="text-[.7em]">{block.description}</p>
                 </div>
             );
-            break;
 
         default:
-            return null;
+            return (<></>)
+
     }
 }
 

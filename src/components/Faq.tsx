@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import "../css/Faq.css";
 
-function Faq() {
+function Faq(): ReactElement {
     const [selectedValue, setSelectedValue] = useState<null | string>(null);
 
     const showAnswer = (value: string) => {

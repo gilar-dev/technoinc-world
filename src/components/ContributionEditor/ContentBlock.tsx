@@ -1,5 +1,6 @@
 import BlockControls from "./BlockControls";
 import "../../css/DynamicPage.css";
+import { ReactElement } from "react";
 
 interface propTypes {
     index: number;
@@ -11,7 +12,7 @@ interface propTypes {
     onChangeHandler: (index: number, key: string, target: any, func: React.Dispatch<React.SetStateAction<any[]>>) => void;
 }
 
-function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMode=false, setToDelete }: propTypes) {
+function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMode=false, setToDelete }: propTypes): ReactElement {
     
     switch (block.type) {
 
@@ -27,7 +28,6 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>
             );
-            break;
 
         // Table type content
         case "table-type":
@@ -48,7 +48,6 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                     <BlockControls currentIndex={index} addButton={true} schema={schema} setSchema={setSchema} />
                 </div>  
             );
-            break;
 
         // Paragraph type content
         case "paragraph-type":
@@ -67,7 +66,6 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>
             );
-            break;
 
         // Image type content
         case "image-type":
@@ -83,11 +81,11 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                         accept="image/*"
                         style={{display: "none"}}
                         onChange={e => {
-                            const selectedFile = e.target.files?.[0];
+                            const selectedFile: File | undefined = e.target.files?.[0];
                             if (!selectedFile) return;
 
                             // Set the image path to accessable on browser
-                            const urlPath = URL.createObjectURL(selectedFile);
+                            const urlPath: string = URL.createObjectURL(selectedFile);
 
                             // If true, current block has a value already
                             if (block?.prev_url === "") onChangeHandler(index, "prev_url", block.url, setSchema);
@@ -120,10 +118,9 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} editMode={true} setToDelete={setToDelete} />
                 </div>
             );
-            break;
 
         default:
-            return null;
+            return (<></>);
     }
 }
 
