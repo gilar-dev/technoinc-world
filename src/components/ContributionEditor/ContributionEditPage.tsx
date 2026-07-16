@@ -1,11 +1,15 @@
 import Menu from "../Menu";
 import ContentBlock from "./ContentBlock"; 
 import ContentToolbar from "./ContentToolbar";
+import Loading from "../Loading";
 import NotFound from "../NotFound";
 import Footer from "../Footer";
 import { Activity, useState, useEffect, ReactElement } from "react";
 import { Link, Params, useParams } from "react-router-dom";
-import { handleInputChange, getCategory, updateArticle, deleteCloudAssets, deleteArticleWiki } from "./ContributionUtils";
+import { toast, ToastContainer } from "react-toastify";
+import { handleInputChange, getCategory, deleteCloudAssets, deleteArticleWiki } from "./ContributionUtils";
+import updateArticle from "../../utils/updateUtils";
+import { getCategoryById } from "../../utils/articleUtils";
 import "../../css/DynamicPage.css";
 
 function ContributionEditPage(): ReactElement {
@@ -16,8 +20,9 @@ function ContributionEditPage(): ReactElement {
     // Set state variables
     const [data, setData] = useState<Record<string, any>>({}); // Article informations
     const [schema, setSchema] = useState<Record<string, any>[]>([]); // Array of article schema to be edited
-    const [isExist, setIsExist] = useState<boolean>(false); // Check if article id is exist
-    const [toDelete, setToDelete] = useState<Record<string, any>[]>([]); // Array of assets to be deleted
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isExist, setIsExist] = useState<boolean | undefined>(undefined); // Check if article id is exist
+    const [toDelete, setToDelete] = useState<string[]>([]); // Array of assets to be deleted
     const [deleteInput, setDeleteInput] = useState<string>(""); // Confirmation before deleting
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false); // Loading after pressing delete button
     const [deleteContainer, setDeleteContainer] = useState<boolean>(false); // Show delete confirmation container
@@ -33,7 +38,6 @@ function ContributionEditPage(): ReactElement {
                 rawData[i] = { ...rawData[i], raw_file: "", prev_url: "" }
             }
         }
-
         return rawData;
     }
 
@@ -79,7 +83,11 @@ function ContributionEditPage(): ReactElement {
                 </Link>
             </div>
 
-            {!isExist && <NotFound />}
+            <Loading show={loading} />
+
+            <Activity mode={isExist !== undefined && !isExist ? "visible" : "hidden"}>
+                <NotFound />
+            </Activity>
 
             <div className={`w-full p-3 flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
                             ${isExist ? "flex" : "hidden"}
@@ -110,7 +118,6 @@ function ContributionEditPage(): ReactElement {
                         schema={schema}
                         setSchema={setSchema}
                         onChangeHandler={handleInputChange}
-                        editMode={true}
                         setToDelete={setToDelete} />
                 ))}
             </div>
@@ -118,11 +125,16 @@ function ContributionEditPage(): ReactElement {
             <button
                 title="Update article"
                 onClick={async () => {
-                    const update: any = await updateArticle(getCategory(splitedId[splitedId.length - 1]).toLowerCase(), data.id, schema);
-
+                    setLoading(true);
+                    const update: any = await updateArticle(contentId as string, getCategoryById(contentId as string), {
+                        schema: schema,
+                        pendingDelete: toDelete
+                    });
                     if (update) {
-                        window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}/${contentId}`);
-                    }
+                        alert("Update Success!");
+                        setLoading(false);
+                        window.location.replace(`/wiki/Category:${getCategoryById(contentId as string, true)}/${contentId}`);
+                    } else setLoading(false);
                 }}
                 className={`${schema.length === 0 ? "hidden" : "block"}
                             w-[40%] mt-5 mx-auto p-2 font-bold text-[1.2em] block rounded-[5px]

@@ -1,16 +1,19 @@
 import { ReactElement } from "react";
 import { addNewTable, moveContent, deleteContent } from "./ContributionUtils";
 
+type Schema = Record<string, any>[];
+type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
 interface propTypes {
     currentIndex: number;
     addButton?: boolean;
     editMode?: boolean;
-    schema: Record<string, any>[];
-    setSchema: React.Dispatch<React.SetStateAction<any[]>>;
-    setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
+    schema: Schema;
+    setSchema: ReactSetState<any[]>;
+    setToDelete?: ReactSetState<any[]> | undefined;
 }
 
-function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete }: propTypes): ReactElement {
+function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete=undefined }: propTypes): ReactElement {
 
     return (
         <div className="w-full flex justify-center items-center gap-1
@@ -41,13 +44,15 @@ function BlockControls({ currentIndex, addButton=false, editMode=false, schema, 
             </button>
 
             <span className="ml-auto mr-auto font-bold text-black/20">
-                {currentIndex as number + 1}
+                {currentIndex + 1}
             </span>
 
             <button
                 title="Delete content"
                 onClick={() => {
-                    if (editMode) setToDelete?.((prev: any) => [...prev, schema[currentIndex as number]]);
+                    if (editMode && schema[currentIndex]?.prev_url !== undefined) {
+                        setToDelete?.((prev: Record<string, any>[]) => [...prev, schema[currentIndex].public_id]);
+                    }
                     deleteContent(currentIndex, setSchema);
                 }}
                 className="delete-btn border-[rgb(255,0,0)] bg-[rgb(255,0,0)]/50 hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">

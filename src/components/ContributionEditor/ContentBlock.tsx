@@ -6,13 +6,12 @@ interface propTypes {
     index: number;
     block: Record<string, any>;
     schema: any[];
-    editMode?: boolean;
     setSchema: React.Dispatch<React.SetStateAction<any[]>>;
     setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
     onChangeHandler: (index: number, key: string, target: any, func: React.Dispatch<React.SetStateAction<any[]>>) => void;
 }
 
-function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMode=false, setToDelete }: propTypes): ReactElement {
+function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToDelete }: propTypes): ReactElement {
     
     switch (block.type) {
 
@@ -92,6 +91,10 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
 
                             onChangeHandler(index, "url", urlPath, setSchema);
                             onChangeHandler(index, "raw_file", selectedFile, setSchema);
+
+                            if (block?.prev_url !== undefined) {
+                                setToDelete?.((prev: string[]) => [...prev, block.public_id]);
+                            }
                         }} />
                     <label
                         htmlFor={`image-input-${index}`}
@@ -104,6 +107,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, editMo
                             // Restore the default image if it's changed
                             onChangeHandler(index, "url", block?.prev_url, setSchema);
                             onChangeHandler(index, "prev_url", "", setSchema);
+                            setToDelete?.((prev: string[]) => [...prev].toSpliced([...prev].indexOf(block.public_id), 1));
                         }}
                         className={`${block?.prev_url !== undefined && block?.prev_url !== "" ? "block" : "hidden"}
                                     my-3 p-3 rounded-full border-none bg-transparent transition-colors duration-150 ease-in-out
