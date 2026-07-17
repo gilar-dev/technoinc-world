@@ -4,7 +4,8 @@ import ContentBlock from "./ContentBlock";
 import ContentToolbar from "./ContentToolbar";
 import ModifyBox from "./ModifyBox";
 import { useState, useEffect, ReactElement } from "react";
-import { handleInputChange, generateId, checkAllValues } from "./ContributionUtils";
+import { handleInputChange, checkAllValues } from "./ContributionUtils";
+import { generateId } from "../../utils/articleUtils";
 import "../../css/DynamicPage.css";
 import Loading from "../Loading";
 

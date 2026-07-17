@@ -1,3 +1,5 @@
+import { getCategoryById } from "../../utils/articleUtils";
+
 const API = import.meta.env.VITE_API;
 
 // Handle value from article inputs
@@ -69,48 +71,6 @@ export const deleteContent = (
     setSchema: React.Dispatch<React.SetStateAction<any[]>>
 ): void => {
     setSchema((prev) => ([...prev].toSpliced(index, 1)));
-}
-
-// Generate article id
-export const generateId = (
-    title: string,
-    category: string
-): string => {
-    const modifiedTitle: string = title
-    .replaceAll(" ", "-")
-    .replaceAll("'", "")
-    .toLowerCase();
-
-    const idNames: Record<string, any> = {
-        Civilization: "civ" ,
-        Character: "char" ,
-        Ideology: "ide" ,
-        Organization: "org" ,
-        Party: "party" ,
-        Town: "town" ,
-        Lore: "lore" 
-    };
-
-    return modifiedTitle + "-" + idNames[category];
-}
-
-// Get article category from category shortcut
-export const getCategory = (
-    cat: string,
-    plural: boolean = false
-): string => {
-
-    const categories: Record<string, any> = {
-        char:  !plural ? "Character"    : "Characters",
-        civ:   !plural ? "Civilization" : "Civilizations",
-        ide:   !plural ? "Ideology"     : "Ideologies",
-        lore:  !plural ? "Lore"         : "Lores",
-        org:   !plural ? "Organization" : "Organizations",
-        party: !plural ? "Party"        : "Parties",
-        town:  !plural ? "Town"         : "Towns"
-    }
-
-    return categories[cat] === undefined ? " " : categories[cat];
 }
 
 // Check if article id existence
@@ -272,142 +232,12 @@ export const checkAllValues = async (
             alert("Your article is sucessfully uploaded!");
 
             const splitedId: string[] = article.id.split("-");
-            window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}/${article.id}`);
+            window.location.replace(`/wiki/Category:${getCategoryById(splitedId[splitedId.length - 1], true)}/${article.id}`);
 
             return true;
 
         } catch (error) {
             console.error(error);
         }
-    }
-}
-
-// Sterilized user input to prevent XSS probability
-export const sterilizedWord = (word: string): string => {
-
-    if (!word) return "";
-
-    const replaced = word.toLowerCase().trim()
-        .replace(/&/g, "&amp")
-        .replace(/</g, "&lt")
-        .replace(/>/g, "&gt")
-        .replace(/"/g, "&quot")
-        .replace(/'/g, "&#x27")
-        .replace(/\//g, "&#x2f")
-
-    return replaced.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-}
-
-// Update article after edited
-export const updateArticle = async (
-    category: string,
-    id: string,
-    schema: Record<string, any>[]
-): Promise<any> => {
-
-    const images: Record<string, any>[] = schema.filter(img => img.type === "image-type");
-    const cloneSchema: Record<string, any>[] = [...schema];
-
-    if (images.length > 0) {
-
-        const imagesToDelete: Record<string, any>[] = [];
-        for (let i: number = 0; i < images.length; i++) {
-
-            if (images[i].prev_url !== undefined && images[i]?.prev_url !== "") imagesToDelete.push(images[i]);
-        }
-
-        deleteCloudAssets("", imagesToDelete);
-
-        const category: string[] = id.split("-");
-        for (let i: number = 0; i < schema.length; i++) {
-
-            const image = schema[i];
-            if (image.type === "image-type" && image?.prev_url !== undefined && image?.prev_url !== "") {
-
-                const getCloudURL: Record<string, any> = await uploadToCloudStorage(image.raw_file, getCategory(category[category.length - 1])) as Record<string, any>;
-
-                if (getCloudURL) {
-                    cloneSchema[i]["url"] = getCloudURL.secure_url;
-                    cloneSchema[i]["public_id"] = getCloudURL.public_id;
-                    delete cloneSchema[i]["raw_file"];
-                    delete cloneSchema[i]["prev_url"];
-                }
-            }
-        }
-    }
-
-    // Create final article data before updating
-    const finalArticleUpdate: Record<string, any> = {
-        id: id,
-        wiki_content: cloneSchema
-    }
-
-    try {
-        // Fetch request to backend API endpoint to update
-        const response: Response = await fetch(`${API}/api/v1/contribution/update/${category}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(finalArticleUpdate)
-        })
-        const results: Record<string, any> = await response.json();
-
-        alert("Successfully updated article!")
-        return true;
-
-    } catch (error) {
-        console.error(error);
-        return false;
-    }
-}
-
-// Delete cloud storage assets based on article images
-export const deleteCloudAssets = async (coverPublicId: string="", assets: Record<string, any>[]): Promise<any> => {
-    
-    const imagePublicIds: string[] = [];
-    if (coverPublicId !== "") imagePublicIds.push(coverPublicId);
-
-    for (let i = 0; i < assets.length; i++) {
-        imagePublicIds.push(assets[i].public_id);
-    }
-
-    if (imagePublicIds.length > 0) {
-
-        const publicIdsJSON: Record<string, any> = { public_ids: imagePublicIds }
-
-        try {
-            const response: Response = await fetch(`${API}/api/v1/cloudinary/delete`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(publicIdsJSON)
-            });
-            const result: Record<string, any> = await response.json();
-
-            if (!response.ok) return;
-
-            return result;
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-}
-
-// Delete the article wiki
-export const deleteArticleWiki = async (category: string, article_id: string): Promise<any> => {
-    try {
-        const response: Response = await fetch(`${API}/api/v1/wiki/${category}/${article_id}`, {
-            method: "DELETE"
-        })
-
-        if (!response.ok) throw new Error(`Error: ${response}`);
-
-        return true;
-
-    } catch (error) {
-        console.error(error);
     }
 }

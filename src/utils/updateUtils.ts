@@ -1,6 +1,6 @@
 import { Schema, PublicID, ResObject } from "./typesUtils";
 import { checkContentValues } from "./articleUtils";
-import { uploadPackage, uploadToCloud, deleteAssets } from "./cloudStorageUtils";
+import { uploadPackage, uploadToCloud, deleteAssets } from "./storageUtils";
 import { updateArticleWiki } from "./databaseUtils";
 
 // Add essential configurations
@@ -10,7 +10,7 @@ interface Config {
 }
 
 // Main export function to validate all things before updating
-export default async function updateArticle(id: string, category: string, config: Config): Promise<any> {
+export default async function updateArticleInit(id: string, category: string, config: Config): Promise<any> {
 
     const cloneSchema: Schema = structuredClone<Schema>(config.schema); // Store schema by cloning it
 

@@ -7,10 +7,11 @@ import Footer from "../Footer";
 import { Activity, useState, useEffect, ReactElement } from "react";
 import { Link, Params, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { handleInputChange, getCategory, deleteCloudAssets, deleteArticleWiki } from "./ContributionUtils";
-import updateArticle from "../../utils/updateUtils";
+import { handleInputChange } from "./ContributionUtils";
+import updateArticleInit from "../../utils/updateUtils";
 import { getCategoryById } from "../../utils/articleUtils";
 import "../../css/DynamicPage.css";
+import deleleArticleInit from "../../utils/deleteUtils";
 
 function ContributionEditPage(): ReactElement {
 
@@ -45,7 +46,7 @@ function ContributionEditPage(): ReactElement {
         // Get wiki article from db
         const fetchData = async () => {
             const API: string = import.meta.env.VITE_API;
-            const category: string = getCategory(splitedId[splitedId.length - 1]).toLowerCase();
+            const category: string = getCategoryById(splitedId[splitedId.length - 1]).toLowerCase();
 
             try {
                 // Get article from category & article is
@@ -82,8 +83,6 @@ function ContributionEditPage(): ReactElement {
                     <i className="fa-solid fa-xmark"></i>
                 </Link>
             </div>
-
-            <Loading show={loading} />
 
             <Activity mode={isExist !== undefined && !isExist ? "visible" : "hidden"}>
                 <NotFound />
@@ -122,16 +121,17 @@ function ContributionEditPage(): ReactElement {
                 ))}
             </div>
 
+            <Loading show={loading} position={"static"} />
+
             <button
                 title="Update article"
                 onClick={async () => {
                     setLoading(true);
-                    const update: any = await updateArticle(contentId as string, getCategoryById(contentId as string), {
+                    const update: any = await updateArticleInit(contentId as string, getCategoryById(contentId as string), {
                         schema: schema,
                         pendingDelete: toDelete
                     });
                     if (update) {
-                        alert("Update Success!");
                         setLoading(false);
                         window.location.replace(`/wiki/Category:${getCategoryById(contentId as string, true)}/${contentId}`);
                     } else setLoading(false);
@@ -186,13 +186,21 @@ function ContributionEditPage(): ReactElement {
                                 if (deleteInput !== contentId) return;
                                 if (deleteLoading) return;
 
-                                setDeleteLoading(true);
-                                await deleteCloudAssets(data.public_id, schema.filter(item => item.type === "image-type"));
-                                await deleteArticleWiki(getCategory(splitedId[splitedId.length - 1]).toLowerCase(), contentId);
+                                setLoading(true)
+                                const deleteResult: any = await deleleArticleInit(contentId, getCategoryById(splitedId[splitedId.length - 1]).toLowerCase());
 
-                                setDeleteLoading(false);
-                                setDeleteContainer(false);
-                                window.location.replace(`/wiki/Category:${getCategory(splitedId[splitedId.length - 1], true)}`);
+                                if (deleteResult) {
+                                    alert("Delete Success!");
+                                    setLoading(false);
+                                    setDeleteLoading(false);
+                                    setDeleteContainer(false);
+                                    window.location.replace(`/wiki/Category:${getCategoryById(splitedId[splitedId.length - 1], true)}`);
+                                } else {
+                                    alert("Delete Failed!");
+                                    setLoading(false);
+                                    setDeleteLoading(false);
+                                    setDeleteContainer(false);
+                                }
                             }}
                             className={`${deleteInput !== contentId && "cursor-not-allowed"} border-gray-300 bg-gray-300
                                         ${deleteInput === contentId && "border-red-700 bg-red-500 hover:bg-red-400"} transition-colors duration-150 ease-in-out`}>Delete Article</button>

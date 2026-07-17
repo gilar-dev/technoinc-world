@@ -2,6 +2,7 @@
 export type Schema = ArticleObject<string, any>[];
 export type PublicID = string[];
 export type ResObject = Record<string, any>;
+export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
 // Export interfaces
 export interface UploadConfig {
