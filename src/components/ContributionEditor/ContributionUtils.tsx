@@ -1,22 +1,7 @@
 import { getCategoryById } from "../../utils/articleUtils";
+import { checkArticleId } from "../../utils/databaseUtils";
 
 const API = import.meta.env.VITE_API;
-
-// Handle value from article inputs
-export const handleInputChange = (
-    index: number,
-    property: string,
-    value: Record<string, any>,
-    setSchema: React.Dispatch<React.SetStateAction<any[]>>
-): any => {
-    setSchema(prev => {
-        const updatedSchema: Record<string, any>[] = [...prev];
-
-        updatedSchema[index][property] = value;
-
-        return updatedSchema;
-    });
-}
 
 // Add new content to list of content blocks
 export const addNewContent = (
@@ -73,27 +58,6 @@ export const deleteContent = (
     setSchema((prev) => ([...prev].toSpliced(index, 1)));
 }
 
-// Check if article id existence
-export const checkArticleId = async (
-    category: string,
-    articleId: string
-): Promise<boolean | void> => {
-
-    if (articleId === "" || category === "") return;
-
-    try {
-        const getId: Response = await fetch(`${API}/api/v1/wiki/${category}/${articleId}/exist`);
-
-        if (!getId.ok) return console.error(getId);
-            
-        const result: Record<string, any> = await getId.json();
-
-        return result.is_exist;
-
-    } catch(error) {
-        console.error(error);
-    }
-}
 
 // Upload selected image to cloud storage
 export const uploadToCloudStorage = async (
@@ -135,7 +99,7 @@ export const checkAllValues = async (
     // Check if article contains images
     let containImages: boolean = false;
     // Check article id existence
-    const checkId: boolean = await checkArticleId(article.category, article.id) as boolean;
+    const checkId: boolean = await checkArticleId(article.id, article.category);
 
     if (article.title === "") return alert("Article title can't be empty");
     if (checkId) return alert("Article id is already exist!");

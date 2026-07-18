@@ -1,6 +1,6 @@
-import { Schema, ResObject } from "./typesUtils";
-import { deleteAssets } from "./storageUtils";
-import { getArticleWiki, deleteArticleWiki } from "./databaseUtils";
+import { Schema, ResObject } from "../typesUtils";
+import { deleteAssets } from "../storageUtils";
+import { getArticleWiki, deleteArticleWiki } from "../databaseUtils";
 
 export default async function deleleArticleInit(id: string, category: string): Promise<any> {
 

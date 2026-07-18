@@ -1,42 +1,47 @@
+// Sub components
 import Menu from "../Menu";
-import ContentBlock from "./ContentBlock"; 
-import ContentToolbar from "./ContentToolbar";
 import Loading from "../Loading";
 import NotFound from "../NotFound";
+import ContentBlock from "./Components/ContentBlock"; 
+import ContentToolbar from "./Components/ContentToolbar";
 import Footer from "../Footer";
+
+// Supporting utilites
+import { handleInputChange } from "../../utils/articleUtils";
+import { PublicID, ResObject } from "../../utils/typesUtils";
+import { getCategoryById } from "../../utils/articleUtils";
+import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
+import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
+import "../../css/DynamicPage.css";
+
+// React built-in utilities
 import { Activity, useState, useEffect, ReactElement } from "react";
 import { Link, Params, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { handleInputChange } from "./ContributionUtils";
-import updateArticleInit from "../../utils/updateUtils";
-import { getCategoryById } from "../../utils/articleUtils";
-import "../../css/DynamicPage.css";
-import deleleArticleInit from "../../utils/deleteUtils";
+import "react-toastify/dist/ReactToastify.css";
 
 function ContributionEditPage(): ReactElement {
 
-    const { contentId }: Params<string> = useParams();
+    const { contentId }: Params<string> = useParams(); // Get dynamic 'contentid' url
     const splitedId: string[] = (contentId as string).split("-"); // Split text with '-' separator
 
     // Set state variables
-    const [data, setData] = useState<Record<string, any>>({}); // Article informations
-    const [schema, setSchema] = useState<Record<string, any>[]>([]); // Array of article schema to be edited
+    const [data, setData] = useState<ResObject>({}); // Article informations
+    const [schema, setSchema] = useState<ResObject[]>([]); // Array of article schema to be edited
     const [loading, setLoading] = useState<boolean>(false);
     const [isExist, setIsExist] = useState<boolean | undefined>(undefined); // Check if article id is exist
-    const [toDelete, setToDelete] = useState<string[]>([]); // Array of assets to be deleted
+    const [toDelete, setToDelete] = useState<PublicID>([]); // Array of assets to be deleted
     const [deleteInput, setDeleteInput] = useState<string>(""); // Confirmation before deleting
-    const [deleteLoading, setDeleteLoading] = useState<boolean>(false); // Loading after pressing delete button
     const [deleteContainer, setDeleteContainer] = useState<boolean>(false); // Show delete confirmation container
 
     // Get the site main theme from browser local storage
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
-    // Modify image type content from db
-    const modifiedSchema = (rawData: Record<string, any>[]) => {
-        for (let i: number = 0; i < rawData.length; i++) {
-
-            if (rawData[i].type === "image-type") {
-                rawData[i] = { ...rawData[i], raw_file: "", prev_url: "" }
+    // Modify image type content from database
+    const modifiedSchema = (rawData: ResObject[]) => {
+        for (let index: number = 0; index < rawData.length; index++) {
+            if (rawData[index].type === "image-type") {
+                rawData[index] = { ...rawData[index], raw_file: "", prev_url: "" }
             }
         }
         return rawData;
@@ -51,16 +56,20 @@ function ContributionEditPage(): ReactElement {
             try {
                 // Get article from category & article is
                 const response: Response = await fetch(`${API}/api/v1/wiki/${category}/${contentId}`)
-                const result: Record<string, any> = await response.json();
-                const articleFront: Record<string, any> = { ...result.article };
+                if (!response.ok) throw new Error(`${response}`);
+
+                const result: ResObject = await response.json();
+                const articleFront: ResObject = { ...result.article };
                 delete articleFront["wiki_content"];
 
+                // Set data from fetch result to state variables
                 setIsExist(true);
                 setData(articleFront);
                 setSchema(modifiedSchema(result.article.wiki_content));
 
             } catch (error) {
                 setIsExist(false);
+                console.log(error);
             }
         }
 
@@ -76,18 +85,15 @@ function ContributionEditPage(): ReactElement {
     return (
         <>
             <Menu wikiTitle="Contribution" setLight={setLight} />
-
             <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-0 text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
                 <Link title="Exit edit mode" to="/contribution" replace className="cursor-pointer text-white">
                     <i className="fa-solid fa-xmark"></i>
                 </Link>
             </div>
-
             <Activity mode={isExist !== undefined && !isExist ? "visible" : "hidden"}>
                 <NotFound />
             </Activity>
-
             <div className={`w-full p-3 flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
                             ${isExist ? "flex" : "hidden"}
                             ${light ? "bg-white/70" : "text-white bg-gray-700/50"}`}>
@@ -99,7 +105,6 @@ function ContributionEditPage(): ReactElement {
                 <p>{data.id}</p>
                 <p className="text-[.8em]">{data.category}</p>
             </div>
-
             <div className={`mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                             [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                             [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
@@ -184,7 +189,7 @@ function ContributionEditPage(): ReactElement {
                         <button
                             onClick={async () => {
                                 if (deleteInput !== contentId) return;
-                                if (deleteLoading) return;
+                                if (loading) return;
 
                                 setLoading(true)
                                 const deleteResult: any = await deleleArticleInit(contentId, getCategoryById(splitedId[splitedId.length - 1]).toLowerCase());
@@ -192,13 +197,13 @@ function ContributionEditPage(): ReactElement {
                                 if (deleteResult) {
                                     alert("Delete Success!");
                                     setLoading(false);
-                                    setDeleteLoading(false);
+                                    setLoading(false);
                                     setDeleteContainer(false);
                                     window.location.replace(`/wiki/Category:${getCategoryById(splitedId[splitedId.length - 1], true)}`);
                                 } else {
                                     alert("Delete Failed!");
                                     setLoading(false);
-                                    setDeleteLoading(false);
+                                    setLoading(false);
                                     setDeleteContainer(false);
                                 }
                             }}

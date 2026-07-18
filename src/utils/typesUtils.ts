@@ -14,6 +14,7 @@ export interface ArticleConfig {
     id: string;
     title: string;
     category: string;
+    raw_cover: File | undefined; // Temporary
     cover: string;
     public_id: string;
     wiki_content: ResObject[];

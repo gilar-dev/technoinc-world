@@ -1,7 +1,7 @@
-import Loading from "../Loading";
+import Loading from "../../Loading";
 import { useState, useEffect, ReactElement } from "react";
 import { Link } from "react-router-dom";
-import { sterilizedWord } from "../../utils/articleUtils";
+import { sterilizedWord } from "../../../utils/articleUtils";
 
 interface propTypes {
     search: boolean;

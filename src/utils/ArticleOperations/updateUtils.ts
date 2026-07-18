@@ -1,7 +1,7 @@
-import { Schema, PublicID, ResObject } from "./typesUtils";
-import { checkContentValues } from "./articleUtils";
-import { uploadPackage, uploadToCloud, deleteAssets } from "./storageUtils";
-import { updateArticleWiki } from "./databaseUtils";
+import { Schema, PublicID, ResObject } from "../typesUtils";
+import { checkContentValues, filtration } from "../articleUtils";
+import { uploadPackage, uploadToCloud, deleteAssets } from "../storageUtils";
+import { updateArticleWiki } from "../databaseUtils";
 
 // Add essential configurations
 interface Config {
@@ -52,17 +52,5 @@ async function getImagesToUpload(category: string, schema: Schema): Promise<any>
             schema[index].public_id = upload.public_id;
         }
     }
-    return schema;
-}
-
-// Delete unecessary properties from image type content
-function filtration(schema: Schema): Schema {
-    for (let index: number = 0; index < schema.length; index++) {
-        if (schema[index].type === "image-type") {
-            delete schema[index]["raw_file"];
-            delete schema[index]["prev_url"];
-        }
-    }
-    // Return filtrated schema
     return schema;
 }

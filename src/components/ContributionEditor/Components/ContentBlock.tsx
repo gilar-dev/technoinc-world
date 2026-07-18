@@ -1,6 +1,7 @@
 import BlockControls from "./BlockControls";
-import "../../css/DynamicPage.css";
+import "../../../css/DynamicPage.css";
 import { ReactElement } from "react";
+import { ResObject, SetState } from "../../../utils/typesUtils";
 
 interface propTypes {
     index: number;
@@ -8,7 +9,7 @@ interface propTypes {
     schema: any[];
     setSchema: React.Dispatch<React.SetStateAction<any[]>>;
     setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
-    onChangeHandler: (index: number, key: string, target: any, func: React.Dispatch<React.SetStateAction<any[]>>) => void;
+    onChangeHandler: (index: number, key: string, target: any, func: SetState<ResObject[]>) => void;
 }
 
 function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToDelete }: propTypes): ReactElement {

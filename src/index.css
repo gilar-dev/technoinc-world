@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 
 :root {
+    /* Self local variables */
     --light-theme-color: rgb(235, 225, 210);
     --dark-theme-color: rgb(20, 30, 50);
 }

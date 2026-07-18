@@ -1,16 +1,15 @@
 import { ReactElement } from "react";
-import { addNewTable, moveContent, deleteContent } from "./ContributionUtils";
-
-type Schema = Record<string, any>[];
-type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
+import { addNewTable, moveContent, deleteContent } from "../ContributionUtils";
+import { Schema, PublicID, ResObject, SetState } from "../../../utils/typesUtils";
+import "../../../css/DynamicPage.css";
 
 interface propTypes {
     currentIndex: number;
     addButton?: boolean;
     editMode?: boolean;
     schema: Schema;
-    setSchema: ReactSetState<any[]>;
-    setToDelete?: ReactSetState<any[]> | undefined;
+    setSchema: SetState<ResObject[]>;
+    setToDelete?: SetState<PublicID>;
 }
 
 function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete=undefined }: propTypes): ReactElement {
@@ -51,7 +50,7 @@ function BlockControls({ currentIndex, addButton=false, editMode=false, schema, 
                 title="Delete content"
                 onClick={() => {
                     if (editMode && schema[currentIndex]?.prev_url !== undefined) {
-                        setToDelete?.((prev: Record<string, any>[]) => [...prev, schema[currentIndex].public_id]);
+                        setToDelete?.((prev: PublicID) => [...prev, schema[currentIndex].public_id]);
                     }
                     deleteContent(currentIndex, setSchema);
                 }}
