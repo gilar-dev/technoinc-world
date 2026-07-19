@@ -3,6 +3,7 @@ export type Schema = ArticleObject<string, any>[];
 export type PublicID = string[];
 export type ResObject = Record<string, any>;
 export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+export type MoveDirections = "up" | "down";
 
 // Export interfaces
 export interface UploadConfig {
@@ -17,7 +18,8 @@ export interface ArticleConfig {
     raw_cover: File | undefined; // Temporary
     cover: string;
     public_id: string;
-    wiki_content: ResObject[];
+    visited: number;
+    wiki_content: Schema;
 }
 
 // Export essential variables

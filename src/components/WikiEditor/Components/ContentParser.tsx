@@ -1,19 +1,20 @@
+import { Schema, ResObject, SetState } from "../../../utils/typesUtils";
 import { ReactElement } from "react";
-import "../../css/DynamicPage.css";
+import "../../../css/DynamicPage.css";
 
-interface propTypes {
+interface PropTypes {
     index: number;
-    content: Record<string, any>[];
-    block: Record<string, any>;
-    setImageContainer: React.Dispatch<React.SetStateAction<boolean>>;
-    setShowed: React.Dispatch<React.SetStateAction<string>>;
-    menuContent: Record<string, any>[];
+    content: Schema;
+    block: ResObject;
+    menuContent?: Schema;
+    setImageContainer: SetState<boolean>;
+    setShowed: SetState<string>;
 }
 
-function ContentParser({ index, content, block, setImageContainer, setShowed, menuContent=[] }: propTypes): ReactElement {
+function ContentParser({ index, content, block, menuContent=[], setImageContainer, setShowed }: PropTypes): ReactElement {
 
-    const prevBlock: Record<string, any> = content[index - 1];
-    const nextBlock: Record<string, any> = content[index + 1];
+    const prevBlock: ResObject = content[index - 1];
+    const nextBlock: ResObject = content[index + 1];
 
     const sameCheck = (block: Record<string, any>, type: string): boolean => {
         return block?.type === type ? true : false;
@@ -56,11 +57,11 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                 </div>
             );
             
-            for (let i: number = 0; i < menuContent.length; i++) {
-                if (block === menuContent[i]) {
+            for (let index: number = 0; index < menuContent.length; index++) {
+                if (block === menuContent[index]) {
                     return (
                         <div
-                            id={`content${i + 1}`}
+                            id={`content${index + 1}`}
                             className="mx-3 my-10">
                             <h3 className="font-medium">{block.title}</h3>
                             <p className="mt-3 font-normal leading-7 text-[.9em]">{block.data}</p>
@@ -78,11 +79,11 @@ function ContentParser({ index, content, block, setImageContainer, setShowed, me
                         setImageContainer(true);
                     }}
                     className="p-3 flex flex-col items-center justify-center gap-1">
-                    <div className="w-full overflow-hidden cursor-pointer relative">
+                    <div className="w-full overflow-hidden flex flex-col items-center cursor-pointer relative">
                         <img
                             src={block.url || null}
-                            alt={block.description}
-                            className="w-full max-h-60 transition-transform ease-in-out duration-500 hover:scale-[110%]" />
+                            alt={block.description}  
+                            className="max-w-[90%] max-h-100 transition-transform ease-in-out duration-500 hover:scale-[110%]" />
                         <span className="p-1.25 text-[10px] absolute bottom-2 right-2 self-end rounded-full text-white bg-black/50">
                             <i className="fa-regular fa-clone"></i>
                         </span>

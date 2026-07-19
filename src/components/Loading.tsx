@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import "../css/DynamicPage.css";
 
 interface PropTypes {
@@ -7,10 +7,6 @@ interface PropTypes {
 }
 
 function Loading({ show=false, position="absolute" }:PropTypes): ReactElement {
-
-    useEffect(() => {
-        document.body.style.overflow = show ? "hidden" : "visible";
-    }, [show]);
 
     return (
         <div className={`w-full h-full mt-5 justify-center items-center top-0 z-100

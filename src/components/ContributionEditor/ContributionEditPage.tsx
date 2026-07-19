@@ -7,9 +7,8 @@ import ContentToolbar from "./Components/ContentToolbar";
 import Footer from "../Footer";
 
 // Supporting utilites
-import { handleInputChange } from "../../utils/articleUtils";
-import { PublicID, ResObject } from "../../utils/typesUtils";
-import { getCategoryById } from "../../utils/articleUtils";
+import { PublicID, ResObject, API } from "../../utils/typesUtils";
+import { handleInputChange, getCategoryById } from "../../utils/articleUtils";
 import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
 import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
 import "../../css/DynamicPage.css";
@@ -17,12 +16,12 @@ import "../../css/DynamicPage.css";
 // React built-in utilities
 import { Activity, useState, useEffect, ReactElement } from "react";
 import { Link, Params, useParams } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { Id, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function ContributionEditPage(): ReactElement {
 
-    const { contentId }: Params<string> = useParams(); // Get dynamic 'contentid' url
+    const { contentId }: Params<string> = useParams<string>(); // Get dynamic 'contentid' url
     const splitedId: string[] = (contentId as string).split("-"); // Split text with '-' separator
 
     // Set state variables
@@ -37,6 +36,16 @@ function ContributionEditPage(): ReactElement {
     // Get the site main theme from browser local storage
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
+    // Toast success
+    const successToastNotify = (message: string): Id => toast.success(message, {
+        className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
+    });
+    // Toast error
+    const errorToastNotify = (message: string): Id => toast.error(message, {
+        className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
+    });
+    
+
     // Modify image type content from database
     const modifiedSchema = (rawData: ResObject[]) => {
         for (let index: number = 0; index < rawData.length; index++) {
@@ -50,7 +59,6 @@ function ContributionEditPage(): ReactElement {
     useEffect(() => {
         // Get wiki article from db
         const fetchData = async () => {
-            const API: string = import.meta.env.VITE_API;
             const category: string = getCategoryById(splitedId[splitedId.length - 1]).toLowerCase();
 
             try {
@@ -77,15 +85,16 @@ function ContributionEditPage(): ReactElement {
     }, []);
 
     useEffect(() => {
-        setDeleteInput("")
+        // Reset delete input valiidation when delete container is false
+        if (!deleteContainer) setDeleteInput("");
         // Set body overflow property
-        document.body.style.overflow = deleteContainer ? "hidden" : "visible";
-    }, [deleteContainer]);
+        document.body.style.overflow = deleteContainer || loading ? "hidden" : "visible";
+    }, [deleteContainer, loading]);
 
     return (
         <>
             <Menu wikiTitle="Contribution" setLight={setLight} />
-            <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-0 text-white bg-yellow-600">
+            <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
                 <Link title="Exit edit mode" to="/contribution" replace className="cursor-pointer text-white">
                     <i className="fa-solid fa-xmark"></i>
@@ -95,6 +104,7 @@ function ContributionEditPage(): ReactElement {
                 <NotFound />
             </Activity>
             <div className={`w-full p-3 flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
+                            [&_h3,&_p]:text-center
                             ${isExist ? "flex" : "hidden"}
                             ${light ? "bg-white/70" : "text-white bg-gray-700/50"}`}>
                 <img
@@ -126,7 +136,7 @@ function ContributionEditPage(): ReactElement {
                 ))}
             </div>
 
-            <Loading show={loading} position={"static"} />
+            <Loading show={loading} position="fixed" />
 
             <button
                 title="Update article"
@@ -136,10 +146,16 @@ function ContributionEditPage(): ReactElement {
                         schema: schema,
                         pendingDelete: toDelete
                     });
-                    if (update) {
+                    if (update.passed) {
+                        successToastNotify(update.message);
+                        setTimeout(() => {
+                            setLoading(false);
+                            window.location.replace(`/wiki/Category:${getCategoryById(contentId as string, true)}/${contentId}`);
+                        }, 3000);
+                    } else {
+                        errorToastNotify(update.message);
                         setLoading(false);
-                        window.location.replace(`/wiki/Category:${getCategoryById(contentId as string, true)}/${contentId}`);
-                    } else setLoading(false);
+                    }
                 }}
                 className={`${schema.length === 0 ? "hidden" : "block"}
                             w-[40%] mt-5 mx-auto p-2 font-bold text-[1.2em] block rounded-[5px]
@@ -192,17 +208,17 @@ function ContributionEditPage(): ReactElement {
                                 if (loading) return;
 
                                 setLoading(true)
-                                const deleteResult: any = await deleleArticleInit(contentId, getCategoryById(splitedId[splitedId.length - 1]).toLowerCase());
+                                const result: any = await deleleArticleInit(contentId, getCategoryById(splitedId[splitedId.length - 1]).toLowerCase());
 
-                                if (deleteResult) {
-                                    alert("Delete Success!");
-                                    setLoading(false);
-                                    setLoading(false);
-                                    setDeleteContainer(false);
-                                    window.location.replace(`/wiki/Category:${getCategoryById(splitedId[splitedId.length - 1], true)}`);
+                                if (result.passed) {
+                                    successToastNotify(result.message)
+                                    setTimeout(() => {
+                                        setLoading(false);
+                                        setDeleteContainer(false);
+                                        window.location.replace(`/wiki/Category:${getCategoryById(splitedId[splitedId.length - 1], true)}`);
+                                    }, 3000);
                                 } else {
-                                    alert("Delete Failed!");
-                                    setLoading(false);
+                                    errorToastNotify(result.message)
                                     setLoading(false);
                                     setDeleteContainer(false);
                                 }
@@ -216,6 +232,14 @@ function ContributionEditPage(): ReactElement {
             <Activity mode={isExist ? "visible" : "hidden"}>
                 <ContentToolbar setSchema={setSchema} light={light} />
             </Activity>
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={true}
+                stacked={true}
+                limit={1}
+                pauseOnFocusLoss
+                pauseOnHover />
             <Footer />
         </>
     );

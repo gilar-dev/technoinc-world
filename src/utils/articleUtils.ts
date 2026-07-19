@@ -1,4 +1,5 @@
 import { Schema, ResObject, ArticleConfig, SetState } from "./typesUtils";
+import { processMessage } from "./processUtils";
 
 // Strerilized word from user input to prevent XSS
 export function sterilizedWord(word: string): string {
@@ -64,43 +65,17 @@ export function handleInputChange(index: number, property: string, value: any, s
 }
 
 // Check article general values
-export function checkArticleValues(article: ArticleConfig): string {
-    if (article.title === "") return "Title is empty"; // Return if title is empty
-    if (article.cover === "") return "Cover is empty"; // Return if cover is empty
+export function checkArticleValues(article: ArticleConfig): ResObject {
+    if (article.title === "") return processMessage(false, "Title can't be empty"); // Return if title is empty
+    if (article.cover === "") return processMessage(false, "Cover can't be empty"); // Return if cover is empty
     // // Return true if all values passed the checks
-    return "Passed";
-}
-
-// Check schema content values
-export function checkContentValues(schema: Schema): string {
-    if (schema.length === 0) return "Schema contents can't be empty"; // Check if schema length is empty (0)
-    for (let index: number = 0; index < schema.length; index++) {
-        // Define content inside schema
-        const content: ResObject = schema[index];
-        switch (content.type) {
-            case "heading-type": // Heading type content check
-                if (content.data === "") return "this can't be empty";
-                break;
-            case "table-type": // Table type content check
-                if (content.head_data === "" || content.content_data === "") return "this can't be empty";
-                break;
-            case "paragraph-type": // Paragraph type content check
-                if (content.title === "" || content.data === "") return "this can't be empty";
-                break;
-            case "image-type": // Image type content check
-                if (content.url === "" || content.description === "") return "this can't be empty";
-                break;
-            default:
-                return "none";
-        }
-    }
-    // Return true if all values are not empty
-    return "Passed";
+    return processMessage(true, "Passed");
 }
 
 // Delete unecessary properties from image type content
 export function filtration(schema: Schema): Schema {
     for (let index: number = 0; index < schema.length; index++) {
+        delete schema[index]["raw_cover"];
         delete schema[index]["raw_file"];
         delete schema[index]["prev_url"];
     }

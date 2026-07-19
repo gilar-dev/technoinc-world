@@ -1,9 +1,14 @@
 import Menu from "../Menu";
 import Loading from "../Loading";
 import NotFound from "../NotFound";
+import TitleBox from "./Components/TitleBox";
+import PageImageCover from "./Components/PageImageCover";
+import ContentParser from "./Components/ContentParser";
+import ImageContainer from "./Components/ImageContainer";
 import Footer from "../Footer";
-import ContentParser from "./ContentParser";
-import ImageContainer from "./ImageContainer";
+
+import { Schema, ResObject, API } from "../../utils/typesUtils";
+
 import { Activity, useState, useEffect, ReactElement } from "react";
 import { Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
@@ -11,14 +16,14 @@ import "../../css/DynamicPage.css";
 function WikiPage(): ReactElement {
 
     // get the category name and content id
-    const { categoryName, contentId }: Params<string> = useParams();
+    const { categoryName, contentId }: Params<string> = useParams<string>();
     const getCategory: string = (categoryName as string).split(":")[1];
     
     // Essential data variables
-    const [article, setArticle] = useState<Record<string, any>>({});
-    const [content, setContent] = useState<Record<string, any>[]>([]);
-    const [images, setImages] = useState<Record<string, any>[]>([]);
-    const [menuContent, setMenuContent] = useState<Record<string, any>[]>([]);
+    const [article, setArticle] = useState<ResObject>({});
+    const [content, setContent] = useState<Schema>([]);
+    const [images, setImages] = useState<Schema>([]);
+    const [menuContent, setMenuContent] = useState<ResObject[]>([]);
 
     // Boolean state variables
     const [loading, setLoading] = useState<boolean>(true);
@@ -33,7 +38,6 @@ function WikiPage(): ReactElement {
             setLoading(true);
 
             let convertedName: string = getCategory.toLowerCase();
-            const API: string = import.meta.env.VITE_API;
 
             // Convert plural name to singular name
             if (convertedName.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
@@ -42,29 +46,36 @@ function WikiPage(): ReactElement {
             try {
                 // Fetch request to backend server
                 const response: Response = await fetch(`${API}/api/v1/wiki/${convertedName}/${contentId}`);
-                const results: Record<string, any> = await response.json();
+                // If response is not ok, throw error
+                if (!response.ok) throw new Error(`${response}`);
 
-                // Get all image contents
-                const getImages: Record<string, any>[] = results.article.wiki_content.filter((img: any) => img.type === "image-type");
+                // Initialize successful response data in json object
+                const result: ResObject = await response.json();
+                // Get all image type contents
+                const getImages: Schema = result.article.wiki_content.filter((img: any) => img.type === "image-type");
+                // Get all paragraph type contents
+                const getParagraph: Schema = result.article.wiki_content.filter((para: any) => para.type === "paragraph-type");
                 // Add cover image to list
                 getImages.unshift({
-                    url: results.article.cover,
-                    description: results.article.title
+                    url: result.article.cover,
+                    description: result.article.title
                 });
 
-                const getParagraph: Record<string, any>[] = results.article.wiki_content.filter((para: any) => para.type === "paragraph-type");
-
-                // Set state based on the results
                 setIsExist(true);
                 setLoading(false);
-                setArticle({...results.article, wiki_content: []});
-                setContent(results.article.wiki_content);
-                setImages(getImages);
-                setMenuContent(getParagraph);
+                setArticle((prev: ResObject) => {
+                    const cloneArticle: ResObject = { ...result.article } // Clone article object from response result
+                    delete cloneArticle["wiki_content"]; // Delete article wiki content because it already has its own state variable
+                    return cloneArticle; // Return the filtered clone article
+                });
+                setContent(result.article.wiki_content); // Set the content state with schema from result article contents
+                setImages(getImages); // Set gotten image type contents
+                setMenuContent(getParagraph); // Set gotten paragraph type contents
 
             } catch(error) {
                 setIsExist(false);
                 setLoading(false);
+                console.error(error);
             }
         }
 
@@ -78,35 +89,8 @@ function WikiPage(): ReactElement {
             <Activity mode={!isExist && isExist !== undefined ? "visible" : "hidden"}>
                 <NotFound />
             </Activity>
-
-            <div className={`mt-4 mb-[6em] flex-col items-center
-                            ${isExist ? "flex" : "hidden"}`}>
-                <h2 className="text-center">
-                    <span className="highlight">{article.title}</span>
-                </h2>
-                <p className="mt-2 text-[small]">{`${article.category} Page`}</p>
-                <div className="mt-3 flex justify-center items-center gap-1 [&>p]:text-[.7em]">
-                    <p>VISITED</p>
-                    <p>{article.visited}</p>
-                </div>
-            </div>
-
-            <div className={`box mx-3 p-5 border
-                            ${isExist ? "block" : "hidden"}
-                            ${
-                                content[0]?.type.includes("heading-type") && "border-b-0" ||
-                                content[0]?.type.includes("table-type") && "border-b-0"
-                            }`}>
-                <img
-                    src={article.cover || null}
-                    alt={article.title}
-                    onClick={() => {
-                        setShowed(article.cover);
-                        setImageContainer(true);
-                    }}
-                    className="w-full cursor-pointer" />
-            </div>
-
+            <TitleBox isExist={isExist} article={article} />
+            <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
             <div>
                 {content.map((item, idx) => (
                     <ContentParser
@@ -119,14 +103,12 @@ function WikiPage(): ReactElement {
                         menuContent={menuContent} />
                 ))}
             </div>
-
             <ImageContainer
                 images={images}
                 showed={showed}
                 setShowed={setShowed}
                 display={imageContainer}
                 setDisplay={setImageContainer} />
-                
             <Footer />
         </>
     );

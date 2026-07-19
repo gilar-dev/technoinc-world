@@ -15,7 +15,7 @@ import uploadArticleInit from "../../utils/ArticleOperations/uploadUtils";
 import "../../css/DynamicPage.css";
 
 // React built-in utilities
-import { ReactElement, Activity, useState } from "react";
+import { ReactElement, Activity, useState, useEffect } from "react";
 import { Id, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,6 +29,7 @@ function ContributionPage(): ReactElement {
         cover: "", // Article image cover
         public_id: "", // Article image cover public id
         raw_cover: undefined, // Temporary
+        visited: 0,
         wiki_content: [] // Array of article contents
     });
 
@@ -47,6 +48,10 @@ function ContributionPage(): ReactElement {
     const errorToastNotify = (content: string): Id => toast.error(content, {
         className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
     });
+
+    useEffect(() => {
+        document.body.style.overflow = loading ? "hidden" : "visible";
+    }, [loading]);
 
     return (
         <>
@@ -83,13 +88,15 @@ function ContributionPage(): ReactElement {
                     setLoading(true); // Set loading to true
                     // Await to validate all things before uploading
                     const validate: any = await uploadArticleInit(article, schema, { setArticle, setSchema });
-                    if (validate === "Success") { // If all validation is success
-                        setLoading(false);
+                    if (validate.passed) { // If all validation is success
                         successToastNotify();
-                        window.location.replace(`/wiki/Category:${getCategoryById(article.id, true)}/${article.id}`);
+                        setTimeout(() => {
+                            setLoading(false);
+                            window.location.replace(`/wiki/Category:${getCategoryById(article.id, true)}/${article.id}`);
+                        }, 3000);
                     } else { // If something isn't valid when validating
+                        errorToastNotify(validate.message);
                         setLoading(false);
-                        errorToastNotify(validate);
                     }
                 }}
                 className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]
@@ -106,8 +113,7 @@ function ContributionPage(): ReactElement {
                 stacked={false}
                 limit={1}
                 pauseOnFocusLoss
-                pauseOnHover
-                theme="dark" />
+                pauseOnHover />
             <Footer />
         </>
     )

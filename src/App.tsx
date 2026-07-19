@@ -7,29 +7,29 @@ import Footer from "./components/Footer";
 import { ReactElement, useEffect } from "react";
 
 function App(): ReactElement {
+    
+    // Apply a show-up effect to element with specific class
+    useEffect(() => {
 
-  // Apply a show-up effect to element with specific class
-  useEffect(() => {
+        const scrollShowUp = () => {
+            [...document.querySelectorAll(".scroll-effect")].forEach((item: Element) => {
+                const itemRect: DOMRect = item.getBoundingClientRect();
 
-    const scrollShowUp = () => {
-      [...document.querySelectorAll(".scroll-effect")].forEach(item => {
-        const itemRect: DOMRect = item.getBoundingClientRect();
-
-        if (itemRect.top - (itemRect.height / 2) <= window.innerHeight) {
-          (item as HTMLElement).style.opacity = "1";
-          (item as HTMLElement).style.transform = "translateY(0)";
+                if (itemRect.top - (itemRect.height / 2) <= window.innerHeight) {
+                    (item as HTMLElement).style.opacity = "1";
+                    (item as HTMLElement).style.transform = "translateY(0)";
+                }
+            });
         }
-      });
-    }
 
-    // Add event listener to handle scroll event
-    window.addEventListener("scroll", scrollShowUp);
+        // Add event listener to handle scroll event
+        window.addEventListener("scroll", scrollShowUp);
 
-    return () => {
-      // Remove event listener from window when component is unbounded
-      window.removeEventListener("scroll", scrollShowUp);
-    }
-  }, []);
+        return () => {
+            // Remove event listener from window when component is unbounded
+            window.removeEventListener("scroll", scrollShowUp);
+        }
+    }, []);
 
   return (
     <>

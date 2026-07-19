@@ -1,5 +1,7 @@
 import { Schema, PublicID, ResObject } from "../typesUtils";
-import { checkContentValues, filtration } from "../articleUtils";
+import { filtration } from "../articleUtils";
+import { checkContentValues } from "../ContentBlocks/contentUtils";
+import { processMessage } from "../processUtils";
 import { uploadPackage, uploadToCloud, deleteAssets } from "../storageUtils";
 import { updateArticleWiki } from "../databaseUtils";
 
@@ -10,30 +12,37 @@ interface Config {
 }
 
 // Main export function to validate all things before updating
-export default async function updateArticleInit(id: string, category: string, config: Config): Promise<any> {
+/**
+ * @description A function to update existed article after being edited to database
+ * @param id Article id
+ * @param category Article category
+ * @param config Additional configurations from main component to monitor which is changed or deleted in schema
+ * @returns Returns ResObject which contains only two keys (passed: boolean, message: string)
+ */
+export default async function updateArticleInit(id: string, category: string, config: Config): Promise<ResObject> {
 
     const cloneSchema: Schema = structuredClone<Schema>(config.schema); // Store schema by cloning it
+    const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
+    const modifiedSchema: Schema | undefined = await getImagesToUpload(category, cloneSchema); // Bulk delete and upload new assets
 
+    if (!checkContents.passed) return processMessage(false, checkContents.message);
     // Check delete image assets
     if (config.pendingDelete.length !== 0) {
-        if (!await deleteAssets(config.pendingDelete)) return;
+        if (!await deleteAssets(config.pendingDelete)) return processMessage(false, "Failed to delete previous assets");
     }
-
-    const modifiedSchema: Schema | undefined = await getImagesToUpload(category, cloneSchema); // Bulk delete and upload new assets
     // Check if schema is successfully modified
-    if (!modifiedSchema) return;
-    // Check if all content values are not empty
-    if (!checkContentValues(modifiedSchema)) return;
+    if (!modifiedSchema) return processMessage(false, "Failed to upload assets to cloud");
     // Wait for the update article to database result
-    if (!await updateArticleWiki(id, category, filtration(modifiedSchema))) return;
+    if (!await updateArticleWiki(id, category, filtration(modifiedSchema))) return processMessage(false, "Failed to update article");
 
-    return true;
+    // Return successful update article process
+    return processMessage(true, "Successfully update article!");
 }
 
 // Helper functions
 // Get changed images to upload to cloud storage
 async function getImagesToUpload(category: string, schema: Schema): Promise<any> {
-    const images: ResObject[] = schema.filter((img: ResObject) => img.type === "image-type");
+    const images: Schema = schema.filter((img: ResObject) => img.type === "image-type");
     // Return schema immediately if no images are changed
     if (schema.filter((img: ResObject) => img.raw_file === "").length === images.length) return schema;
     // Bulk upload assets to cloud storage

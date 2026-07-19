@@ -1,25 +1,24 @@
+import { ResObject, Schema, SetState } from "../../../utils/typesUtils";
 import { ReactElement, useState, useEffect } from "react";
-import "../../css/DynamicPage.css";
+import "../../../css/DynamicPage.css";
 
-interface propTypes {
-    images: Record<string, any>[];
+interface PropTypes {
+    images: Schema;
     showed: string;
     display: boolean;
-    setShowed: React.Dispatch<React.SetStateAction<string>>;
-    setDisplay: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowed: SetState<string>;
+    setDisplay: SetState<boolean>;
 }
 
-function ImageContainer({ images, showed, setShowed, display, setDisplay }: propTypes): ReactElement {
+function ImageContainer({ images, showed, setShowed, display, setDisplay }: PropTypes): ReactElement {
 
     const [navigation, setNavigation] = useState<boolean>(true);
-    const [current, setCurrent] = useState<Record<string, any>>({});
+    const [current, setCurrent] = useState<ResObject>({});
     
     useEffect(() => {
-
-        for (let i: number = 0; i < images.length; i++) {
-            if (images[i].url === showed) {
-                setCurrent({ index: i, description: images[i].description });
-                break;
+        for (let index: number = 0; index < images.length; index++) {
+            if (images[index].url === showed) {
+                setCurrent({ index: index, description: images[index].description });
             }
         }
     }, [showed]);

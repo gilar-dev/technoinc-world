@@ -58,7 +58,7 @@ function ArticleForm({ article, light=false, states }: PropTypes): ReactElement 
                 <input
                     id="article-cover"
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg, image/png, image/webp, .jpg, .jpeg, .png, .webp"
                     style={{display: "none"}}
                     onChange={(e) => {
                         const selectedFile: File = e.target.files?.[0] as File;

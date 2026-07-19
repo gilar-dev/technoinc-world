@@ -91,7 +91,6 @@ export async function deleteArticleWiki(id: string, category: string): Promise<a
 
         // Return the successful fetch response data
         const result: ResObject = await response.json();
-        console.log(result);
         return result;
 
     } catch (error) {

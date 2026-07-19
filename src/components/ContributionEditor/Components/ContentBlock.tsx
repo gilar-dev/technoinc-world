@@ -78,7 +78,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                     <input
                         id={`image-input-${index}`}
                         type="file"
-                        accept="image/*"
+                        accept="image/jpeg, image/png, image/webp, .jpg, .jpeg, .png, .webp"
                         style={{display: "none"}}
                         onChange={e => {
                             const selectedFile: File | undefined = e.target.files?.[0];
