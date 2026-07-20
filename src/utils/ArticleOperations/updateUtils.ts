@@ -22,18 +22,20 @@ interface Config {
 export default async function updateArticleInit(id: string, category: string, config: Config): Promise<ResObject> {
 
     const cloneSchema: Schema = structuredClone<Schema>(config.schema); // Store schema by cloning it
-    const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
-    const modifiedSchema: Schema | undefined = await getImagesToUpload(category, cloneSchema); // Bulk delete and upload new assets
 
+    const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
     if (!checkContents.passed) return processMessage(false, checkContents.message);
     // Check delete image assets
     if (config.pendingDelete.length !== 0) {
-        if (!await deleteAssets(config.pendingDelete)) return processMessage(false, "Failed to delete previous assets");
+        const deleteProcess: ResObject = await deleteAssets(config.pendingDelete);
+        if (!deleteProcess) return processMessage(false, "Failed to delete previous assets");
     }
+    const modifiedSchema: Schema | undefined = await getImagesToUpload(category, cloneSchema); // Bulk delete and upload new assets
     // Check if schema is successfully modified
     if (!modifiedSchema) return processMessage(false, "Failed to upload assets to cloud");
     // Wait for the update article to database result
-    if (!await updateArticleWiki(id, category, filtration(modifiedSchema))) return processMessage(false, "Failed to update article");
+    const updateArticle: ResObject = await updateArticleWiki(id, category, filtration(modifiedSchema));
+    if (!updateArticle) return processMessage(false, "Failed to update article");
 
     // Return successful update article process
     return processMessage(true, "Successfully update article!");

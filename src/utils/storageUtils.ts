@@ -5,7 +5,7 @@ export async function deleteAssets(publicIDs: PublicID): Promise<any> {
     try {
         // Fetch request to backend for deleting cloud assets
         const response: Response = await fetch(`${API}/api/v1/cloudinary/delete`, {
-            method: "POST",
+            method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ public_ids: publicIDs })
         });

@@ -97,3 +97,24 @@ export async function deleteArticleWiki(id: string, category: string): Promise<a
         console.error(error);
     }
 }
+
+// Update increase article using its id
+export async function increaseArticleVisited(id: string, category: string): Promise<any> {
+    try {
+        // Fetch request to backend for increasing article visited value
+        const response: Response = await fetch(`${API}/api/v1/wiki/view`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id, category: category })
+        })
+        // If response is not ok, throw error
+        if (!response.ok) throw new Error(`${response}`);
+
+        // Return the successful response fetch data
+        const result: ResObject = await response.json();
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+}

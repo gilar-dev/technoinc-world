@@ -83,7 +83,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
                         <img
                             src={block.url || null}
                             alt={block.description}  
-                            className="max-w-[90%] max-h-100 transition-transform ease-in-out duration-500 hover:scale-[110%]" />
+                            className="max-w-full max-h-[35em] transition-transform ease-in-out duration-500 hover:scale-[110%]" />
                         <span className="p-1.25 text-[10px] absolute bottom-2 right-2 self-end rounded-full text-white bg-black/50">
                             <i className="fa-regular fa-clone"></i>
                         </span>

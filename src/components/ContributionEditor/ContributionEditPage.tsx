@@ -178,7 +178,10 @@ function ContributionEditPage(): ReactElement {
                 <div className={`max-w-[90%] min-h-[5em] p-7 relative rounded-[10px] shadow-2xs shadow-black1
                                 ${light ? "text-black bg-white" : "text-white bg-gray-800"}`}>
                     <span
-                        onClick={() => setDeleteContainer(false)}
+                        onClick={() => {
+                            if (loading) return;
+                            setDeleteContainer(false);
+                        }}
                         className="text-[1.3em] absolute top-1 right-1">
                         <i className="fa-solid fa-xmark"></i>
                     </span>
@@ -196,6 +199,7 @@ function ContributionEditPage(): ReactElement {
                         value={deleteInput}
                         onChange={(e) => setDeleteInput(e.target.value)}
                         className="w-full mt-5 p-2 outline-blue-500 rounded-[5px]" />
+                    <Loading show={loading} position="static" />
                     <div className="w-full mt-5 flex justify-end items-center gap-3
                                     [&>button]:p-2 [&>button]:font-bold [&>button]:outline-none [&>button]:rounded-[5px]
                                     [&>button]:border-solid [&>button]:text-white">

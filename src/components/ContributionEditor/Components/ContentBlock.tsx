@@ -1,15 +1,15 @@
 import BlockControls from "./BlockControls";
 import "../../../css/DynamicPage.css";
 import { ReactElement } from "react";
-import { ResObject, SetState } from "../../../utils/typesUtils";
+import { Schema, ResObject, SetState } from "../../../utils/typesUtils";
 
 interface propTypes {
     index: number;
-    block: Record<string, any>;
-    schema: any[];
-    setSchema: React.Dispatch<React.SetStateAction<any[]>>;
+    block: ResObject;
+    schema: Schema;
+    setSchema: SetState<Schema>;
     setToDelete?: React.Dispatch<React.SetStateAction<any[]>>;
-    onChangeHandler: (index: number, key: string, target: any, func: SetState<ResObject[]>) => void;
+    onChangeHandler: (index: number, key: string, target: any, func: SetState<Schema>) => void;
 }
 
 function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToDelete }: propTypes): ReactElement {

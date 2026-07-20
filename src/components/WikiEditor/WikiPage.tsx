@@ -8,6 +8,8 @@ import ImageContainer from "./Components/ImageContainer";
 import Footer from "../Footer";
 
 import { Schema, ResObject, API } from "../../utils/typesUtils";
+import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
+import { increaseArticleVisited } from "../../utils/databaseUtils";
 
 import { Activity, useState, useEffect, ReactElement } from "react";
 import { Params, useParams } from "react-router-dom";
@@ -38,7 +40,6 @@ function WikiPage(): ReactElement {
             setLoading(true);
 
             let convertedName: string = getCategory.toLowerCase();
-
             // Convert plural name to singular name
             if (convertedName.includes("ies")) convertedName = convertedName.replaceAll("ies", "y");
             else convertedName = convertedName.slice(0, convertedName.length - 1);
@@ -81,6 +82,25 @@ function WikiPage(): ReactElement {
 
         fetchData();
     }, []);
+
+    useEffect(() => {
+
+        const splitedId: string[] = (contentId as string).split("-"); // Split content id to get its category id
+        const getCat: string = getCategoryById(splitedId[splitedId.length - 1]); // Get category in the last index of splited id
+
+        const processToIncreaseView = async (): Promise<void> => {
+            // Check if content id is not undefined and its value is not empty
+            if (contentId as string !== "") {
+                // Check and register view with cookie if not exist
+                const isNewVisit: boolean = checkAndRegisterViewWithCookie(contentId as string);
+                if (isNewVisit) {
+                    // If new visit, increase the visited value of current article
+                    await increaseArticleVisited(contentId as string, getCat.toLowerCase());
+                }
+            }
+        }
+        processToIncreaseView();
+    }, [contentId]);
 
     return (
         <>

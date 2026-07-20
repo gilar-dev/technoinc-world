@@ -56,9 +56,9 @@ export function getCategoryById(id: string, plural: boolean=false): string {
 }
 
 // Handle input changes on content schema
-export function handleInputChange(index: number, property: string, value: any, setSchema: SetState<ResObject[]>): void {
-    setSchema((prev: ResObject[]) => {
-        const updatedSchema: ResObject[] = [...prev]; // Store schema by cloning it
+export function handleInputChange(index: number, property: string, value: any, setSchema: SetState<Schema>): void {
+    setSchema((prev: Schema) => {
+        const updatedSchema: Schema = [...prev]; // Store schema by cloning it
         updatedSchema[index][property] = value; // Set property needs to be updated
         return updatedSchema; // Return the updated schema
     });
@@ -81,4 +81,18 @@ export function filtration(schema: Schema): Schema {
     }
     // Return filtrated schema
     return schema;
+}
+
+// Check and register user view based on cookie in their browser
+export function checkAndRegisterViewWithCookie(articleId: string): boolean {
+    const cookieName: string = `visited_art_${articleId}`;
+    // Check if cookie with article id is exist in the browser
+    const cookies: string[] = document.cookie.split("; ");
+    const cookieExists: boolean = cookies.some((row: string) => row.startsWith(`${cookieName}=`));
+    // If cookie exists, it's not been 2 hours yet and return false
+    if (cookieExists) return false;
+    // If doesn't exist, it's been 2 hours and a new visit
+    const maxAgeSeconds: number = 60 * 5;
+    document.cookie = `${cookieName}=true; max-age=${maxAgeSeconds}; path=/; SameSite=Lax`;
+    return true;
 }
