@@ -2,6 +2,7 @@ import Loading from "../../Loading";
 import { useState, useEffect, ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { sterilizedWord } from "../../../utils/articleUtils";
+import { Schema, ResObject, API } from "../../../utils/typesUtils";
 
 interface propTypes {
     search: boolean;
@@ -10,22 +11,22 @@ interface propTypes {
 function ModifyBox({ search }: propTypes): ReactElement {
 
     const [input, setInput] = useState<string>(""); // User article search input
-    const [data, setData] = useState<any[]>([]); // Get all articles from db
-    const [specific, setSpecific] = useState<any[]>([]); // Set only specific article matches with input
+    const [data, setData] = useState<Schema>([]); // Get all articles from db
+    const [specific, setSpecific] = useState<Schema>([]); // Set only specific article matches with input
     const [loading, setLoading] = useState<boolean>(false);
 
     // Get all articles from db when loaded
     useEffect(() => {
         const fetchData = async (): Promise<void> => {
+            setLoading(true)
 
-            const API: string = import.meta.env.VITE_API;
-            
             try {
-                setLoading(true)
-
+                // Fetch request to backend
                 const response: Response = await fetch(`${API}/api/v1/wiki/articles`);
-
-                const result: Record<string, any> = await response.json();
+                // If response is not ok, throw error
+                if (!response.ok) throw new Error(`${response}`);
+                // Get the successful fetch response data
+                const result: ResObject = await response.json();
 
                 setData(result.data);
                 setSpecific(result.data.filter((item: any) => item.title.toLowerCase().includes(input.toLowerCase())));
@@ -77,7 +78,7 @@ function ModifyBox({ search }: propTypes): ReactElement {
                     ({specific.length})
                 </p>
 
-                {specific.map((item, index) => (
+                {specific.map((item: ResObject, index: number) => (
                     <div
                         key={index}
                         className="mt-10 mx-3 flex justify-between hover:bg-white/10

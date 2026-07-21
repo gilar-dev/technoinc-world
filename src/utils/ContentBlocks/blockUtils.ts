@@ -2,35 +2,43 @@ import { ResObject } from "../typesUtils"
 
 // Blue print for validated block configurations
 interface BlockConfigs<T> {
-    HeadingType: T;
-    TableType: T,
-    ParagraphType: T,
-    ImageType: T
+    HeadingType: () => T;
+    TableType: () => T,
+    ParagraphType: () => T,
+    ImageType: () => T
 }
 
 // Blocks setting
 const Blocks: BlockConfigs<ResObject> = {
-    HeadingType: { // Heading type content
+    // Heading type content
+    HeadingType: () => ({
         type: "heading-type" as const,
-        data: ""
-    },
-    TableType: { // Table type content
+        data: "",
+        is_empty: false
+    }),
+    // Table type content
+    TableType: () => ({
         type: "table-type" as const,
         head_data: "",
-        content_data: ""
-    },
-    ParagraphType: { // Paragraph type content
+        content_data: "",
+        is_empty: false
+    }),
+    // Paragraph type content
+    ParagraphType: () => ({
         type: "paragraph-type" as const,
         title: "",
-        data: ""
-    },
-    ImageType: { // Image type content
+        data: "",
+        is_empty: false
+    }),
+    // Image type content
+    ImageType: () => ({
         type: "image-type" as const,
         url: "",
         public_id: "",
         raw_file: undefined,
-        description: ""
-    }
+        description: "",
+        is_empty: false
+    })
 }
 
 // Export main Blocks variable

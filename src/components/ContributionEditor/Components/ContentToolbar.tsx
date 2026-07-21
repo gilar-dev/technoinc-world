@@ -19,22 +19,22 @@ function ContentToolbar({ light, setSchema }: PropTypes): ReactElement {
                                 : "bg-gray-700/50 [&>button]:border-white [&>button]:text-white [&>button]:bg-gray-700 [&>button]:hover:bg-gray-500"}`}>
             <button
                 title="Add new table heading"
-                onClick={() => addNewContentBlock({...Blocks.HeadingType}, setSchema)}>
+                onClick={() => addNewContentBlock(Blocks.HeadingType(), setSchema)}>
                 <i className="fa-solid fa-heading"></i>
             </button>
             <button
                 title="Add new table content"
-                onClick={() => addNewContentBlock({...Blocks.TableType}, setSchema)}>
+                onClick={() => addNewContentBlock(Blocks.TableType(), setSchema)}>
                 <i className="fa-solid fa-table-list"></i>
             </button>
             <button
                 title="Add new paragraph"
-                onClick={() => addNewContentBlock({...Blocks.ParagraphType}, setSchema)}>
+                onClick={() => addNewContentBlock(Blocks.ParagraphType(), setSchema)}>
                 <i className="fa-solid fa-paragraph"></i>
             </button>
             <button
                 title="Add new image"
-                onClick={() => addNewContentBlock({...Blocks.ImageType}, setSchema)}>
+                onClick={() => addNewContentBlock(Blocks.ImageType(), setSchema)}>
                 <i className="fa-solid fa-image"></i>
             </button>
         </div>

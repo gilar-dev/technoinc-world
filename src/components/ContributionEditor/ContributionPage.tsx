@@ -7,12 +7,12 @@ import InspireBox from "./Components/InspireBox";
 import ContentBlock from "./Components/ContentBlock";
 import ContentToolbar from "./Components/ContentToolbar";
 import Footer from "../Footer";
+import "../../css/DynamicPage.css";
 
 // Supporting utilities
 import { ArticleConfig, ResObject } from "../../utils/typesUtils";
 import { getCategoryById, handleInputChange } from "../../utils/articleUtils";
 import uploadArticleInit from "../../utils/ArticleOperations/uploadUtils";
-import "../../css/DynamicPage.css";
 
 // React built-in utilities
 import { ReactElement, Activity, useState, useEffect } from "react";
@@ -62,7 +62,7 @@ function ContributionPage(): ReactElement {
             <Activity mode={schema.length === 0 ? "visible" : "hidden"}>
                 <InspireBox />
             </Activity>
-            <div className={`mt-[3em] flex flex-col gap-[2em] rounded-[10px]
+            <div className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                             [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                             [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                             [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
@@ -95,8 +95,15 @@ function ContributionPage(): ReactElement {
                             window.location.replace(`/wiki/Category:${getCategoryById(article.id, true)}/${article.id}`);
                         }, 3000);
                     } else { // If something isn't valid when validating
-                        errorToastNotify(validate.message);
                         setLoading(false);
+                        if (validate.index === undefined) errorToastNotify(validate.message);
+                        else {
+                            errorToastNotify(`${validate.message} at content ${validate.index + 1}`);
+                            const schemaContainer: HTMLElement = document.querySelector(".schema") as HTMLElement;
+                            const children: HTMLCollection = schemaContainer.children;
+                            children[validate.index].scrollIntoView({ behavior: "smooth", block: "center" });
+                            handleInputChange(validate.index, "is_empty", true, setSchema);
+                        }
                     }
                 }}
                 className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]

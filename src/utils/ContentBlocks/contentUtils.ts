@@ -45,16 +45,16 @@ export function checkContentValues(schema: Schema): ResObject {
         const content: ResObject = schema[index];
         switch (content.type) {
             case "heading-type": // Heading type content check
-                if (content.data === "") return processMessage(false, "this can't be empty");
+                if (content.data === "") return processMessage(false, "this can't be empty", index);
                 break;
             case "table-type": // Table type content check
-                if (content.head_data === "" || content.content_data === "") return processMessage(false, "this can't be empty");
+                if (content.head_data === "" || content.content_data === "") return processMessage(false, "this can't be empty", index);
                 break;
             case "paragraph-type": // Paragraph type content check
-                if (content.title === "" || content.data === "") return processMessage(false, "this can't be empty");
+                if (content.title === "" || content.data === "") return processMessage(false, "this can't be empty", index);
                 break;
             case "image-type": // Image type content check
-                if (content.url === "" || content.description === "") return processMessage(false, "this can't be empty");
+                if (content.url === "" || content.description === "") return processMessage(false, "this can't be empty", index);
                 break;
             default:
                 return processMessage(false, "none");

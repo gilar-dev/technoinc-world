@@ -24,7 +24,7 @@ export default async function updateArticleInit(id: string, category: string, co
     const cloneSchema: Schema = structuredClone<Schema>(config.schema); // Store schema by cloning it
 
     const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
-    if (!checkContents.passed) return processMessage(false, checkContents.message);
+    if (!checkContents.passed) return processMessage(false, checkContents.message, checkContents.index);
     // Check delete image assets
     if (config.pendingDelete.length !== 0) {
         const deleteProcess: ResObject = await deleteAssets(config.pendingDelete);

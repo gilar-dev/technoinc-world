@@ -5,13 +5,13 @@ import NotFound from "../NotFound";
 import ContentBlock from "./Components/ContentBlock"; 
 import ContentToolbar from "./Components/ContentToolbar";
 import Footer from "../Footer";
+import "../../css/DynamicPage.css";
 
 // Supporting utilites
 import { PublicID, ResObject, API } from "../../utils/typesUtils";
 import { handleInputChange, getCategoryById } from "../../utils/articleUtils";
 import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
 import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
-import "../../css/DynamicPage.css";
 
 // React built-in utilities
 import { Activity, useState, useEffect, ReactElement } from "react";
@@ -64,9 +64,12 @@ function ContributionEditPage(): ReactElement {
             try {
                 // Get article from category & article is
                 const response: Response = await fetch(`${API}/api/v1/wiki/${category}/${contentId}`)
+                // If response is not ok, throw error
                 if (!response.ok) throw new Error(`${response}`);
 
+                // Get the successfull response data
                 const result: ResObject = await response.json();
+                // Clone the object data then delete content schema
                 const articleFront: ResObject = { ...result.article };
                 delete articleFront["wiki_content"];
 
@@ -115,7 +118,7 @@ function ContributionEditPage(): ReactElement {
                 <p>{data.id}</p>
                 <p className="text-[.8em]">{data.category}</p>
             </div>
-            <div className={`mt-[3em] flex flex-col gap-[2em] rounded-[10px]
+            <div className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                             [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                             [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                             [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
@@ -135,9 +138,7 @@ function ContributionEditPage(): ReactElement {
                         setToDelete={setToDelete} />
                 ))}
             </div>
-
             <Loading show={loading} position="fixed" />
-
             <button
                 title="Update article"
                 onClick={async () => {
@@ -153,8 +154,14 @@ function ContributionEditPage(): ReactElement {
                             window.location.replace(`/wiki/Category:${getCategoryById(contentId as string, true)}/${contentId}`);
                         }, 3000);
                     } else {
-                        errorToastNotify(update.message);
                         setLoading(false);
+                        if (update.index === undefined) errorToastNotify(update.message);
+                        else {
+                            errorToastNotify(`${update.message} at content ${update.index + 1}`);
+                            const schemaContainer: HTMLElement = document.querySelector(".schema") as HTMLElement;
+                            const children: HTMLCollection = schemaContainer.children;
+                            children[update.index].scrollIntoView({ behavior: "smooth", block: "center" });
+                        }
                     }
                 }}
                 className={`${schema.length === 0 ? "hidden" : "block"}
@@ -164,7 +171,6 @@ function ContributionEditPage(): ReactElement {
                             transition-colors duration-150 ease-in-out`}>
                 Update
             </button>
-
             <button
                 title="Delete article"
                 onClick={() => setDeleteContainer(true)}
@@ -173,7 +179,6 @@ function ContributionEditPage(): ReactElement {
                             ${isExist ? "block" : "hidden"}`}>
                 Delete
             </button>
-
             <div className={`w-full h-full ${deleteContainer ? "flex" : "hidden"} justify-center items-center fixed top-0 z-100 bg-blue-300/30`}>
                 <div className={`max-w-[90%] min-h-[5em] p-7 relative rounded-[10px] shadow-2xs shadow-black1
                                 ${light ? "text-black bg-white" : "text-white bg-gray-800"}`}>
@@ -210,10 +215,8 @@ function ContributionEditPage(): ReactElement {
                             onClick={async () => {
                                 if (deleteInput !== contentId) return;
                                 if (loading) return;
-
                                 setLoading(true)
                                 const result: any = await deleleArticleInit(contentId, getCategoryById(splitedId[splitedId.length - 1]).toLowerCase());
-
                                 if (result.passed) {
                                     successToastNotify(result.message)
                                     setTimeout(() => {

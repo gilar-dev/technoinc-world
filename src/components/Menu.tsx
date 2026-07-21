@@ -1,4 +1,5 @@
 import Loading from "./Loading";
+import { ResObject, API } from "../utils/typesUtils";
 import { Link } from "react-router-dom";
 import { useState, useEffect, ReactElement } from "react";
 import "../css/Menu.css";
@@ -9,7 +10,7 @@ interface MenuProps {
     setReplace?: boolean,
     contribution?: boolean,
     search?: boolean,
-    menuContent?: Array<Object>,
+    menuContent?: ResObject[],
     setSearch?: (search: boolean) => void,
     setLight?: (light: boolean) => void
 }
@@ -30,7 +31,7 @@ function Menu({
     const [loading, setLoading] = useState<boolean>(false);
 
     // Define the website theme color
-    const [theme, setTheme] = useState(
+    const [theme, setTheme] = useState<string>(
         localStorage.getItem("technoinc-theme") || "light"
     );
 
@@ -38,13 +39,13 @@ function Menu({
     const [categories, setCategories] = useState<string[]>([]);
 
     // Function to switch to different theme
-    const themeToggle = () => {
+    const themeToggle = (): void => {
         setTheme(theme === "light" ? "dark" : "light");
         setIsActive(isActive === "active" ? "" : "active");
     }
 
     // Set the value of isActive for sidebar menu
-    const sidebarMenuClicked = () => {
+    const sidebarMenuClicked = (): void => {
         setIsActive(isActive === "" ? "active" : "");
     }
 
@@ -53,19 +54,19 @@ function Menu({
     // Menu effect when the page is being scrolled
     useEffect(() => {
         
-        const API: string = import.meta.env.VITE_API;
-        const menuBox: Element = document.querySelector(".menu-box") as Element;
+        const menuBox: HTMLElement = document.querySelector(".menu-box") as HTMLElement;
 
         for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
             (inputBox as HTMLInputElement).checked = true; 
         }
 
         const fetchData = async () => {
-            try {
-                setLoading(true);
+            setLoading(true);
 
+            try {
                 const response: Response = await fetch(`${API}/api/v1/wiki/categories`);
-                const result: Record<string, any> = await response.json();
+                if (!response.ok) throw new Error(`${response}`);
+                const result: ResObject = await response.json();
 
                 setCategories(result.category_list);
                 setLoading(false);
@@ -77,8 +78,8 @@ function Menu({
         }
         
         const scrollMovement = () => {
-            if (window.scrollY === 0) (menuBox as HTMLElement).style.padding = ".7em";
-            else (menuBox as HTMLElement).style.padding = ".5em";
+            if (window.scrollY === 0) menuBox.style.padding = ".7em";
+            else menuBox.style.padding = ".5em";
         }
 
         fetchData();
@@ -166,7 +167,7 @@ function Menu({
                         <Loading show={loading} />
 
                         <ul>
-                            {categories.map((item, idx) =>
+                            {categories.map((item: string, idx: number) =>
                                 <Link key={idx} replace={setReplace} to={`/wiki/Category:${item}`} onClick={() => sidebarMenuClicked()}>
                                     <li className={selected === item ? "selected" : ""}>{item}</li>
                                 </Link>
@@ -209,7 +210,7 @@ function Menu({
                     </label>
                     <div className="list-box">
                         <ul>
-                            {menuContent.map((content, index) => (
+                            {menuContent.map((content: ResObject, index: number) => (
                                 <li
                                     key={index}
                                     className="content"
@@ -223,10 +224,10 @@ function Menu({
 
                                             const target = document.getElementById(`content${index + 1}`);
                                             if (target) {
-                                                target.scrollIntoView({ behavior: "smooth" });
+                                                target.scrollIntoView({ behavior: "smooth", block: "center" });
                                             }
                                         }}>
-                                        {(content as HTMLElement).title}
+                                        {content.title}
                                     </a>
                                 </li>
                             ))}

@@ -30,7 +30,7 @@ export default async function uploadArticleInit(article: ArticleConfig, schema: 
     if (checkId.is_exist) return processMessage(false, "Article id is already exist!");
 
     const checkContents: ResObject = checkContentValues(cloneSchema); // Check content values
-    if (!checkContents.passed) return processMessage(false, checkContents.message);
+    if (!checkContents.passed) return processMessage(false, checkContents.message, checkContents.index);
 
     const coverAssets: ResObject = await uploadCoverAssets(article.raw_cover as File);
     const containImages: Schema = cloneSchema.filter((img: ResObject) => img.type === "image-type"); // Check image types in schema

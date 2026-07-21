@@ -78,6 +78,7 @@ export function filtration(schema: Schema): Schema {
         delete schema[index]["raw_cover"];
         delete schema[index]["raw_file"];
         delete schema[index]["prev_url"];
+        delete schema[index]["is_empty"];
     }
     // Return filtrated schema
     return schema;
@@ -92,7 +93,7 @@ export function checkAndRegisterViewWithCookie(articleId: string): boolean {
     // If cookie exists, it's not been 2 hours yet and return false
     if (cookieExists) return false;
     // If doesn't exist, it's been 2 hours and a new visit
-    const maxAgeSeconds: number = 60 * 5;
+    const maxAgeSeconds: number = 60 * 30;
     document.cookie = `${cookieName}=true; max-age=${maxAgeSeconds}; path=/; SameSite=Lax`;
     return true;
 }
