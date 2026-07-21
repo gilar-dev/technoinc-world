@@ -48,7 +48,7 @@ export default async function uploadArticleInit(article: ArticleConfig, schema: 
     })
     if (!uploadArticle) return processMessage(false, "Failed to upload article!");
 
-    return processMessage(true, "Success!");
+    return processMessage(true, "Successfully created article");
 }
 
 // Helper functions

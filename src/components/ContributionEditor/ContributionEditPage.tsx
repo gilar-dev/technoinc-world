@@ -161,6 +161,7 @@ function ContributionEditPage(): ReactElement {
                             const schemaContainer: HTMLElement = document.querySelector(".schema") as HTMLElement;
                             const children: HTMLCollection = schemaContainer.children;
                             children[update.index].scrollIntoView({ behavior: "smooth", block: "center" });
+                            handleInputChange(update.index, "is_empty", true, setSchema);
                         }
                     }
                 }}

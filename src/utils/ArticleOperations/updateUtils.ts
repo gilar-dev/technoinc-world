@@ -38,7 +38,7 @@ export default async function updateArticleInit(id: string, category: string, co
     if (!updateArticle) return processMessage(false, "Failed to update article");
 
     // Return successful update article process
-    return processMessage(true, "Successfully update article!");
+    return processMessage(true, "Successfully updated article!");
 }
 
 // Helper functions
