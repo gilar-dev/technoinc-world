@@ -4,7 +4,7 @@ import Article from "./components/Article";
 import Content from "./components/Content";
 import Faq from "./components/Faq";
 import Footer from "./components/Footer";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, createContext, useContext, Context } from "react";
 
 function App(): ReactElement {
     

@@ -1,5 +1,5 @@
 import Loading from "../../Loading";
-import { useState, useEffect, ReactElement } from "react";
+import { ReactElement, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { sterilizedWord } from "../../../utils/articleUtils";
 import { Schema, ResObject, API } from "../../../utils/typesUtils";
@@ -14,6 +14,9 @@ function ModifyBox({ search }: propTypes): ReactElement {
     const [data, setData] = useState<Schema>([]); // Get all articles from db
     const [specific, setSpecific] = useState<Schema>([]); // Set only specific article matches with input
     const [loading, setLoading] = useState<boolean>(false);
+
+    // Get the ref to input element in DOM
+    const getSearchInput: React.RefObject<HTMLInputElement | null> = useRef<HTMLInputElement>(null);
 
     // Get all articles from db when loaded
     useEffect(() => {
@@ -40,15 +43,16 @@ function ModifyBox({ search }: propTypes): ReactElement {
 
         fetchData();
     }, []);
-
+    
     // Set the specific article matches with user input
     useEffect(() => {
         setSpecific(data.filter(item => item.title.toLowerCase().includes(input.toLowerCase())));
         if (input === "") setSpecific([]);
     }, [input]);
-
+    
     useEffect(() => {
         document.body.style.overflow = search ? "hidden" : "visible";
+        if (getSearchInput.current) getSearchInput.current.focus();
     }, [search]);
 
     return (
@@ -56,6 +60,7 @@ function ModifyBox({ search }: propTypes): ReactElement {
             <div className="mt-3 flex items-center relative min-[1200px]:w-[calc(100%-350px)]">
                 <input
                     type="text"
+                    ref={getSearchInput}
                     placeholder="Search article name"
                     value={input}
                     onChange={e => setInput(e.target.value)}

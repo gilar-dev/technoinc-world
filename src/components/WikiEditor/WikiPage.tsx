@@ -11,7 +11,7 @@ import { Schema, ResObject, API } from "../../utils/typesUtils";
 import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
 import { increaseArticleVisited } from "../../utils/databaseUtils";
 
-import { Activity, useState, useEffect, ReactElement } from "react";
+import { ReactElement, Activity, useState, useEffect, useMemo } from "react";
 import { Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
 
@@ -24,8 +24,15 @@ function WikiPage(): ReactElement {
     // Essential data variables
     const [article, setArticle] = useState<ResObject>({});
     const [content, setContent] = useState<Schema>([]);
-    const [images, setImages] = useState<Schema>([]);
-    const [menuContent, setMenuContent] = useState<ResObject[]>([]);
+
+    // Get only image types content
+    const images: Schema = useMemo<Schema>(() => {
+        const imgArray: ResObject[] = content.filter((img: ResObject) => img.type === "image-type");
+        imgArray.unshift({ url: article.cover, description: article.title });
+        return imgArray;
+    }, [content]);
+    // Get only paragraph type contents
+    const menuContent: Schema = useMemo<Schema>(() => content.filter((para: ResObject) => para.type === "paragraph-type"), [content]);
 
     // Boolean state variables
     const [loading, setLoading] = useState<boolean>(true);
@@ -34,10 +41,26 @@ function WikiPage(): ReactElement {
 
     const [showed, setShowed] = useState<string>("");
 
+    const processToIncreaseView = async (): Promise<void> => {
+        const splitedId: string[] = (contentId as string).split("-"); // Split content id to get its category id
+        const getCat: string = getCategoryById(splitedId[splitedId.length - 1]); // Get category in the last index of splited id
+
+        // Check if content id is not undefined and its value is not empty
+        if (contentId) {
+            // Check and register view with cookie if not exist
+            const isNewVisit: boolean = checkAndRegisterViewWithCookie(contentId as string);
+            if (isNewVisit) {
+                // If new visit, increase the visited value of current article
+                await increaseArticleVisited(contentId as string, getCat.toLowerCase());
+            }
+        }
+    }
+
     useEffect(() => {
         
         const fetchData = async () => {
             setLoading(true);
+            await processToIncreaseView(); // Check if article is already visited and process increasing visited value
 
             let convertedName: string = getCategory.toLowerCase();
             // Convert plural name to singular name
@@ -52,15 +75,6 @@ function WikiPage(): ReactElement {
 
                 // Initialize successful response data in json object
                 const result: ResObject = await response.json();
-                // Get all image type contents
-                const getImages: Schema = result.article.wiki_content.filter((img: any) => img.type === "image-type");
-                // Get all paragraph type contents
-                const getParagraph: Schema = result.article.wiki_content.filter((para: any) => para.type === "paragraph-type");
-                // Add cover image to list
-                getImages.unshift({
-                    url: result.article.cover,
-                    description: result.article.title
-                });
 
                 setIsExist(true);
                 setLoading(false);
@@ -70,8 +84,6 @@ function WikiPage(): ReactElement {
                     return cloneArticle; // Return the filtered clone article
                 });
                 setContent(result.article.wiki_content); // Set the content state with schema from result article contents
-                setImages(getImages); // Set gotten image type contents
-                setMenuContent(getParagraph); // Set gotten paragraph type contents
 
             } catch(error) {
                 setIsExist(false);
@@ -83,25 +95,6 @@ function WikiPage(): ReactElement {
         fetchData();
     }, []);
 
-    useEffect(() => {
-
-        const splitedId: string[] = (contentId as string).split("-"); // Split content id to get its category id
-        const getCat: string = getCategoryById(splitedId[splitedId.length - 1]); // Get category in the last index of splited id
-
-        const processToIncreaseView = async (): Promise<void> => {
-            // Check if content id is not undefined and its value is not empty
-            if (contentId as string !== "") {
-                // Check and register view with cookie if not exist
-                const isNewVisit: boolean = checkAndRegisterViewWithCookie(contentId as string);
-                if (isNewVisit) {
-                    // If new visit, increase the visited value of current article
-                    await increaseArticleVisited(contentId as string, getCat.toLowerCase());
-                }
-            }
-        }
-        processToIncreaseView();
-    }, [contentId]);
-
     return (
         <>
             <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent}  />
@@ -111,7 +104,7 @@ function WikiPage(): ReactElement {
             </Activity>
             <TitleBox isExist={isExist} article={article} />
             <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
-            <div>
+            <div className="whitespace-pre-wrap">
                 {content.map((item, idx) => (
                     <ContentParser
                         key={idx}

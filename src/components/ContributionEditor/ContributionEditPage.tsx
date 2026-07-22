@@ -10,11 +10,12 @@ import "../../css/DynamicPage.css";
 // Supporting utilites
 import { PublicID, ResObject, API } from "../../utils/typesUtils";
 import { handleInputChange, getCategoryById } from "../../utils/articleUtils";
+import { Config } from "../../utils/contextUtils";
 import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
 import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
 
 // React built-in utilities
-import { Activity, useState, useEffect, ReactElement } from "react";
+import { ReactElement, Activity, useState, useEffect, createContext, Context } from "react";
 import { Link, Params, useParams } from "react-router-dom";
 import { Id, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -50,7 +51,7 @@ function ContributionEditPage(): ReactElement {
     const modifiedSchema = (rawData: ResObject[]) => {
         for (let index: number = 0; index < rawData.length; index++) {
             if (rawData[index].type === "image-type") {
-                rawData[index] = { ...rawData[index], raw_file: "", prev_url: "" }
+                rawData[index] = { ...rawData[index], raw_file: undefined, prev_url: "" }
             }
         }
         return rawData;
@@ -95,7 +96,7 @@ function ContributionEditPage(): ReactElement {
     }, [deleteContainer, loading]);
 
     return (
-        <>
+        <Config.Provider value={{ schema, setSchema, toDelete, setToDelete, handleInputChange }}>
             <Menu wikiTitle="Contribution" setLight={setLight} />
             <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
@@ -142,6 +143,7 @@ function ContributionEditPage(): ReactElement {
             <button
                 title="Update article"
                 onClick={async () => {
+                    if (loading) return;
                     setLoading(true);
                     const update: any = await updateArticleInit(contentId as string, getCategoryById(contentId as string), {
                         schema: schema,
@@ -249,7 +251,7 @@ function ContributionEditPage(): ReactElement {
                 pauseOnFocusLoss
                 pauseOnHover />
             <Footer />
-        </>
+        </Config.Provider>
     );
 }
 

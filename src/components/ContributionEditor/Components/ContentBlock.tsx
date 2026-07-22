@@ -97,6 +97,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
 
                             onChangeHandler(index, "url", urlPath, setSchema);
                             onChangeHandler(index, "raw_file", selectedFile, setSchema);
+                            onChangeHandler(index, "is_empty", false, setSchema)
 
                             if (block?.prev_url !== undefined) {
                                 setToDelete?.((prev: string[]) => [...prev, block.public_id]);
@@ -114,9 +115,10 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                             // Restore the default image if it's changed
                             onChangeHandler(index, "url", block?.prev_url, setSchema);
                             onChangeHandler(index, "prev_url", "", setSchema);
+                            onChangeHandler(index, "raw_file", undefined, setSchema);
+                            console.log(block);
                             setToDelete?.((prev: string[]) => [...prev].toSpliced([...prev].indexOf(block.public_id), 1));
                         }}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
                         className={`${block?.prev_url !== undefined && block?.prev_url !== "" ? "block" : "hidden"}
                                     my-3 p-3 rounded-full border-none bg-transparent transition-colors duration-150 ease-in-out
                                     hover:bg-gray-500/30`}>

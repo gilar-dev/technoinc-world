@@ -1,6 +1,7 @@
 import { Schema, ResObject, SetState } from "../../../utils/typesUtils";
 import { ReactElement } from "react";
 import "../../../css/DynamicPage.css";
+import { sterilizedWord } from "../../../utils/articleUtils";
 
 interface PropTypes {
     index: number;
@@ -64,7 +65,24 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
                             id={`content${index + 1}`}
                             className="mx-3 my-10">
                             <h3 className="font-medium">{block.title}</h3>
-                            <p className="mt-3 font-normal leading-7 text-[.9em]">{block.data}</p>
+                            <p className="mt-3 font-normal leading-7 text-[.9em]" dangerouslySetInnerHTML={{__html:
+                                block.data.replace(
+                                    /(?<italic>\*(.*?)\*)|(?<bold>\*\*(.*?)\*\*)|(?<underline>__(._?)__)/g,
+                                    (fullMatch: any, ...args: any) => {
+                                        const groups: any = args[args.length - 1];
+                                        if (groups.bold) {
+                                            return `<strong>${args[1]}</strong>`
+                                        }
+                                        if (groups.italic) {
+                                            return `<em>${args[1]}</em>`;
+                                        }
+                                        if (groups.underline) {
+                                            return `<u>${args[5]}</u>`
+                                        }
+                                        return fullMatch;
+                                    }
+                                )
+                            }}></p>
                         </div>
                     );
                 }

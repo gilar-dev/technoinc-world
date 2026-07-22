@@ -46,10 +46,12 @@ export default async function updateArticleInit(id: string, category: string, co
 async function getImagesToUpload(category: string, schema: Schema): Promise<any> {
     const images: Schema = schema.filter((img: ResObject) => img.type === "image-type");
     // Return schema immediately if no images are changed
-    if (schema.filter((img: ResObject) => img.raw_file === "").length === images.length) return schema;
+    if (schema.filter((img: ResObject) => Object.keys(img).includes("raw_file") && img.raw_file === undefined).length === images.length){
+        return schema;
+    }
     // Bulk upload assets to cloud storage
     for (let index: number = 0; index < schema.length; index++) {
-        if (schema[index].type === "image-type" && schema[index].raw_file !== "") {
+        if (schema[index].type === "image-type" && schema[index].raw_file !== undefined) {
             // Create form data to upload to cloud storage
             const dataPackage: FormData = uploadPackage(schema[index].raw_file, {
                 folder: category,
