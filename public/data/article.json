@@ -4,13 +4,13 @@
             "id": 1,
             "title": "United Lands of Augusta",
             "imageUrl": "/assets/flags/ula-flag.png",
-            "linkUrl": "/"
+            "linkUrl": "/wiki/Category:Civilizations/united-lands-of-augusta-civ"
         },
         {
             "id": 2,
             "title": "United Civilizations",
             "imageUrl": "/assets/organizations/uc-logo-org.png",
-            "linkUrl": "/"
+            "linkUrl": "/wiki/Category:Organizations/united-civilizations-org"
         },
         {
             "id": 3,
@@ -22,7 +22,7 @@
             "id": 4,
             "title": "People's Sosnev Socialist Republics",
             "imageUrl": "/assets/flags/pssr-flag.png",
-            "linkUrl": "/"
+            "linkUrl": "/wiki/Category:Civilizations/peoples-sosnev-socialist-republics-civ"
         }
     ],
     "popularCategories": [
@@ -30,25 +30,25 @@
             "id": 1,
             "title": "Civilizations",
             "imageUrl": "/assets/icons/technoinc-header-bg.jpg",
-            "linkUrl": "/category/Civilizations"
+            "linkUrl": "/wiki/Category:Civilizations"
         },
         {
             "id": 2,
             "title": "Characters",
             "imageUrl": "https://p.novaskin.me/5093163314.png",
-            "linkUrl": "/category/Characters"
+            "linkUrl": "/wiki/Category:Characters"
         },
         {
             "id": 3,
             "title": "Organizations",
             "imageUrl": "/assets/organizations/uc-headquarters-org.jpg",
-            "linkUrl": "/category/Organizations"
+            "linkUrl": "/wiki/Category:Organizations"
         },
         {
             "id": 4,
             "title": "Towns",
             "imageUrl": "/assets/towns/keralis-mt-town.jpg",
-            "linkUrl": "/category/Towns"
+            "linkUrl": "/wiki/Category:Towns"
         }
     ]
 }

@@ -1,7 +1,7 @@
+import TextParser from "./TextParser";
 import { Schema, ResObject, SetState } from "../../../utils/typesUtils";
 import { ReactElement } from "react";
 import "../../../css/DynamicPage.css";
-import { sterilizedWord } from "../../../utils/articleUtils";
 
 interface PropTypes {
     index: number;
@@ -46,7 +46,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
                 <div className={`box mx-3 flex p-3 border-l border-r
                                 ${differCheck(nextBlock, "table-type") && "border-b border-b-[rgb(85,85,85)]"}`}>
                     <h4 className="w-full uppercase text-[.8em]">{block.head_data}</h4>
-                    <p className="w-full font-normal text-[.9em]">{block.content_data}</p>
+                    <TextParser content={block.content_data} style="w-full font-normal text-[.9em]" />
                 </div>
             );
 
@@ -65,24 +65,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
                             id={`content${index + 1}`}
                             className="mx-3 my-10">
                             <h3 className="font-medium">{block.title}</h3>
-                            <p className="mt-3 font-normal leading-7 text-[.9em]" dangerouslySetInnerHTML={{__html:
-                                block.data.replace(
-                                    /(?<italic>\*(.*?)\*)|(?<bold>\*\*(.*?)\*\*)|(?<underline>__(._?)__)/g,
-                                    (fullMatch: any, ...args: any) => {
-                                        const groups: any = args[args.length - 1];
-                                        if (groups.bold) {
-                                            return `<strong>${args[1]}</strong>`
-                                        }
-                                        if (groups.italic) {
-                                            return `<em>${args[1]}</em>`;
-                                        }
-                                        if (groups.underline) {
-                                            return `<u>${args[5]}</u>`
-                                        }
-                                        return fullMatch;
-                                    }
-                                )
-                            }}></p>
+                            <TextParser content={block.data} style="mt-3 font-normal leading-relaxed text-[.9em]" />
                         </div>
                     );
                 }

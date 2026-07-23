@@ -48,7 +48,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
             </div>
 
 
-            <div className={`w-full p-1 flex flex-col gap-3 absolute bottom-5 text-white bg-linear-to-t from-black to-black/0
+            <div className={`w-full p-1 flex flex-col gap-3 absolute bottom-10 text-white bg-linear-to-t from-black to-black/0
                             ${navigation ? "flex" : "hidden"}`}>
                 <div className="w-full mb-3 flex justify-between items-center text-white [&>span]:text-3xl [&>span]:hover:border-white">
                     <span

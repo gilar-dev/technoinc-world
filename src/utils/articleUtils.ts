@@ -97,3 +97,18 @@ export function checkAndRegisterViewWithCookie(articleId: string): boolean {
     document.cookie = `${cookieName}=true; max-age=${maxAgeSeconds}; path=/; SameSite=Lax`;
     return true;
 }
+
+// Parse unique text code to turn it into unique text styles
+export function textParser(text: string): string {
+    const parsing: string = text.replace(
+        /(?<bold>\*\*(.*?)\*\*)|(?<underline>__(.*?)__)|(?<italic>\*(.*?)\*)/g,
+        (fullMatch: string, ...args: any[]) => {
+            const groups: ResObject = args[args.length - 1];
+            if (groups.bold) return `<strong>${args[1]}</strong>`;
+            if (groups.underline) return `<u>${args[3]}</u>`;
+            if (groups.italic) return `<em>${args[5]}</em>`;
+            return fullMatch;
+        }
+    )
+    return parsing;
+}
