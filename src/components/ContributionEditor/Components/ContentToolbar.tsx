@@ -1,5 +1,4 @@
 import { addNewContentBlock } from "../../../utils/ContentBlocks/contentUtils";
-import { Config } from "../../../utils/contextUtils";
 import { ReactElement } from "react";
 import Blocks from "../../../utils/ContentBlocks/blockUtils";
 import { Schema, SetState } from "../../../utils/typesUtils";

@@ -1,7 +1,7 @@
 import Loading from "./Loading";
 import { ResObject, API } from "../utils/typesUtils";
 import { Link } from "react-router-dom";
-import { useState, useEffect, ReactElement } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import "../css/Menu.css";
 
 interface MenuProps {
@@ -41,7 +41,7 @@ function Menu({
     // Function to switch to different theme
     const themeToggle = (): void => {
         setTheme(theme === "light" ? "dark" : "light");
-        setIsActive(isActive === "active" ? "" : "active");
+        sidebarMenuClicked();
     }
 
     // Set the value of isActive for sidebar menu
@@ -109,7 +109,7 @@ function Menu({
         <section className={`menu-panel ${theme}`}>
 
             <div className="menu-box">
-                <button 
+                <button
                     id="menu-btn"
                     title="Open sidebar menu"
                     onClick={() => sidebarMenuClicked()}>
@@ -164,7 +164,7 @@ function Menu({
                     </label>
                     <div className="list-box">
 
-                        <Loading show={loading} />
+                        <Loading show={loading} position="static" />
 
                         <ul>
                             {categories.map((item: string, idx: number) =>

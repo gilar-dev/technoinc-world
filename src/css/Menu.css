@@ -207,6 +207,10 @@
     list-style: disc;
 }
 
+.list-box li.content a {
+    display: block;
+}
+
 @media screen and (min-width: 800px) {
     .sidebar-menu {
         width: 350px;

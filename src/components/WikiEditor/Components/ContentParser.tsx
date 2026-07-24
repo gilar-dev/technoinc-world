@@ -74,22 +74,23 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
 
         case "image-type":
             return (
-                <div
-                    onClick={() => {
-                        setShowed(block.url);
-                        setImageContainer(true);
-                    }}
-                    className="p-3 flex flex-col items-center justify-center gap-1">
-                    <div className="w-full overflow-hidden flex flex-col items-center cursor-pointer relative">
-                        <img
-                            src={block.url || null}
-                            alt={block.description}  
-                            className="max-w-full max-h-[35em] transition-transform ease-in-out duration-500 hover:scale-[110%]" />
-                        <span className="p-1.25 text-[10px] absolute bottom-2 right-2 self-end rounded-full text-white bg-black/50">
-                            <i className="fa-regular fa-clone"></i>
-                        </span>
+                <div className="m-3 flex justify-center items-center">
+                    <div className="flex flex-col items-center gap-1">
+                        <div className="overflow-hidden cursor-pointer relative">
+                            <img
+                                src={block.url || null}
+                                alt={block.description}  
+                                onClick={() => {
+                                    setShowed(block.url);
+                                    setImageContainer(true);
+                                }}
+                                className="max-w-screen max-h-[35em] transition-transform ease-in-out duration-500 hover:scale-[110%]" />
+                            <span className="p-1.25 text-[10px] absolute bottom-2 right-2 self-end rounded-full text-white bg-black/50">
+                                <i className="fa-regular fa-clone"></i>
+                            </span>
+                        </div>
+                        <p className="max-w-full text-[.7em]">{block.description}</p>
                     </div>
-                    <p className="text-[.7em]">{block.description}</p>
                 </div>
             );
 
