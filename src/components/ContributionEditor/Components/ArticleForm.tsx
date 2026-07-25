@@ -54,16 +54,20 @@ function ArticleForm({ article, light=false, states }: PropTypes): ReactElement 
                 {article.cover &&
                     <img
                         src={article.cover}
-                        className="w-full rounded-[5px]" />}
+                        className="w-full rounded-[5px]" />
+                }
                 <input
                     id="article-cover"
                     type="file"
                     accept="image/jpeg, image/png, image/webp, .jpg, .jpeg, .png, .webp"
-                    style={{display: "none"}}
+                    style={{ display: "none" }}
                     onChange={(e) => {
                         const selectedFile: File = e.target.files?.[0] as File;
+                        // If file is undefined or canceled, return
                         if (!selectedFile) return;
+                        // Create object url and get url as value to cover source
                         const preview: string = URL.createObjectURL(selectedFile);
+                        // Update article state
                         states.setArticle((prev: any) => (
                             { ...prev, cover: preview, raw_cover: selectedFile }
                         ));
@@ -73,7 +77,8 @@ function ArticleForm({ article, light=false, states }: PropTypes): ReactElement 
                     className={`p-3 font-bold self-start rounded-2xl border-2 text-black
                                 hover:bg-gray-400/70 active:text-[rgb(0,175,255)] active:bg-white
                                 transition-colors duration-150 ease-in-out
-                                ${!light && "text-white border-gray-500"}`}>
+                                ${!light && "text-white border-gray-500"}`}
+                >
                     Select Cover
                 </label>
             </div>

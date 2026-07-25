@@ -3,6 +3,7 @@ import Menu from "../Menu";
 import Loading from "../Loading";
 import ModifyBox from "./Components/ModifyBox";
 import ArticleForm from "./Components/ArticleForm";
+import TextEditor from "./Components/TextEditor";
 import InspireBox from "./Components/InspireBox";
 import ContentBlock from "./Components/ContentBlock";
 import ContentToolbar from "./Components/ContentToolbar";
@@ -15,7 +16,7 @@ import { getCategoryById, handleInputChange } from "../../utils/articleUtils";
 import uploadArticleInit from "../../utils/ArticleOperations/uploadUtils";
 
 // React built-in utilities
-import { ReactElement, Activity, useState, useEffect } from "react";
+import { ReactElement, Activity, useState, useEffect, useRef } from "react";
 import { Id, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,11 +26,11 @@ function ContributionPage(): ReactElement {
     const [article, setArticle] = useState<ArticleConfig>({
         id: "", // Article id
         title: "", // Article title
-        category: "Civilization", // Default value
+        category: "Civilization", // Article category default value
         cover: "", // Article image cover
         public_id: "", // Article image cover public id
         raw_cover: undefined, // Temporary
-        visited: 0,
+        visited: 0, // Article total visited (0 as start)
         wiki_content: [] // Array of article contents
     });
 
@@ -37,19 +38,23 @@ function ContributionPage(): ReactElement {
     const [search, setSearch] = useState<boolean>(false); // If search button in Menu component is clicked
     const [loading, setLoading] = useState<boolean>(false); // Loading state to wait validating something
 
-    // State varble for getting current site theme from local storage
+    // Create reference to schema div element
+    const schemaElement = useRef<HTMLDivElement | null>(null);
+
+    // State variable for getting current site theme from local storage
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
     // Toast success
-    const successToastNotify = (): Id => toast.success("Sussess!", {
-        className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
+    const successToastNotify = (content: string): Id => toast.success(content, {
+        className: `shadow-2xs! shadow-black! ${light ? "text-black! bg-white!" : "text-white! bg-gray-700!"}`
     });
     // Toast warning
     const errorToastNotify = (content: string): Id => toast.error(content, {
-        className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
+        className: `shadow-2xs! shadow-black! ${light ? "text-black! bg-white!" : "text-white! bg-gray-700!"}`
     });
 
     useEffect(() => {
+        // Set body overflow style property based on loading state
         document.body.style.overflow = loading ? "hidden" : "visible";
     }, [loading]);
 
@@ -59,10 +64,13 @@ function ContributionPage(): ReactElement {
             <ModifyBox search={search} />
             <Loading show={loading} position="fixed" />
             <ArticleForm article={article} light={light} states={{setArticle}} />
+            <TextEditor />
             <Activity mode={schema.length === 0 ? "visible" : "hidden"}>
                 <InspireBox />
             </Activity>
-            <div className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]
+            <div
+                ref={schemaElement}
+                className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                             [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                             [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                             [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
@@ -85,23 +93,29 @@ function ContributionPage(): ReactElement {
                 title="Upload article"
                 style={{display: schema.length === 0 ? "none" : "block"}}
                 onClick={async () => {
+                    if (loading) return; // If it's still in loading process, return
                     setLoading(true); // Set loading to true
                     // Await to validate all things before uploading
                     const validate: any = await uploadArticleInit(article, schema, { setArticle, setSchema });
                     if (validate.passed) { // If all validation is success
-                        successToastNotify();
+                        successToastNotify(validate.message);
+                        // Set delay before redirecting to the page
                         setTimeout(() => {
                             setLoading(false);
+                            // Redirect to created article
                             window.location.replace(`/wiki/Category:${getCategoryById(article.id, true)}/${article.id}`);
                         }, 3000);
                     } else { // If something isn't valid when validating
                         setLoading(false);
                         if (validate.index === undefined) errorToastNotify(validate.message);
                         else {
+                            if (!schemaElement.current) return; // Check if schema element ref is undefined and return
                             errorToastNotify(`${validate.message} at content ${validate.index + 1}`);
-                            const schemaContainer: HTMLElement = document.querySelector(".schema") as HTMLElement;
-                            const children: HTMLCollection = schemaContainer.children;
+                            // Get all children of schema container parent element
+                            const children: HTMLCollection = schemaElement.current.children;
+                            // Scroll to invalid content value index
                             children[validate.index].scrollIntoView({ behavior: "smooth", block: "center" });
+                            // Set the invalid content 'is_empty' property to true
                             handleInputChange(validate.index, "is_empty", true, setSchema);
                         }
                     }

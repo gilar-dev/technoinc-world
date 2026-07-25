@@ -209,29 +209,26 @@ function Menu({
                         </span>
                     </label>
                     <div className="list-box">
-                        <ul>
+                        <ol className="content">
                             {menuContent.map((content: ResObject, index: number) => (
                                 <li
                                     key={index}
-                                    className="content"
                                     onClick={() => sidebarMenuClicked()}>
                                     <a
                                         href={`#content${index + 1}`}
                                         onClick={(e) => {
                                             e.preventDefault();
 
-                                            history.replaceState(null, "", `content${index + 1}`);
-
                                             const target = document.getElementById(`content${index + 1}`);
                                             if (target) {
-                                                target.scrollIntoView({ behavior: "smooth", block: "center" });
+                                                target.scrollIntoView({ behavior: "smooth", block: "start" });
                                             }
                                         }}>
                                         {content.title}
                                     </a>
                                 </li>
                             ))}
-                        </ul>
+                        </ol>
                     </div>
                 </div>
             </div>

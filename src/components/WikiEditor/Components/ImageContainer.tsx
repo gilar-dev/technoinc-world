@@ -39,16 +39,16 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
 
             <div
                 onClick={() => setNavigation(!navigation)}
-                className="h-screen flex justify-center items-center">
+                className="w-full h-full flex justify-center items-center">
                 {display &&
                     <img
                         src={showed}
                         alt={images[current.index]?.description}
-                        className="w-full max-h-[65vh]" />}
+                        className="min-w-full max-w-full max-h-[65%]" />}
             </div>
 
 
-            <div className={`w-full p-1 flex flex-col gap-3 absolute bottom-10 text-white bg-linear-to-t from-black to-black/0
+            <div className={`w-full p-1 flex flex-col gap-3 absolute bottom-15 text-white bg-linear-to-t from-black to-black/0
                             ${navigation ? "flex" : "hidden"}`}>
                 <div className="w-full mb-3 flex justify-between items-center text-white [&>span]:text-3xl [&>span]:hover:border-white">
                     <span
@@ -68,9 +68,9 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                         <i className="fa-solid fa-angle-right"></i>
                     </span>
                 </div>
-                <h4 className="ml-3">{`${current.index + 1}/${images.length}`}</h4>
-                <p className="ml-3 mb-3 font-light text-[.9em]">{current.description}</p>
-                <div className="flex gap-1">
+                <h4 className="px-3">{`${current.index + 1}/${images.length}`}</h4>
+                <p className="px-3 mb-3 font-light text-[.9em]">{current.description}</p>
+                <div className="px-3 flex gap-1">
                     {images.map((img, idx) => (
                         <div
                             key={idx}

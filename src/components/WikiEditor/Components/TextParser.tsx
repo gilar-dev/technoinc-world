@@ -8,10 +8,10 @@ interface PropTypes {
 
 function TextParser({ content, style="" }: PropTypes): ReactElement {
 
-    const parsedText: any = useMemo<any>(() => {
+    const parsedText = (content: string): any => {
         if (!content) return [];
 
-        const regexCombined: RegExp = /(?<bold>\*\*(.*?)\*\*)|(?<underline>__(.*?)__)|(?<italic>\*(.*?)\*)|(?<link><link:(.*?)#(.*?)>)/g;
+        const regexCombined: RegExp = /(?<bold>\*\*(.*?)\*\*)|(?<underline>__(.*?)__)|(?<italic>\*(.*?)\*)|(?<dotted>_(.*?)_)|(?<link><link:(.*?)#(.*?)>)/g;
         const elements: React.ReactNode[] = [];
         let lastIndex: number = 0;
 
@@ -28,28 +28,35 @@ function TextParser({ content, style="" }: PropTypes): ReactElement {
             if (groups?.bold) {
                 const cleanText: string = match[2];
                 elements.push(
-                    <strong key={`b-${index}`}>{cleanText}</strong>
+                    <strong key={`b-${index}`}>{parsedText(cleanText)}</strong>
                 );
             } else if (groups?.underline) {
                 const cleanText: string = match[4];
                 elements.push(
-                    <u key={`u-${index}`}>{cleanText}</u>
+                    <u key={`u-${index}`}>{parsedText(cleanText)}</u>
                 );
             } else if (groups?.italic) {
                 const cleanText: string = match[6];
                 elements.push(
-                    <em key={`i-${index}`}>{cleanText}</em>
+                    <em key={`i-${index}`}>{parsedText(cleanText)}</em>
+                );
+            } else if (groups?.dotted) {
+                const cleanText: string = match[8];
+                elements.push(
+                    <span key={`d-${index}`} className="border-0 border-b border-dotted">{parsedText(cleanText)}</span>
                 );
             } else if (groups?.link) {
-                const linkLabel: string = match[8];
-                const linkUrl: string = match[9];
+                const linkLabel: string = match[10];
+                const linkUrl: string = match[11];
                 elements.push(
                     <a 
                         key={`l-${index}`}
                         href={linkUrl} target={linkUrl.startsWith("http") ? "_blank" : "_self"}
                         rel="noopener nooferrer"
-                        className="text-[rgb(105,137,252)]"
-                        >{linkLabel}</a>
+                        className="font-medium text-[#5c92ff]"
+                    >
+                        {parsedText(linkLabel)}
+                    </a>
                 );
             }
 
@@ -61,10 +68,10 @@ function TextParser({ content, style="" }: PropTypes): ReactElement {
         }
 
         return elements;
-    }, [content]);
+    }
 
     return (
-        <p className={style}>{parsedText}</p>
+        <p className={style}>{parsedText(content)}</p>
     );
 }
 

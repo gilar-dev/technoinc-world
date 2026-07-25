@@ -62,6 +62,7 @@
 .sidebar-menu {
     width: 70%;
     height: 100vh;
+    overflow: auto;
     position: absolute;
     top: 0;
     transform: translateX(-100%);
@@ -202,13 +203,38 @@
     gap: .5em;
 }
 
-.list-box li.content {
-    margin-left: 1em;
-    list-style: disc;
-}
-
 .list-box li.content a {
     display: block;
+}
+
+ol.content {
+    margin-top: .5em;
+    counter-reset: item;
+    list-style-type: none;
+}
+
+ol.content li {
+    counter-increment: item;
+    cursor: pointer;
+}
+
+ol.content li::before {
+    content: counter(item) ". ";
+}
+
+ol.content li ol {
+    margin-left: 1rem;
+    counter-reset: subitem;
+    list-style: none;
+}
+
+ol.content li ol li {
+    counter-increment: subitem;
+    cursor: pointer;
+}
+
+ol.content li ol li::before {
+    content: counter(item) "." counter(subitem) ". ";
 }
 
 @media screen and (min-width: 800px) {
