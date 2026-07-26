@@ -1,4 +1,4 @@
-import React, { ReactElement, useMemo } from "react";
+import { ReactElement } from "react";
 import { ResObject } from "../../../utils/typesUtils";
 
 interface PropTypes {

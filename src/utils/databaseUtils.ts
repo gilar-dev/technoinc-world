@@ -35,6 +35,23 @@ export async function getArticleWiki(id: string, category: string): Promise<any>
     }
 }
 
+// Get article by using search input value
+export async function searchArticle(input: string): Promise<any> {
+    try {
+        // Fetch request to backend for uploading new article
+        const response: Response = await fetch(`${API}/api/v1/wiki/search/${input}`);
+        // If response is not ok, throw error
+        if (!response.ok) throw new Error(`${response}`);
+
+        // Return the successful fetch response data
+        const result: ResObject = await response.json();
+        return result;
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 // Upload new article wiki to database
 export async function uploadArticleWiki(finalArticle: ArticleConfig): Promise<any> {
     try {

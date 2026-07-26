@@ -1,8 +1,10 @@
+import SearchMatches from "./SearchMatches";
 import Loading from "../../Loading";
 import { ReactElement, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { sterilizedWord } from "../../../utils/articleUtils";
 import { Schema, ResObject, API } from "../../../utils/typesUtils";
+import { sterilizedWord } from "../../../utils/articleUtils";
+import { searchArticle } from "../../../utils/databaseUtils";
 
 interface propTypes {
     search: boolean;
@@ -11,12 +13,11 @@ interface propTypes {
 function ModifyBox({ search }: propTypes): ReactElement {
 
     const [input, setInput] = useState<string>(""); // User article search input
-    const [data, setData] = useState<Schema>([]); // Get all articles from db
-    const [specific, setSpecific] = useState<Schema>([]); // Set only specific article matches with input
     const [loading, setLoading] = useState<boolean>(false);
+    const [matches, setMatches] = useState<Schema>([]);
 
-    // Get the ref to input element in DOM
-    const getSearchInput: React.RefObject<HTMLInputElement | null> = useRef<HTMLInputElement>(null);
+    // Get the ref to specific html tags
+    const inputTag = useRef<HTMLInputElement>(null);
 
     // Get all articles from db when loaded
     useEffect(() => {
@@ -31,8 +32,7 @@ function ModifyBox({ search }: propTypes): ReactElement {
                 // Get the successful fetch response data
                 const result: ResObject = await response.json();
 
-                setData(result.data);
-                setSpecific(result.data.filter((item: any) => item.title.toLowerCase().includes(input.toLowerCase())));
+                setMatches(result.data);
                 setLoading(false);
 
             } catch (error) {
@@ -46,13 +46,29 @@ function ModifyBox({ search }: propTypes): ReactElement {
     
     // Set the specific article matches with user input
     useEffect(() => {
-        setSpecific(data.filter(item => item.title.toLowerCase().includes(input.toLowerCase())));
-        if (input === "") setSpecific([]);
+        if (!input.trim()) {
+            setMatches([]);
+            setLoading(false);
+            return;
+        }
+        setMatches([]);
+        setLoading(true);
+
+        // Add delay before searching
+        const delayed = setTimeout(async () => {
+            const process: ResObject = await searchArticle(input);
+            setMatches(process.matches);
+            setLoading(false);
+        }, 700);
+
+        // Clear tiemout delay as input changes
+        return () => clearTimeout(delayed);
     }, [input]);
     
     useEffect(() => {
+        setInput("");
         document.body.style.overflow = search ? "hidden" : "visible";
-        if (getSearchInput.current) getSearchInput.current.focus();
+        if (inputTag.current) inputTag.current.focus();
     }, [search]);
 
     return (
@@ -60,8 +76,8 @@ function ModifyBox({ search }: propTypes): ReactElement {
             <div className="mt-3 flex items-center relative min-[1200px]:w-[calc(100%-350px)]">
                 <input
                     type="text"
-                    ref={getSearchInput}
-                    placeholder="Search article name"
+                    ref={inputTag}
+                    placeholder="Search article title"
                     value={input}
                     onChange={e => setInput(e.target.value)}
                     className="w-full h-10 pl-3 pr-10 text-[1em] outline-none border-l-0 border-t-0 border-r-0 text-white bg-transparent" />
@@ -73,17 +89,17 @@ function ModifyBox({ search }: propTypes): ReactElement {
                 </button>
             </div>
 
+            <Loading show={loading} />
+
             <div className="h-[85%] py-3 overflow-auto">
-
-                <Loading show={loading} />
-
-                <p className={`mx-3 ${specific.length > 0 ? "block" : "hidden"} text-white`}>
-                    <span style={{display: input === "" && specific.length > 0 ? "inline" : "none"}}>All Articles </span>
-                    <span style={{display: input !== "" ? "inline" : "none"}}>Found Match </span>
-                    ({specific.length})
+                <p className={`mx-3 ${!loading ? "block" : "hidden"} text-white`}>
+                    <span style={{display: input === "" && matches.length > 0 ? "inline" : "none"}}>All Articles </span>
+                    <span style={{display: input !== "" && matches.length > 0 ? "inline" : "none"}}>Found Matches </span>
+                    <span style={{display: input !== "" && matches.length === 0 ? "inline" : "none"}}>No Matches Found</span>
+                    {matches.length > 0 && `(${matches.length})`}
                 </p>
 
-                {specific.map((item: ResObject, index: number) => (
+                {matches.map((item: ResObject, index: number) => (
                     <div
                         key={index}
                         className="mt-10 mx-3 flex justify-between hover:bg-white/10
@@ -96,11 +112,7 @@ function ModifyBox({ search }: propTypes): ReactElement {
                         </div>
 
                         <div className="w-[60%] flex flex-col text-white min-[1200px]:w-[70%]">
-                            <h4 dangerouslySetInnerHTML={{__html:
-                                item.title.replace(new RegExp(`(${sterilizedWord(input)})`, "gi"), (word: any) => (
-                                    `<span style="background-color: blue;">${word}</span>`
-                                ))
-                            }}></h4>
+                            <SearchMatches title={item.title} input={input} />
                             <p className="text-[.9em]">{item.id}</p>
                             <p className="text-[.9em] flex items-center gap-1 text-white/50">{item.category} | {item.visited} <i className="fa-regular fa-eye"></i></p>
 
