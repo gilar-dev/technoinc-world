@@ -8,6 +8,7 @@ import ImageContainer from "./Components/ImageContainer";
 import Footer from "../Footer";
 
 import { Schema, ResObject, API } from "../../utils/typesUtils";
+import { Theme } from "../../utils/contextUtils";
 import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
 import { increaseArticleVisited } from "../../utils/databaseUtils";
 
@@ -24,6 +25,7 @@ function WikiPage(): ReactElement {
     // Essential data variables
     const [article, setArticle] = useState<ResObject>({});
     const [content, setContent] = useState<Schema>([]);
+    const [showed, setShowed] = useState<string>("");
 
     // Get only image types content
     const images: Schema = useMemo<Schema>(() => {
@@ -38,8 +40,7 @@ function WikiPage(): ReactElement {
     const [loading, setLoading] = useState<boolean>(true);
     const [isExist, setIsExist] = useState<boolean | undefined>(undefined);
     const [imageContainer, setImageContainer] = useState<boolean>(false);
-
-    const [showed, setShowed] = useState<string>("");
+    const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
     const processToIncreaseView = async (): Promise<void> => {
         const splitedId: string[] = (contentId as string).split("-"); // Split content id to get its category id
@@ -96,15 +97,15 @@ function WikiPage(): ReactElement {
     }, []);
 
     return (
-        <>
-            <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent}  />
+        <Theme.Provider value={{ light }}>
+            <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent} setLight={setLight} />
             <Loading show={loading} position={"static"} />
             <Activity mode={!isExist && isExist !== undefined ? "visible" : "hidden"}>
                 <NotFound />
             </Activity>
             <TitleBox isExist={isExist} article={article} />
             <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
-            <div className="whitespace-pre-wrap">
+            <div className={`whitespace-pre-wrap`}>
                 {content.map((item, idx) => (
                     <ContentParser
                         key={idx}
@@ -123,7 +124,7 @@ function WikiPage(): ReactElement {
                 display={imageContainer}
                 setDisplay={setImageContainer} />
             <Footer />
-        </>
+        </Theme.Provider>
     );
 }
 

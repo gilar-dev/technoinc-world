@@ -97,3 +97,13 @@ export function checkAndRegisterViewWithCookie(articleId: string): boolean {
     document.cookie = `${cookieName}=true; max-age=${maxAgeSeconds}; path=/; SameSite=Lax`;
     return true;
 }
+
+// Clear styling code in article text
+export function clearTextStyling(text: string): string {
+    return text
+        .replaceAll("*", "")
+        .replaceAll("_", "")
+        .replaceAll("<link:", "")
+        .replaceAll("#", "")
+        .replaceAll(">", "");
+}

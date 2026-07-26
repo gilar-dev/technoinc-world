@@ -1,4 +1,5 @@
 import { ResObject, Schema, SetState } from "../../../utils/typesUtils";
+import { clearTextStyling } from "../../../utils/articleUtils";
 import { ReactElement, useState, useEffect } from "react";
 import "../../../css/DynamicPage.css";
 
@@ -69,7 +70,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                     </span>
                 </div>
                 <h4 className="px-3">{`${current.index + 1}/${images.length}`}</h4>
-                <p className="px-3 mb-3 font-light text-[.9em]">{current.description}</p>
+                <p className="px-3 mb-3 font-light text-[.9em]">{current.description && clearTextStyling(current.description)}</p>
                 <div className="px-3 flex gap-1">
                     {images.map((img, idx) => (
                         <div

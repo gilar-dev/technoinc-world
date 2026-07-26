@@ -1,3 +1,3 @@
-import { Context, createContext } from "react";
+import { createContext } from "react"
 
-export const Config: Context<any> = createContext(undefined);
+export const Theme = createContext<any>("");

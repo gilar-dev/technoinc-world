@@ -10,7 +10,6 @@ import "../../css/DynamicPage.css";
 // Supporting utilites
 import { PublicID, ResObject, API } from "../../utils/typesUtils";
 import { handleInputChange, getCategoryById } from "../../utils/articleUtils";
-import { Config } from "../../utils/contextUtils";
 import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
 import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
 
@@ -96,7 +95,7 @@ function ContributionEditPage(): ReactElement {
     }, [deleteContainer, loading]);
 
     return (
-        <Config.Provider value={{ schema, setSchema, toDelete, setToDelete, handleInputChange }}>
+        <>
             <Menu wikiTitle="Contribution" setLight={setLight} />
             <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
@@ -251,7 +250,7 @@ function ContributionEditPage(): ReactElement {
                 pauseOnFocusLoss
                 pauseOnHover />
             <Footer />
-        </Config.Provider>
+        </>
     );
 }
 

@@ -14,7 +14,7 @@ function TitleBox({ isExist, article }: PropTypes): ReactElement {
             <h2 className="text-center">
                 <span className="highlight">{article.title}</span>
             </h2>
-            <p className="mt-2 text-[small]">{`${article.category} Page`}</p>
+            <p className="mt-2 text-[small]">{article?.description || article.category}</p>
             <div className="mt-3 flex justify-center items-center gap-1 [&>p]:text-[.7em]">
                 <p>VISITED</p>
                 <p>{article.visited}</p>
