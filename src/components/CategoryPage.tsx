@@ -1,6 +1,7 @@
 import Menu from "./Menu";
 import Loading from "./Loading";
 import Footer from "./Footer";
+import { API } from "../utils/typesUtils";
 import { useState, useEffect, ReactElement } from "react";
 import { Link, Params, useParams } from "react-router-dom";
 import "../css/DynamicPage.css";
@@ -27,8 +28,6 @@ function CategoryPage(): ReactElement {
 
         const fetchData = async (): Promise<void> => {
 
-            const API: string = import.meta.env.VITE_API;
-            
             try {
                 setLoading(true);
                 let convertedName: string = getCategory.toLowerCase();
@@ -51,6 +50,11 @@ function CategoryPage(): ReactElement {
 
         fetchData();
     }, [categoryName]);
+
+    useEffect(() => {
+        const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
+        titleTag.textContent = `${getCategory} - TechnoInc MC Wiki`;
+    }, []);
 
     return (
         <>

@@ -57,6 +57,10 @@ function ContributionEditPage(): ReactElement {
     }
 
     useEffect(() => {
+
+        const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
+        titleTag.textContent = "Edit Article - TechnoInc MC Wiki";
+
         // Get wiki article from db
         const fetchData = async () => {
             const category: string = getCategoryById(splitedId[splitedId.length - 1]).toLowerCase();
@@ -115,7 +119,7 @@ function ContributionEditPage(): ReactElement {
                     alt={data.title}
                     className="w-[80%] border border-white" />
                 <h3>{data.title}</h3>
-                <p>{data.id}</p>
+                <p className="font-normal">{data?.description || data.id}</p>
                 <p className="text-[.8em]">{data.category}</p>
             </div>
             <div className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]

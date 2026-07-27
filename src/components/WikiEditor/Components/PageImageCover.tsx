@@ -23,7 +23,7 @@ function PageImageCover({ isExist, article, content, states }: PropTypes): React
                             content?.type.includes("heading-type") && "border-b-0" ||
                             content?.type.includes("table-type") && "border-b-0"
                         }
-                        ${light ? "bg-white/10" : "bg-gray-700/10"}`}>
+                        ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
             <img
                 src={article.cover || null}
                 alt={article.title}

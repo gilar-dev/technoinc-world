@@ -3,9 +3,10 @@ import { ResObject } from "../typesUtils"
 // Blue print for validated block configurations
 interface BlockConfigs<T> {
     HeadingType: () => T;
-    TableType: () => T,
-    ParagraphType: () => T,
-    ImageType: () => T
+    TableType: () => T;
+    ParagraphType: () => T;
+    ImageType: () => T;
+    InfoBoxType: () => T;
 }
 
 // Blocks setting
@@ -38,6 +39,11 @@ const Blocks: BlockConfigs<ResObject> = {
         raw_file: undefined,
         description: "",
         is_empty: false
+    }),
+    // InfoBox type content
+    InfoBoxType: () => ({
+        type: "infobox-type" as const,
+        blocks: []
     })
 }
 

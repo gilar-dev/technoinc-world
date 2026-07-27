@@ -67,6 +67,7 @@ export function handleInputChange(index: number, property: string, value: any, s
 // Check article general values
 export function checkArticleValues(article: ArticleConfig): ResObject {
     if (article.title === "") return processMessage(false, "Title can't be empty"); // Return if title is empty
+    if (article.description === "") return processMessage(false, "Description can't be empty") // Return if description is empty
     if (article.cover === "") return processMessage(false, "Cover can't be empty"); // Return if cover is empty
     // // Return true if all values passed the checks
     return processMessage(true, "Passed");
@@ -101,9 +102,7 @@ export function checkAndRegisterViewWithCookie(articleId: string): boolean {
 // Clear styling code in article text
 export function clearTextStyling(text: string): string {
     return text
-        .replaceAll("*", "")
-        .replaceAll("_", "")
-        .replaceAll("<link:", "")
-        .replaceAll("#", "")
-        .replaceAll(">", "");
+        .replaceAll("*", "") // Replace all '*' symbols
+        .replaceAll("_", "") // Replace all '_' symbols
+        .replace(/(<link:(.*?)#(.*?)>)/g, "$2"); // Replace link code
 }

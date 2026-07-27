@@ -2,6 +2,7 @@ import Menu from "../Menu";
 import Loading from "../Loading";
 import NotFound from "../NotFound";
 import TitleBox from "./Components/TitleBox";
+import ActionToolbar from "./Components/ActionToolbar";
 import PageImageCover from "./Components/PageImageCover";
 import ContentParser from "./Components/ContentParser";
 import ImageContainer from "./Components/ImageContainer";
@@ -13,7 +14,7 @@ import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/art
 import { increaseArticleVisited } from "../../utils/databaseUtils";
 
 import { ReactElement, Activity, useState, useEffect, useMemo } from "react";
-import { Params, useParams } from "react-router-dom";
+import { data, Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
 
 function WikiPage(): ReactElement {
@@ -58,7 +59,7 @@ function WikiPage(): ReactElement {
     }
 
     useEffect(() => {
-        
+
         const fetchData = async () => {
             setLoading(true);
             await processToIncreaseView(); // Check if article is already visited and process increasing visited value
@@ -76,6 +77,8 @@ function WikiPage(): ReactElement {
 
                 // Initialize successful response data in json object
                 const result: ResObject = await response.json();
+                const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
+                titleTag.textContent = `${result.article.title} - TechnoInc MC Wiki`;
 
                 setIsExist(true);
                 setLoading(false);
@@ -104,6 +107,7 @@ function WikiPage(): ReactElement {
                 <NotFound />
             </Activity>
             <TitleBox isExist={isExist} article={article} />
+            <ActionToolbar visited={article.visited} />
             <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
             <div className={`whitespace-pre-wrap`}>
                 {content.map((item, idx) => (

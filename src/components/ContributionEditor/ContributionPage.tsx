@@ -26,6 +26,7 @@ function ContributionPage(): ReactElement {
     const [article, setArticle] = useState<ArticleConfig>({
         id: "", // Article id
         title: "", // Article title
+        description: "", // Brief article description
         category: "Civilization", // Article category default value
         cover: "", // Article image cover
         public_id: "", // Article image cover public id
@@ -57,6 +58,11 @@ function ContributionPage(): ReactElement {
         // Set body overflow style property based on loading state
         document.body.style.overflow = loading ? "hidden" : "visible";
     }, [loading]);
+
+    useEffect(() => {
+        const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
+        titleTag.textContent = "Contribution - TechnoInc MC Wiki";
+    }, []);
 
     return (
         <>

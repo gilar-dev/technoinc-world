@@ -36,7 +36,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
             return (
                 <div className={`box mx-3 py-3 flex flex-col items-center justify-center gap-2 border-l border-r
                                 ${index !== 0 && differCheck(prevBlock, "table-type") && "border-t"}
-                                ${light ? "bg-white/10" : "bg-gray-700/10"}`}>
+                                ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
                     <div
                         className={`w-[90%]
                                     ${sameCheck(prevBlock, "table-type") && "border-t border-t-[rgb(85,85,85)]"}`} />
@@ -50,7 +50,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
             return (
                 <div className={`box mx-3 p-3 flex gap-3 border-l border-r
                                 ${differCheck(nextBlock, "table-type") && differCheck(nextBlock, "heading-type") && "border-b"}
-                                ${light ? "bg-white/10" : "bg-gray-700/10"}`}>
+                                ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
                     <h4 className="w-full uppercase text-[.8em]">{block.head_data}</h4>
                     <TextParser content={block.content_data} style="w-full font-normal text-[.9em]" />
                 </div>

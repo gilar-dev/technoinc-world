@@ -31,6 +31,12 @@ function ArticleForm({ article, light=false, states }: PropTypes): ReactElement 
                     value={article.id}
                     readOnly
                     className="p-1 font-bold outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                <textarea
+                    placeholder="Brief article description"
+                    value={article.description}
+                    onChange={e => states.setArticle(prev => ({ ...prev, description: e.target.value }))}
+                    className={`p-1 min-h-2 font-['Montserrat'] font-normal text-[1.2em] field-sizing-content resize-none
+                                outline-none border-l-0 border-t-0 border-r-0 bg-transparent`} />
                 <div className="flex items-centers gap-3">
                     <h3 className="text-black">Select category:</h3>
                     <select

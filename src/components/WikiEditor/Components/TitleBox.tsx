@@ -9,16 +9,12 @@ interface PropTypes {
 function TitleBox({ isExist, article }: PropTypes): ReactElement {
 
     return (
-        <div className={`mt-4 mb-[6em] flex-col items-center
+        <div className={`mt-5 mb-[3em] flex-col items-center
                         ${isExist ? "flex" : "hidden"}`}>
             <h2 className="text-center">
                 <span className="highlight">{article.title}</span>
             </h2>
             <p className="mt-2 text-[small]">{article?.description || article.category}</p>
-            <div className="mt-3 flex justify-center items-center gap-1 [&>p]:text-[.7em]">
-                <p>VISITED</p>
-                <p>{article.visited}</p>
-            </div>
         </div>
     );
 }
