@@ -2,15 +2,13 @@ import { ResObject } from "../../../utils/typesUtils";
 import { ReactElement } from "react";
 
 interface PropTypes {
-    isExist: boolean | undefined;
     article: ResObject;
 }
 
-function TitleBox({ isExist, article }: PropTypes): ReactElement {
+function TitleBox({ article }: PropTypes): ReactElement {
 
     return (
-        <div className={`mt-5 mb-[3em] flex-col items-center
-                        ${isExist ? "flex" : "hidden"}`}>
+        <div className={`mt-5 mb-[3em] flex flex-col items-center`}>
             <h2 className="text-center">
                 <span className="highlight">{article.title}</span>
             </h2>

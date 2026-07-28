@@ -81,7 +81,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
         case "image-type":
             return (
                 <div className="p-3 flex justify-center items-center">
-                    <div className="w-min flex flex-col items-center gap-1">
+                    <div className="w-min p-1 flex flex-col items-center gap-1 border border-[rgb(85,85,85)]">
                         <div className="overflow-hidden cursor-pointer relative">
                             <img
                                 src={block.url || null}

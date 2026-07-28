@@ -13,8 +13,8 @@ import { Theme } from "../../utils/contextUtils";
 import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
 import { increaseArticleVisited } from "../../utils/databaseUtils";
 
-import { ReactElement, Activity, useState, useEffect, useMemo } from "react";
-import { data, Params, useParams } from "react-router-dom";
+import { ReactElement, Activity, useState, useEffect, useMemo, useRef } from "react";
+import { Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
 
 function WikiPage(): ReactElement {
@@ -28,14 +28,51 @@ function WikiPage(): ReactElement {
     const [content, setContent] = useState<Schema>([]);
     const [showed, setShowed] = useState<string>("");
 
+    // Get only paragraph type contents
+    const menuContent= useMemo<Schema>(() => content.filter((para: ResObject) => para.type === "paragraph-type"), [content]);
+
     // Get only image types content
-    const images: Schema = useMemo<Schema>(() => {
+    const images = useMemo<Schema>(() => {
         const imgArray: ResObject[] = content.filter((img: ResObject) => img.type === "image-type");
         imgArray.unshift({ url: article.cover, description: article.title });
         return imgArray;
     }, [content]);
-    // Get only paragraph type contents
-    const menuContent: Schema = useMemo<Schema>(() => content.filter((para: ResObject) => para.type === "paragraph-type"), [content]);
+
+    // Content grouping
+    const contentGrouper = useMemo<any[]>(() => {
+        const group: any[] = [];
+        let infobox: any[] = [];
+        let paragraph: any[] = [];
+        let current: string = "";
+        for (let index: number = 0; index < content.length; index++) {
+            const block = content[index];
+
+            if (block.type === "heading-type" || block.type === "table-type") {
+                current = "infobox";
+                infobox.push(block);
+            } else if (current === "infobox" && infobox.length !== 0) {
+                group.push(infobox);
+                infobox = [];
+            }
+
+            if (block.type === "paragraph-type" || block.type === "image-type") {
+                if (block.type === "paragraph-type" && paragraph.length !== 0) {
+                    group.push(paragraph);
+                    paragraph = [];
+                }
+                current = "paragraph";
+                paragraph.push(block);
+            } else if (current === "paragraph" && paragraph.length !== 0) {
+                group.push(paragraph);
+                paragraph = [];
+            }
+        }
+
+        if (infobox.length !== 0) group.push(infobox);
+        else if (paragraph.length !== 0) group.push(paragraph);
+
+        return group;
+    }, [content]);
 
     // Boolean state variables
     const [loading, setLoading] = useState<boolean>(true);
@@ -106,19 +143,59 @@ function WikiPage(): ReactElement {
             <Activity mode={!isExist && isExist !== undefined ? "visible" : "hidden"}>
                 <NotFound />
             </Activity>
-            <TitleBox isExist={isExist} article={article} />
-            <ActionToolbar visited={article.visited} />
+            <Activity mode={isExist ? "visible" : "hidden"}>
+                <TitleBox article={article} />
+                <ActionToolbar visited={article.visited} />
+            </Activity>
             <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
             <div className={`whitespace-pre-wrap`}>
-                {content.map((item, idx) => (
-                    <ContentParser
-                        key={idx}
-                        index={idx}
-                        content={content}
-                        block={item}
-                        setImageContainer={setImageContainer}
-                        setShowed={setShowed}
-                        menuContent={menuContent} />
+                {contentGrouper.map((group: any[], index: number) => (
+                    <div
+                        key={index}
+                        id={`box-${index}`}
+                        className="mx-3 overflow-hidden relative"
+                    >
+                        {group.map((block: Schema, subIndex: number) => {
+                            const box: HTMLElement | null = document.getElementById(`box-${index}`);
+                            if (group.some((check: any) => check.type === "table-type")) {
+                                if (box) box.style.border = "1px solid rgb(85,85,85)";
+                            }
+
+                            return <ContentParser
+                                key={subIndex}
+                                index={subIndex}
+                                content={contentGrouper[index]}
+                                block={block}
+                                setImageContainer={setImageContainer}
+                                setShowed={setShowed}
+                                menuContent={menuContent} />
+                        })}
+                        <button
+                            onClick={e => {
+                                const target: HTMLButtonElement = e.currentTarget;
+                                const box: HTMLElement | null = document.getElementById(`box-${index}`);
+
+                                if (box) {
+                                    box.style.maxHeight = box.style.maxHeight === "" || box.style.maxHeight === "none" ? "400px" : "none";
+                                    
+                                    if (box.style.maxHeight === "none") {
+                                        target.textContent = "Show less"
+                                        target.style.position = "static";
+                                        target.style.transform = "translateX(0)";
+                                    } else {
+                                        target.textContent = "Show more"
+                                        target.style.position = "absolute";
+                                        target.style.transform = "translateX(-50%)";
+                                    }
+                                }
+
+                            }}
+                            className={`mx-auto my-1 static bottom-0 left-[50%]
+                                        ${document.getElementById(`box-${index}`)?.clientHeight! > 400 ? "block" : "hidden"}`}
+                        >
+                            Show less
+                        </button>
+                    </div>
                 ))}
             </div>
             <ImageContainer
