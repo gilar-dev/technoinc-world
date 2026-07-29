@@ -4,6 +4,7 @@ import NotFound from "../NotFound";
 import TitleBox from "./Components/TitleBox";
 import ActionToolbar from "./Components/ActionToolbar";
 import PageImageCover from "./Components/PageImageCover";
+import ContentGrouper from "./Components/ContentGrouper";
 import ContentParser from "./Components/ContentParser";
 import ImageContainer from "./Components/ImageContainer";
 import Footer from "../Footer";
@@ -137,7 +138,7 @@ function WikiPage(): ReactElement {
     }, []);
 
     return (
-        <Theme.Provider value={{ light }}>
+        <Theme.Provider value={{ light, menuContent, setShowed, setImageContainer }}>
             <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent} setLight={setLight} />
             <Loading show={loading} position={"static"} />
             <Activity mode={!isExist && isExist !== undefined ? "visible" : "hidden"}>
@@ -148,56 +149,16 @@ function WikiPage(): ReactElement {
                 <ActionToolbar visited={article.visited} />
             </Activity>
             <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
-            <div className={`whitespace-pre-wrap`}>
-                {contentGrouper.map((group: any[], index: number) => (
-                    <div
-                        key={index}
-                        id={`box-${index}`}
-                        className="mx-3 overflow-hidden relative"
-                    >
-                        {group.map((block: Schema, subIndex: number) => {
-                            const box: HTMLElement | null = document.getElementById(`box-${index}`);
-                            if (group.some((check: any) => check.type === "table-type")) {
-                                if (box) box.style.border = "1px solid rgb(85,85,85)";
-                            }
-
-                            return <ContentParser
-                                key={subIndex}
-                                index={subIndex}
-                                content={contentGrouper[index]}
-                                block={block}
-                                setImageContainer={setImageContainer}
-                                setShowed={setShowed}
-                                menuContent={menuContent} />
-                        })}
-                        <button
-                            onClick={e => {
-                                const target: HTMLButtonElement = e.currentTarget;
-                                const box: HTMLElement | null = document.getElementById(`box-${index}`);
-
-                                if (box) {
-                                    box.style.maxHeight = box.style.maxHeight === "" || box.style.maxHeight === "none" ? "400px" : "none";
-                                    
-                                    if (box.style.maxHeight === "none") {
-                                        target.textContent = "Show less"
-                                        target.style.position = "static";
-                                        target.style.transform = "translateX(0)";
-                                    } else {
-                                        target.textContent = "Show more"
-                                        target.style.position = "absolute";
-                                        target.style.transform = "translateX(-50%)";
-                                    }
-                                }
-
-                            }}
-                            className={`mx-auto my-1 static bottom-0 left-[50%]
-                                        ${document.getElementById(`box-${index}`)?.clientHeight! > 400 ? "block" : "hidden"}`}
-                        >
-                            Show less
-                        </button>
-                    </div>
-                ))}
-            </div>
+            {content.map((block: ResObject, index: number) => (
+                <ContentParser
+                    key={index}
+                    index={index}
+                    content={content}
+                    block={block}
+                    menuContent={menuContent}
+                    setShowed={setShowed}
+                    setImageContainer={setImageContainer} />
+            ))}
             <ImageContainer
                 images={images}
                 showed={showed}

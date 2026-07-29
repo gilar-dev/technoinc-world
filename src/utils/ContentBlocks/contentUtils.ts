@@ -56,6 +56,9 @@ export function checkContentValues(schema: Schema): ResObject {
             case "image-type": // Image type content check
                 if (content.url === "" || content.description === "") return processMessage(false, "this can't be empty", index);
                 break;
+            case "plain-text-type":
+                if (content.text === "") return processMessage(false, "this can't be empty");
+                break;
             default:
                 return processMessage(false, "none");
         }

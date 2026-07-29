@@ -12,6 +12,7 @@ import "../../css/DynamicPage.css";
 
 // Supporting utilities
 import { ArticleConfig, ResObject } from "../../utils/typesUtils";
+import { Config } from "../../utils/contextUtils";
 import { getCategoryById, handleInputChange } from "../../utils/articleUtils";
 import uploadArticleInit from "../../utils/ArticleOperations/uploadUtils";
 
@@ -65,12 +66,11 @@ function ContributionPage(): ReactElement {
     }, []);
 
     return (
-        <>
+        <Config.Provider value={{ light }}>
             <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} setLight={setLight} />
             <ModifyBox search={search} />
             <Loading show={loading} position="fixed" />
             <ArticleForm article={article} light={light} states={{setArticle}} />
-            <TextEditor />
             <Activity mode={schema.length === 0 ? "visible" : "hidden"}>
                 <InspireBox />
             </Activity>
@@ -142,7 +142,7 @@ function ContributionPage(): ReactElement {
                 pauseOnFocusLoss
                 pauseOnHover />
             <Footer />
-        </>
+        </Config.Provider>
     )
 }
 

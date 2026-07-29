@@ -33,14 +33,14 @@ function ContentToolbar({ light, setSchema }: PropTypes): ReactElement {
                 <i className="fa-solid fa-paragraph"></i>
             </button>
             <button
+                title="Add new plain text"
+                onClick={() => addNewContentBlock(Blocks.PlainTextType(), setSchema)}>
+                <i className="fa-solid fa-t"></i>
+            </button>
+            <button
                 title="Add new image"
                 onClick={() => addNewContentBlock(Blocks.ImageType(), setSchema)}>
                 <i className="fa-solid fa-image"></i>
-            </button>
-            <button
-                title="Add infobox"
-                onClick={() => addNewContentBlock(Blocks.InfoBoxType(), setSchema)}>
-                <i className="fa-regular fa-square"></i>
             </button>
         </div>
     );

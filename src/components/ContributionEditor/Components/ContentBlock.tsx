@@ -60,7 +60,6 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                         placeholder="Paragraph title"
                         value={block.title}
                         onChange={(e) => onChangeHandler(index, "title", e.target.value, setSchema)}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
                         className="w-full p-1 field-sizing-content resize-none font-['Montserrat'] text-[1.3em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
                     <textarea
                         placeholder="Paragraph content"
@@ -68,6 +67,20 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                         onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
                         onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none bg-transparent" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
+        // Plain text type content
+        case "plain-text-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <textarea
+                        placeholder="Text"
+                        value={block.text}
+                        onChange={(e) => onChangeHandler(index, "text", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full p-1 field-sizing-content resize-none font-['Montserrat'] text-center text-[1em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>
             );

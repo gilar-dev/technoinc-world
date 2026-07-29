@@ -53,7 +53,7 @@ function TextParser({ content, style="" }: PropTypes): ReactElement {
                         key={`l-${index}`}
                         href={linkUrl} target={linkUrl.startsWith("http") ? "_blank" : "_self"}
                         rel="noopener nooferrer"
-                        className="font-medium text-[#5c92ff]"
+                        className="font-medium text-[#5c92ff] hover:underline"
                     >
                         {parsedText(linkLabel)}
                     </a>

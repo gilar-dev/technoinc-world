@@ -17,29 +17,21 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
 
     const { light } = useContext(Theme);
 
-    const prevBlock: ResObject = content[index - 1];
-    const nextBlock: ResObject = content[index + 1];
-
-    const sameCheck = (block: ResObject, type: string): boolean => {
-        if (!block) return false;
-        return block?.type === type ? true : false;
-    }
-
-    const differCheck = (block: ResObject, type: string): boolean => {
-        if (!block) return true;
-        return block?.type !== type ? true : false;
-    }
+    const prevBlock: ResObject | undefined = content[index - 1];
+    const nextBlock: ResObject | undefined = content[index + 1];
+    const boxTypes: string[] = ["heading-type", "table-type", "plain-text-type"];
 
     switch(block.type) {
         
         case "heading-type":
             return (
-                <div className={`box mx-3 py-3 flex flex-col items-center justify-center gap-2 border-l border-r
-                                ${index !== 0 && differCheck(prevBlock, "table-type") && "border-t"}
+                <div className={`mx-3 py-3 whitespace-pre-wrap flex flex-col items-center justify-center gap-2 border-l border-r
+                                ${!prevBlock && "border-t" || prevBlock && !boxTypes.some((type: string) => prevBlock.type === type) && "border-t"}
+                                ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}
                                 ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
                     <div
-                        className={`w-[90%]
-                                    ${sameCheck(prevBlock, "table-type") && "border-t border-t-[rgb(85,85,85)]"}`} />
+                        className={`w-[90%] border-t-[rgb(85,85,85)]
+                                    ${prevBlock && boxTypes.some((type: string) => prevBlock.type) && "border-t"}`} />
                     <h3 className="text-center">
                         <span className="highlight">{block.data}</span>
                     </h3>
@@ -48,8 +40,9 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
 
         case "table-type":
             return (
-                <div className={`box mx-3 p-3 flex gap-3 border-l border-r
-                                ${differCheck(nextBlock, "table-type") && differCheck(nextBlock, "heading-type") && "border-b"}
+                <div className={`mx-3 p-3 whitespace-pre-wrap flex gap-3 border-l border-r
+                                ${!prevBlock && "border-t" || prevBlock && !boxTypes.some((type: string) => prevBlock.type === type) && "border-t"}
+                                ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}
                                 ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
                     <h4 className="w-full uppercase text-[.8em]">{block.head_data}</h4>
                     <TextParser content={block.content_data} style="w-full font-normal text-[.9em]" />
@@ -57,20 +50,13 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
             );
 
         case "paragraph-type":
-            if (menuContent.length === 0) return (
-                <div className="mx-3 my-10">
-                    <h3 className="font-medium">{block.title}</h3>
-                    <p className="mt-3 font-normal leading-7 text-[.9em]">{block.data}</p>
-                </div>
-            );
-            
             for (let index: number = 0; index < menuContent.length; index++) {
                 if (block === menuContent[index]) {
                     return (
                         <div
                             id={`content${index + 1}`}
-                            className="mx-3 my-10 scroll-m-20">
-                            <h3 className="font-medium">{block.title}</h3>
+                            className="mx-3 my-10 whitespace-pre-wrap scroll-m-20">
+                            <h2 className="py-1 font-medium border-b">{block.title}</h2>
                             <TextParser content={block.data} style="mt-3 font-normal leading-relaxed text-[.9em]" />
                         </div>
                     );
@@ -78,9 +64,18 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
             }
             return (<></>);
 
+        case "plain-text-type":
+            return (
+                <div className={`mx-3 whitespace-pre-wrap text-center border-l border-r
+                                ${!prevBlock && "border-t" || prevBlock && !boxTypes.some((type: string) => prevBlock.type === type) && "border-t"}
+                                ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}`}>
+                    <TextParser content={block.text} />
+                </div>
+            );
+
         case "image-type":
             return (
-                <div className="p-3 flex justify-center items-center">
+                <div className="p-3 whitespace-pre-wrap flex justify-center items-center">
                     <div className="w-min p-1 flex flex-col items-center gap-1 border border-[rgb(85,85,85)]">
                         <div className="overflow-hidden cursor-pointer relative">
                             <img

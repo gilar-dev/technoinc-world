@@ -5,6 +5,7 @@ interface BlockConfigs<T> {
     HeadingType: () => T;
     TableType: () => T;
     ParagraphType: () => T;
+    PlainTextType: () => T;
     ImageType: () => T;
     InfoBoxType: () => T;
 }
@@ -29,6 +30,12 @@ const Blocks: BlockConfigs<ResObject> = {
         type: "paragraph-type" as const,
         title: "",
         data: "",
+        is_empty: false
+    }),
+    // Plain text type content
+    PlainTextType: () => ({
+        type: "plain-text-type" as const,
+        text: "",
         is_empty: false
     }),
     // Image type content
