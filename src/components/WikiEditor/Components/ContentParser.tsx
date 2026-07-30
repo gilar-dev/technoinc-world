@@ -25,7 +25,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
         
         case "heading-type":
             return (
-                <div className={`mx-3 py-3 whitespace-pre-wrap flex flex-col items-center justify-center gap-2 border-l border-r
+                <div className={`mx-3 py-3 whitespace-pre-wrap flex flex-col items-center justify-center gap-2 border-l border-r border-[rgb(85,85,85)]
                                 ${!prevBlock && "border-t" || prevBlock && !boxTypes.some((type: string) => prevBlock.type === type) && "border-t"}
                                 ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}
                                 ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
@@ -40,7 +40,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
 
         case "table-type":
             return (
-                <div className={`mx-3 p-3 whitespace-pre-wrap flex gap-3 border-l border-r
+                <div className={`mx-3 p-3 whitespace-pre-wrap flex gap-3 border-l border-r border-[rgb(85,85,85)]
                                 ${!prevBlock && "border-t" || prevBlock && !boxTypes.some((type: string) => prevBlock.type === type) && "border-t"}
                                 ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}
                                 ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
@@ -66,9 +66,10 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
 
         case "plain-text-type":
             return (
-                <div className={`mx-3 whitespace-pre-wrap text-center border-l border-r
+                <div className={`mx-3 whitespace-pre-wrap text-center border-l border-r border-[rgb(85,85,85)]
                                 ${!prevBlock && "border-t" || prevBlock && !boxTypes.some((type: string) => prevBlock.type === type) && "border-t"}
-                                ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}`}>
+                                ${!nextBlock && "border-b" || nextBlock && !boxTypes.some((type: string) => nextBlock.type === type) && "border-b"}
+                                ${light ? "bg-white/10" : "bg-gray-700/30"}`}>
                     <TextParser content={block.text} />
                 </div>
             );

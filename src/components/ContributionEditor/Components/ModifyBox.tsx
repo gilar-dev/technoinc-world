@@ -32,7 +32,8 @@ function ModifyBox({ search }: propTypes): ReactElement {
                 // Get the successful fetch response data
                 const result: ResObject = await response.json();
 
-                setMatches(result.data);
+                if (input === "") setMatches(result.data);
+                
                 setLoading(false);
 
             } catch (error) {

@@ -7,11 +7,12 @@ import TextEditor from "./Components/TextEditor";
 import InspireBox from "./Components/InspireBox";
 import ContentBlock from "./Components/ContentBlock";
 import ContentToolbar from "./Components/ContentToolbar";
+import BlockMenu from "./Components/BlockMenu";
 import Footer from "../Footer";
 import "../../css/DynamicPage.css";
 
 // Supporting utilities
-import { ArticleConfig, ResObject } from "../../utils/typesUtils";
+import { ArticleConfig, ResObject, Schema } from "../../utils/typesUtils";
 import { Config } from "../../utils/contextUtils";
 import { getCategoryById, handleInputChange } from "../../utils/articleUtils";
 import uploadArticleInit from "../../utils/ArticleOperations/uploadUtils";
@@ -36,9 +37,11 @@ function ContributionPage(): ReactElement {
         wiki_content: [] // Array of article contents
     });
 
-    const [schema, setSchema] = useState<ResObject[]>([]); // Schema that contains object of contents
+    const [schema, setSchema] = useState<Schema>([]); // Schema that contains object of contents
     const [search, setSearch] = useState<boolean>(false); // If search button in Menu component is clicked
     const [loading, setLoading] = useState<boolean>(false); // Loading state to wait validating something
+    const [blockMenu, setBlockMenu] = useState<boolean>(false);
+    const [blockUsed, setBlockUsed] = useState<ResObject[]>([]);
 
     // Create reference to schema div element
     const schemaElement = useRef<HTMLDivElement | null>(null);
@@ -66,7 +69,7 @@ function ContributionPage(): ReactElement {
     }, []);
 
     return (
-        <Config.Provider value={{ light }}>
+        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockUsed, setBlockUsed }}>
             <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} setLight={setLight} />
             <ModifyBox search={search} />
             <Loading show={loading} position="fixed" />
@@ -85,10 +88,10 @@ function ContributionPage(): ReactElement {
                             ${light ? "bg-white/70 [&_span]:text-black/20"
                                     : `bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white
                                     [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white`}`}>
-                {schema.map((block, idx) => (
+                {schema.map((block: ResObject, index: number) => (
                     <ContentBlock
-                        key={idx}
-                        index={idx}
+                        key={index}
+                        index={index}
                         block={block}
                         schema={schema}
                         setSchema={setSchema}
@@ -133,6 +136,7 @@ function ContributionPage(): ReactElement {
             </button>
 
             <ContentToolbar setSchema={setSchema} light={light} />
+            <BlockMenu />
             <ToastContainer
                 position="top-center"
                 autoClose={3000}

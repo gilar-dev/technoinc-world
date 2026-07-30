@@ -56,3 +56,32 @@ const Blocks: BlockConfigs<ResObject> = {
 
 // Export main Blocks variable
 export default Blocks;
+
+export const GeneralBlocks: ResObject[] = [
+    {
+        label: "Heading",
+        icon: "fa-solid fa-heading",
+        block: Blocks.HeadingType()
+    },
+    {
+        label: "Table",
+        icon: "fa-solid fa-table-list",
+        block: Blocks.TableType()
+    },
+    {
+        label: "Paargraph",
+        icon: "fa-solid fa-paragraph",
+        native: "H2",
+        block: Blocks.ParagraphType()
+    },
+    {
+        label: "Text",
+        icon: "fa-solid fa-t",
+        block: Blocks.HeadingType()
+    },
+    {
+        label: "Image",
+        icon: "fa-solid fa-image",
+        block: Blocks.ImageType()
+    }
+];
