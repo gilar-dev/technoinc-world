@@ -1,12 +1,12 @@
 import { ResObject } from "../../../utils/typesUtils";
 import { Config } from "../../../utils/contextUtils";
 import { GeneralBlocks } from "../../../utils/ContentBlocks/blockUtils";
-import { addNewContentBlock } from "../../../utils/ContentBlocks/contentUtils";
+import { addNewContentBlock, addNewContentBlockAtIndex } from "../../../utils/ContentBlocks/contentUtils";
 import { ReactElement, useEffect, useContext } from "react";
 
 function BlockMenu(): ReactElement {
 
-    const { light, setSchema, blockMenu, setBlockMenu, setBlockUsed } = useContext<any>(Config);
+    const { light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, setBlockUsed } = useContext<any>(Config);
 
     useEffect(() => {
         document.body.style.overflow = blockMenu ? "hidden" : "visible";
@@ -15,8 +15,7 @@ function BlockMenu(): ReactElement {
     return (
         <div className={`w-full p-3 fixed bottom-0 z-1 transition-transform duration-150 ease-in-out
                         ${blockMenu ? "translate-y-0" : "translate-y-full"}
-                        ${light ? "bg-white" : "bg-gray-700"}`}>
-            <div className=""></div>
+                        ${light ? "[&_button]:text-black bg-white" : "[&_button]:text-white bg-gray-700"}`}>
             <div className="my-3 flex justify-between items-center">
                 <h3>Content Blocks</h3>
                 <button
@@ -32,13 +31,19 @@ function BlockMenu(): ReactElement {
                         <div
                             key={index}
                             onClick={() =>  {
-                                addNewContentBlock(block.block, setSchema);
+                                if (blockIndex === undefined) addNewContentBlock(block.block(), setSchema);
+                                else {
+                                    addNewContentBlockAtIndex(blockIndex, block.block(), setSchema);
+                                    setBlockIndex(undefined);
+                                }
                                 setBlockUsed((prev: ResObject[]) => {
-                                    if (prev[0]?.block === block.block) return [...prev];
+                                    if (prev[0]?.block === block.block) return prev;
+                                    if (prev.some((icon: ResObject) => icon.icon === block.icon)) return prev;
                                     if (prev.length > 6) prev.pop();
                                     return [{
+                                        label: block.label,
                                         icon: block.icon,
-                                        block: block.block
+                                        block: () => block.block()
                                     }, ...prev];
                                 })
                                 setBlockMenu(false);

@@ -10,6 +10,7 @@ import "../../css/DynamicPage.css";
 // Supporting utilites
 import { PublicID, ResObject, API } from "../../utils/typesUtils";
 import { handleInputChange, getCategoryById } from "../../utils/articleUtils";
+import { Config } from "../../utils/contextUtils";
 import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
 import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
 
@@ -33,8 +34,9 @@ function ContributionEditPage(): ReactElement {
     const [deleteInput, setDeleteInput] = useState<string>(""); // Confirmation before deleting
     const [deleteContainer, setDeleteContainer] = useState<boolean>(false); // Show delete confirmation container
 
-    // Get the site main theme from browser local storage
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
+    const [blockMenu, setBlockMenu] = useState<boolean>(false);
+    const [blockUsed, setBlockUsed] = useState<ResObject[]>([]);
 
     // Toast success
     const successToastNotify = (message: string): Id => toast.success(message, {
@@ -99,7 +101,7 @@ function ContributionEditPage(): ReactElement {
     }, [deleteContainer, loading]);
 
     return (
-        <>
+        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockUsed, setBlockUsed }}>
             <Menu wikiTitle="Contribution" setLight={setLight} />
             <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
@@ -254,7 +256,7 @@ function ContributionEditPage(): ReactElement {
                 pauseOnFocusLoss
                 pauseOnHover />
             <Footer />
-        </>
+        </Config.Provider>
     );
 }
 

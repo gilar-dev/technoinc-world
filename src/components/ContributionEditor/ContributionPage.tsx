@@ -41,6 +41,7 @@ function ContributionPage(): ReactElement {
     const [search, setSearch] = useState<boolean>(false); // If search button in Menu component is clicked
     const [loading, setLoading] = useState<boolean>(false); // Loading state to wait validating something
     const [blockMenu, setBlockMenu] = useState<boolean>(false);
+    const [blockIndex, setBlockIndex] = useState<number | undefined>(undefined);
     const [blockUsed, setBlockUsed] = useState<ResObject[]>([]);
 
     // Create reference to schema div element
@@ -69,7 +70,7 @@ function ContributionPage(): ReactElement {
     }, []);
 
     return (
-        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockUsed, setBlockUsed }}>
+        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed }}>
             <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} setLight={setLight} />
             <ModifyBox search={search} />
             <Loading show={loading} position="fixed" />

@@ -1,18 +1,20 @@
-import { ReactElement } from "react";
-import { addNewContentBlockAtIndex, moveContentBlock, deleteContentBlock } from "../../../utils/ContentBlocks/contentUtils";
+import { ReactElement, useContext } from "react";
 import { Schema, PublicID, SetState } from "../../../utils/typesUtils";
+import { Config } from "../../../utils/contextUtils";
+import { addNewContentBlockAtIndex, moveContentBlock, deleteContentBlock } from "../../../utils/ContentBlocks/contentUtils";
 import "../../../css/DynamicPage.css";
 
 interface propTypes {
     currentIndex: number;
-    addButton?: boolean;
     editMode?: boolean;
     schema: Schema;
     setSchema: SetState<Schema>;
     setToDelete?: SetState<PublicID> | undefined;
 }
 
-function BlockControls({ currentIndex, addButton=false, editMode=false, schema, setSchema, setToDelete=undefined }: propTypes): ReactElement {
+function BlockControls({ currentIndex, editMode=false, schema, setSchema, setToDelete=undefined }: propTypes): ReactElement {
+
+    const { setBlockMenu, setBlockIndex } = useContext<any>(Config);
 
     return (
         <div className="w-full flex justify-center items-center gap-1
@@ -31,21 +33,19 @@ function BlockControls({ currentIndex, addButton=false, editMode=false, schema, 
                 <i className="fa-solid fa-arrow-down"></i>
             </button>
             <button
-                title="Add new table"
-                style={{display: addButton ? "block" : "none"}}
-                onClick={() => addNewContentBlockAtIndex(currentIndex, {
-                    type: "table-type",
-                    head_data: "",
-                    content_data: ""
-                }, setSchema)}
+                title="Add new block"
+                onClick={() => {
+                    setBlockMenu(true);
+                    setBlockIndex(currentIndex);
+                }}
                 className="border-green-500 bg-green-500/50 hover:bg-green-600 active:text-green-500 active:bg-white">
                 <i className="fa-solid fa-plus"></i>
             </button>
             <span className="ml-auto mr-auto font-bold text-black/20">
-                {currentIndex + 1}
+                {currentIndex + 1} | {schema[currentIndex].type}
             </span>
             <button
-                title="Delete content"
+                title="Delete block"
                 onClick={() => {
                     if (editMode && schema[currentIndex]?.prev_url !== undefined) {
                         setToDelete?.((prev: PublicID) => [...prev, schema[currentIndex].public_id]);

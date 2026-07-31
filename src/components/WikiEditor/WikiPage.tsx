@@ -4,7 +4,6 @@ import NotFound from "../NotFound";
 import TitleBox from "./Components/TitleBox";
 import ActionToolbar from "./Components/ActionToolbar";
 import PageImageCover from "./Components/PageImageCover";
-import ContentGrouper from "./Components/ContentGrouper";
 import ContentParser from "./Components/ContentParser";
 import ImageContainer from "./Components/ImageContainer";
 import Footer from "../Footer";
@@ -14,7 +13,7 @@ import { Theme } from "../../utils/contextUtils";
 import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
 import { increaseArticleVisited } from "../../utils/databaseUtils";
 
-import { ReactElement, Activity, useState, useEffect, useMemo, useRef } from "react";
+import { ReactElement, Activity, useState, useEffect, useMemo } from "react";
 import { Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
 

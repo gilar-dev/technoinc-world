@@ -1,13 +1,17 @@
 import { ResObject } from "../typesUtils"
 
 // Blue print for validated block configurations
-interface BlockConfigs<T> {
+interface BlockConfigs<T> extends Infobox<T> {
     HeadingType: () => T;
+    SubheadingType: () => T;
     TableType: () => T;
     ParagraphType: () => T;
     PlainTextType: () => T;
     ImageType: () => T;
-    InfoBoxType: () => T;
+}
+
+interface Infobox<T> {
+    IbHeadingType: () => T;
 }
 
 // Blocks setting
@@ -15,6 +19,11 @@ const Blocks: BlockConfigs<ResObject> = {
     // Heading type content
     HeadingType: () => ({
         type: "heading-type" as const,
+        data: "",
+        is_empty: false
+    }),
+    SubheadingType: () => ({
+        type: "subheading-type",
         data: "",
         is_empty: false
     }),
@@ -47,10 +56,10 @@ const Blocks: BlockConfigs<ResObject> = {
         description: "",
         is_empty: false
     }),
-    // InfoBox type content
-    InfoBoxType: () => ({
-        type: "infobox-type" as const,
-        blocks: []
+    IbHeadingType: () => ({
+        type: "ib-heading-type" as const,
+        heading: "",
+        is_empty: false
     })
 }
 
@@ -61,27 +70,26 @@ export const GeneralBlocks: ResObject[] = [
     {
         label: "Heading",
         icon: "fa-solid fa-heading",
-        block: Blocks.HeadingType()
+        block: () => Blocks.HeadingType()
     },
     {
-        label: "Table",
-        icon: "fa-solid fa-table-list",
-        block: Blocks.TableType()
+        label: "Subheading",
+        icon: "fa-solid fa-heading -skew-x-12",
+        block: () => Blocks.SubheadingType()
     },
     {
-        label: "Paargraph",
+        label: "Paragraph",
         icon: "fa-solid fa-paragraph",
-        native: "H2",
-        block: Blocks.ParagraphType()
+        block: () => Blocks.ParagraphType()
     },
     {
         label: "Text",
         icon: "fa-solid fa-t",
-        block: Blocks.HeadingType()
+        block: () => Blocks.PlainTextType()
     },
     {
         label: "Image",
         icon: "fa-solid fa-image",
-        block: Blocks.ImageType()
+        block: () => Blocks.ImageType()
     }
 ];
