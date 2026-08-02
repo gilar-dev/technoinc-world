@@ -5,19 +5,21 @@ import TitleBox from "./Components/TitleBox";
 import ActionToolbar from "./Components/ActionToolbar";
 import PageImageCover from "./Components/PageImageCover";
 import ContentParser from "./Components/ContentParser";
+import WikiParser from "./Components/WIkiParser";
 import ImageContainer from "./Components/ImageContainer";
 import Footer from "../Footer";
 
 import { Schema, ResObject, API } from "../../utils/typesUtils";
-import { Theme } from "../../utils/contextUtils";
+import { Config } from "../../utils/contextUtils";
+import { contentGrouper } from "../../utils/ContentBlocks/parserUtils";
 import { getCategoryById, checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
 import { increaseArticleVisited } from "../../utils/databaseUtils";
 
-import { ReactElement, Activity, useState, useEffect, useMemo } from "react";
+import { Activity, useState, useEffect, useMemo } from "react";
 import { Params, useParams } from "react-router-dom";
 import "../../css/DynamicPage.css";
 
-function WikiPage(): ReactElement {
+function WikiPage(): React.JSX.Element {
 
     // get the category name and content id
     const { categoryName, contentId }: Params<string> = useParams<string>();
@@ -28,54 +30,25 @@ function WikiPage(): ReactElement {
     const [content, setContent] = useState<Schema>([]);
     const [showed, setShowed] = useState<string>("");
 
+    const group = useMemo<Schema>(() => contentGrouper(content), [content]);
+    console.log(group);
+
     // Get only paragraph type contents
-    const menuContent= useMemo<Schema>(() => content.filter((para: ResObject) => para.type === "paragraph-type"), [content]);
+    const menuContent= useMemo<Schema>(() => {
+        const paragraph: Schema = content.filter((block: ResObject) => block.type === "paragraph-type");
+        return paragraph;
+    }, [content]);
 
     // Get only image types content
     const images = useMemo<Schema>(() => {
-        const imgArray: ResObject[] = content.filter((img: ResObject) => img.type === "image-type");
+        const imgArray: Schema = content.filter((block: ResObject) => block.type === "image-type");
         imgArray.unshift({ url: article.cover, description: article.title });
         return imgArray;
     }, [content]);
 
-    // Content grouping
-    const contentGrouper = useMemo<any[]>(() => {
-        const group: any[] = [];
-        let infobox: any[] = [];
-        let paragraph: any[] = [];
-        let current: string = "";
-        for (let index: number = 0; index < content.length; index++) {
-            const block = content[index];
-
-            if (block.type === "heading-type" || block.type === "table-type") {
-                current = "infobox";
-                infobox.push(block);
-            } else if (current === "infobox" && infobox.length !== 0) {
-                group.push(infobox);
-                infobox = [];
-            }
-
-            if (block.type === "paragraph-type" || block.type === "image-type") {
-                if (block.type === "paragraph-type" && paragraph.length !== 0) {
-                    group.push(paragraph);
-                    paragraph = [];
-                }
-                current = "paragraph";
-                paragraph.push(block);
-            } else if (current === "paragraph" && paragraph.length !== 0) {
-                group.push(paragraph);
-                paragraph = [];
-            }
-        }
-
-        if (infobox.length !== 0) group.push(infobox);
-        else if (paragraph.length !== 0) group.push(paragraph);
-
-        return group;
-    }, [content]);
 
     // Boolean state variables
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [isExist, setIsExist] = useState<boolean | undefined>(undefined);
     const [imageContainer, setImageContainer] = useState<boolean>(false);
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
@@ -119,12 +92,13 @@ function WikiPage(): ReactElement {
 
                 setIsExist(true);
                 setLoading(false);
-                setArticle((prev: ResObject) => {
+                setArticle((_: ResObject) => {
                     const cloneArticle: ResObject = { ...result.article } // Clone article object from response result
                     delete cloneArticle["wiki_content"]; // Delete article wiki content because it already has its own state variable
                     return cloneArticle; // Return the filtered clone article
                 });
                 setContent(result.article.wiki_content); // Set the content state with schema from result article contents
+                console.log("done");
 
             } catch(error) {
                 setIsExist(false);
@@ -137,7 +111,7 @@ function WikiPage(): ReactElement {
     }, []);
 
     return (
-        <Theme.Provider value={{ light, menuContent, setShowed, setImageContainer }}>
+        <Config.Provider value={{ light, menuContent, setShowed, setImageContainer }}>
             <Menu wikiTitle={article.title} selected={getCategory} menuContent={menuContent} setLight={setLight} />
             <Loading show={loading} position={"static"} />
             <Activity mode={!isExist && isExist !== undefined ? "visible" : "hidden"}>
@@ -158,6 +132,7 @@ function WikiPage(): ReactElement {
                     setShowed={setShowed}
                     setImageContainer={setImageContainer} />
             ))}
+            <WikiParser schema={content} />
             <ImageContainer
                 images={images}
                 showed={showed}
@@ -165,7 +140,7 @@ function WikiPage(): ReactElement {
                 display={imageContainer}
                 setDisplay={setImageContainer} />
             <Footer />
-        </Theme.Provider>
+        </Config.Provider>
     );
 }
 

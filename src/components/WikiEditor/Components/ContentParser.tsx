@@ -1,7 +1,7 @@
 import TextParser from "./TextParser";
 import { Schema, ResObject, SetState } from "../../../utils/typesUtils";
-import { Theme } from "../../../utils/contextUtils";
-import { ReactElement, useContext } from "react";
+import { Config } from "../../../utils/contextUtils";
+import { ReactElement, useState, useContext } from "react";
 import "../../../css/DynamicPage.css";
 
 interface PropTypes {
@@ -15,7 +15,7 @@ interface PropTypes {
 
 function ContentParser({ index, content, block, menuContent=[], setImageContainer, setShowed }: PropTypes): ReactElement {
 
-    const { light } = useContext(Theme);
+    const { light } = useContext<any>(Config);
 
     const prevBlock: ResObject | undefined = content[index - 1];
     const nextBlock: ResObject | undefined = content[index + 1];
@@ -57,7 +57,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
                             id={`content${index + 1}`}
                             className="mx-3 my-10 whitespace-pre-wrap scroll-m-20">
                             <h2 className="py-1 font-medium border-b">{block.title}</h2>
-                            <TextParser content={block.data} style="mt-3 font-normal leading-relaxed text-[.9em]" />
+                            <TextParser content={block.data} />
                         </div>
                     );
                 }
@@ -97,7 +97,7 @@ function ContentParser({ index, content, block, menuContent=[], setImageContaine
             );
 
         default:
-            return (<></>)
+            return (<></>);
 
     }
 }

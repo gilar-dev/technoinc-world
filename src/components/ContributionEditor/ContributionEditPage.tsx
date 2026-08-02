@@ -4,6 +4,7 @@ import Loading from "../Loading";
 import NotFound from "../NotFound";
 import ContentBlock from "./Components/ContentBlock"; 
 import ContentToolbar from "./Components/ContentToolbar";
+import BlockMenu from "./Components/BlockMenu";
 import Footer from "../Footer";
 import "../../css/DynamicPage.css";
 
@@ -36,6 +37,7 @@ function ContributionEditPage(): ReactElement {
 
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
     const [blockMenu, setBlockMenu] = useState<boolean>(false);
+    const [blockIndex, setBlockIndex] = useState<number | undefined>(undefined);
     const [blockUsed, setBlockUsed] = useState<ResObject[]>([]);
 
     // Toast success
@@ -101,7 +103,7 @@ function ContributionEditPage(): ReactElement {
     }, [deleteContainer, loading]);
 
     return (
-        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockUsed, setBlockUsed }}>
+        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed }}>
             <Menu wikiTitle="Contribution" setLight={setLight} />
             <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
@@ -247,6 +249,7 @@ function ContributionEditPage(): ReactElement {
             <Activity mode={isExist ? "visible" : "hidden"}>
                 <ContentToolbar setSchema={setSchema} light={light} />
             </Activity>
+            <BlockMenu />
             <ToastContainer
                 position="top-center"
                 autoClose={3000}

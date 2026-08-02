@@ -1,5 +1,5 @@
 import { ResObject, SetState } from "../../../utils/typesUtils";
-import { Theme } from "../../../utils/contextUtils";
+import { Config } from "../../../utils/contextUtils";
 import { ReactElement, useContext } from "react";
 
 interface PropTypes {
@@ -14,7 +14,7 @@ interface PropTypes {
 
 function PageImageCover({ isExist, article, content, states }: PropTypes): ReactElement {
 
-    const { light } = useContext(Theme);
+    const { light } = useContext(Config);
 
     return (
         <div className={`box mx-3 p-5 border

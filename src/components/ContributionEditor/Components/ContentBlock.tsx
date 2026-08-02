@@ -163,6 +163,77 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                 </div>
             );
 
+        // General content block types
+        // Heading type
+        case "gen-heading-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <textarea
+                        placeholder="Add heading"
+                        value={block.heading}
+                        onChange={(e) => onChangeHandler(index, "heading", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[20px] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
+        // Subheading type
+        case "gen-subheading-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <textarea
+                        placeholder="Add subheading"
+                        value={block.subheading}
+                        onChange={(e) => onChangeHandler(index, "subheading", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[15px] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
+        // Paragraph type
+        case "gen-paragraph-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <textarea
+                        placeholder="Paragraph content"
+                        value={block.text}
+                        onChange={(e) => onChangeHandler(index, "text", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none bg-transparent" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
+        // Infobox content block types
+        // Heading type
+        case "ib-heading-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <textarea
+                        placeholder="Infobox heading"
+                        value={block.heading}
+                        onChange={(e) => onChangeHandler(index, "heading", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-semibold text-[20px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
+        case "ib-subheading-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <textarea
+                        placeholder="Infobox subheading"
+                        value={block.heading}
+                        onChange={(e) => onChangeHandler(index, "subheading", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-semibold text-[15px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
         default:
             return (<></>);
     }

@@ -43,24 +43,42 @@ export function checkContentValues(schema: Schema): ResObject {
     for (let index: number = 0; index < schema.length; index++) {
         // Define content inside schema
         const content: ResObject = schema[index];
+        const message: ResObject = processMessage(false, "This can't be empty", index);
         switch (content.type) {
             case "heading-type": // Heading type content check
-                if (content.data === "") return processMessage(false, "this can't be empty", index);
+                if (content.data === "") return message;
                 break;
             case "table-type": // Table type content check
-                if (content.head_data === "" || content.content_data === "") return processMessage(false, "this can't be empty", index);
+                if (content.head_data === "" || content.content_data === "") return message;
                 break;
             case "paragraph-type": // Paragraph type content check
-                if (content.title === "" || content.data === "") return processMessage(false, "this can't be empty", index);
+                if (content.title === "" || content.data === "") return message;
                 break;
             case "image-type": // Image type content check
-                if (content.url === "" || content.description === "") return processMessage(false, "this can't be empty", index);
+                if (content.url === "" || content.description === "") return message;
                 break;
-            case "plain-text-type":
-                if (content.text === "") return processMessage(false, "this can't be empty");
+            // General content blocks
+            case "gen-heading-type":
+                if (content.heading === "") return message;
+                break;
+            case "gen-subheading-type":
+                if (content.subheading === "") return message;
+                break;
+            case "gen-paragraph-type":
+                if (content.text === "") return message;
+                break;
+            case "gen-image-type":
+                if (content.url === "" || content.description === "") return message;
+                break;
+            // Infobox content blocks
+            case "ib-heading-type":
+                if (content.heading === "") return message;
+                break;
+            case "ib-subheading-type":
+                if (content.subheading === "") return message;
                 break;
             default:
-                return processMessage(false, "none");
+                return processMessage(false, "None");
         }
     }
     // Return true if all values are not empty

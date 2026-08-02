@@ -49,7 +49,6 @@ function ModifyBox({ search }: propTypes): ReactElement {
     useEffect(() => {
         if (!input.trim()) {
             setMatches([]);
-            setLoading(false);
             return;
         }
         setMatches([]);
@@ -60,6 +59,7 @@ function ModifyBox({ search }: propTypes): ReactElement {
             const process: ResObject = await searchArticle(input);
             setMatches(process.matches);
             setLoading(false);
+            console.log("fetching");
         }, 700);
 
         // Clear tiemout delay as input changes

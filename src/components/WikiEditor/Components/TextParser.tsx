@@ -71,7 +71,7 @@ function TextParser({ content, style="" }: PropTypes): ReactElement {
     }
 
     return (
-        <p className={style}>{parsedText(content)}</p>
+        <span className={style}>{parsedText(content)}</span>
     );
 }
 
