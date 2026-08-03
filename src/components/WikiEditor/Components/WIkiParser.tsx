@@ -30,7 +30,7 @@ function WikiParser({ schema }: PropTypes): React.JSX.Element {
                     <PrimaryParser key={index} block={block} expandContent={expandContent} />
                 );
                 else if (block[0].type.includes("ib")) return (
-                    <SecondaryParser key={index} block={block} />
+                    <SecondaryParser key={index} block={block} index={index} />
                 );
             })}
         </main>

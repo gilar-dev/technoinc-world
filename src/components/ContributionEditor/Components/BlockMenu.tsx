@@ -48,7 +48,7 @@ function BlockMenu(): ReactElement {
                                 })
                                 setBlockMenu(false);
                             }}
-                            className="w-25 h-25 p-3 flex flex-col items-center justify-between rounded-[5px] border border-[rgb(85,85,85)]">
+                            className="w-25 h-25 p-3 cursor-pointer flex flex-col items-center justify-between rounded-[5px] border border-[rgb(85,85,85)]">
                             <i className={`${block.icon} text-[3em] text-gray-400`}></i>
                             <p className="text-center text-[.7em]">{block.label}</p>
                         </div>
@@ -77,7 +77,7 @@ function BlockMenu(): ReactElement {
                                 })
                                 setBlockMenu(false);
                             }}
-                            className="w-25 h-25 p-3 flex flex-col items-center justify-between rounded-[5px] border border-[rgb(85,85,85)]">
+                            className="w-25 h-25 p-3 cursor-pointer flex flex-col items-center justify-between rounded-[5px] border border-[rgb(85,85,85)]">
                             <i className={`${block.icon} text-[3em] text-gray-400`}></i>
                             <p className="text-center text-[.7em]">{block.label}</p>
                         </div>

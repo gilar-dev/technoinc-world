@@ -31,7 +31,6 @@ function WikiPage(): React.JSX.Element {
     const [showed, setShowed] = useState<string>("");
 
     const group = useMemo<Schema>(() => contentGrouper(content), [content]);
-    console.log(group);
 
     // Get only paragraph type contents
     const menuContent= useMemo<Schema>(() => {

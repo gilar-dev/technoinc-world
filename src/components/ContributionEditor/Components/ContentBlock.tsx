@@ -226,12 +226,33 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                 <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
                     <textarea
                         placeholder="Infobox subheading"
-                        value={block.heading}
+                        value={block.subheading}
                         onChange={(e) => onChangeHandler(index, "subheading", e.target.value, setSchema)}
                         onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
                         className="w-full field-sizing-content resize-none font-['Montserrat'] font-semibold text-[15px] text-center outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>
+            );
+
+        case "ib-info-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <div className="flex gap-3 border-black [&>textarea]:w-43">
+                        <textarea
+                            placeholder="Table head"
+                            value={block.head}
+                            onChange={(e) => onChangeHandler(index, "head", e.target.value, setSchema)}
+                            onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                            className="p-1 field-sizing-content resize-none font-['Montserrat'] font-bold" />
+                        <textarea
+                            placeholder="Table data"
+                            value={block.data}
+                            onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
+                            onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                            className="p-1 field-sizing-content resize-none font-['Montserrat']" />
+                    </div>
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>  
             );
 
         default:

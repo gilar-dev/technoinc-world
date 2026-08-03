@@ -26,7 +26,7 @@ function ContentRenderer({ block }: PropTypes): React.JSX.Element {
 
         case "gen-paragraph-type":
             return (
-                <p className="font-['Montserrat'] text-[.9em] leading-relaxed whitespace-pre-wrap">
+                <p className="mt-3 font-['Montserrat'] text-[.9em] leading-relaxed whitespace-pre-wrap">
                     <TextParser content={block.text} />
                 </p>
             );
@@ -41,10 +41,26 @@ function ContentRenderer({ block }: PropTypes): React.JSX.Element {
         
         case "ib-subheading-type":
             return (
-                <div className="mt-5 border-t border-[rgb(85,85,85)]">
+                <div className="mt-5 p-3 border-t border-[rgb(85,85,85)]">
                     <h4 className="text-center">
                         <span className="highlight">{block.subheading}</span>
                     </h4>
+                </div>
+            );
+
+        case "ib-info-type":
+            return (
+                <div className="py-1 font-['Montserrat'] flex justify-between gap-3">
+                    <div className="w-full">
+                        <h5>
+                            <TextParser content={block.head} />
+                        </h5>
+                    </div>
+                    <div className="w-full">
+                        <div className="font-['Montserrat'] text-[.9em] leading-relaxed whitespace-pre-wrap">
+                            <TextParser content={block.data} />
+                        </div>
+                    </div>
                 </div>
             );
 

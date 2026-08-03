@@ -77,6 +77,9 @@ export function checkContentValues(schema: Schema): ResObject {
             case "ib-subheading-type":
                 if (content.subheading === "") return message;
                 break;
+            case "ib-info-type":
+                if (content.head === "" || content.data === "") return message;
+                break;
             default:
                 return processMessage(false, "None");
         }

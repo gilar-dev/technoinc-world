@@ -11,6 +11,7 @@ interface BlockConfigs<T> {
     infobox: {
         IbHeadingType: () => T;
         IbSubheadingType: () => T;
+        IbInfoType: () => T;
     }
 }
 
@@ -51,6 +52,12 @@ const Blocks: BlockConfigs<ResObject> = {
             type: "ib-subheading-type" as const,
             subheading: "",
             is_empty: false
+        }),
+        IbInfoType: () => ({
+            type: "ib-info-type" as const,
+            head: "",
+            data: "",
+            is_empty: false
         })
     }
 }
@@ -80,13 +87,18 @@ export const GeneralBlocks: ResObject[] = [
 
 export const InfoboxBlocks: ResObject[] = [
     {
-        label: "Heading",
+        label: "IB Heading",
         icon: "fa-solid fa-heading border border-[rgb(85,85,85)]",
         block: () => Blocks.infobox.IbHeadingType()
     },
     {
-        label: "Subheading",
+        label: "IB Subheading",
         icon: "fa-solid fa-heading -skew-x-12 border border-[rgb(85,85,85)]",
         block: () => Blocks.infobox.IbSubheadingType()
+    },
+    {
+        label: "IB Info",
+        icon: "fa-solid fa-info",
+        block: () => Blocks.infobox.IbInfoType()
     }
 ];
