@@ -30,16 +30,14 @@ function WikiPage(): React.JSX.Element {
     const [content, setContent] = useState<Schema>([]);
     const [showed, setShowed] = useState<string>("");
 
-    const group = useMemo<Schema>(() => contentGrouper(content), [content]);
-
     // Get only paragraph type contents
-    const menuContent= useMemo<Schema>(() => {
+    const menuContent = useMemo<Schema>(() => {
         const paragraph: Schema = content.filter((block: ResObject) => block.type === "paragraph-type");
         return paragraph;
     }, [content]);
 
     // Get only image types content
-    const images = useMemo<Schema>(() => {
+    const getImages = useMemo<Schema>(() => {
         const imgArray: Schema = content.filter((block: ResObject) => block.type === "image-type");
         imgArray.unshift({ url: article.cover, description: article.title });
         return imgArray;
@@ -133,7 +131,7 @@ function WikiPage(): React.JSX.Element {
             ))}
             <WikiParser schema={content} />
             <ImageContainer
-                images={images}
+                images={getImages}
                 showed={showed}
                 setShowed={setShowed}
                 display={imageContainer}
