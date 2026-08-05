@@ -15,7 +15,7 @@ function BlockMenu(): ReactElement {
     return (
         <div className={`w-full p-3 fixed bottom-0 z-1 transition-transform duration-150 ease-in-out
                         ${blockMenu ? "translate-y-0" : "translate-y-full"}
-                        ${light ? "[&_button,&_small]:text-black bg-white" : "[&_button.&_small]:text-white bg-gray-700"}`}>
+                        ${light ? "[&_button,&_small]:text-black bg-white" : "[&_button,&_small]:text-white bg-gray-700"}`}>
             <div className="my-3 flex justify-between items-center">
                 <h3>Content Blocks</h3>
                 <button
@@ -24,7 +24,7 @@ function BlockMenu(): ReactElement {
                     <i className="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div className="max-h-[70vh] overflow-auto">
+            <div className="max-h-[50vh] overflow-auto">
                 <small className="mt-3">General</small>
                 <div className="p-1 flex justify-center items-center gap-5 flex-wrap">
                     {GeneralBlocks.map((block: ResObject, index: number) => (

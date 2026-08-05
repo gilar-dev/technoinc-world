@@ -55,6 +55,8 @@ function ContributionEditPage(): ReactElement {
         for (let index: number = 0; index < rawData.length; index++) {
             if (rawData[index].type === "image-type") {
                 rawData[index] = { ...rawData[index], raw_file: undefined, prev_url: "" }
+            } else if (rawData[index].type === "gen-image-type") {
+                rawData[index] = { ...rawData[index], raw_file: undefined, prev_src: "" }
             }
         }
         return rawData;

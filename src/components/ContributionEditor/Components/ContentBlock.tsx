@@ -13,155 +13,26 @@ interface propTypes {
 }
 
 function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToDelete }: propTypes): ReactElement {
+
+    const getSelectedFile = (selectedFile: File | undefined): void => {
+        if (!selectedFile) return;
+        const preview: string = URL.createObjectURL(selectedFile);
+        if (block.prev_src === "") onChangeHandler(index, "prev_src", block.src, setSchema);
+        if (block.prev_src !== undefined) setToDelete?.((prev: string[]) => [...prev, block.public_id]);
+        onChangeHandler(index, "src", preview, setSchema);
+        onChangeHandler(index, "raw_file", selectedFile, setSchema);
+        onChangeHandler(index, "is_empty", false, setSchema);
+    }
+
+    const restorePrevious = (): void => {
+        // Restore the default image if it's changed
+        onChangeHandler(index, "src", block.prev_src, setSchema);
+        onChangeHandler(index, "prev_src", "", setSchema);
+        onChangeHandler(index, "raw_file", undefined, setSchema);
+        setToDelete?.((prev: string[]) => [...prev].toSpliced([...prev].indexOf(block.public_id), 1));
+    }
     
     switch (block.type) {
-
-        // General content blocks
-        // Heading type content
-        case "heading-type":
-            return (
-                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
-                    <textarea
-                        placeholder="Add heading"
-                        value={block.data}
-                        onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[20px] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
-                </div>
-            );
-
-        // Subheading type content
-        case "subheading-type":
-            return (
-                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
-                    <textarea
-                        placeholder="Add subheading"
-                        value={block.data}
-                        onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full field-sizing-content resize-none font-['Montserrat'] font-bold text-[15px] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
-                </div>
-            );
-
-        // Infobox content blocks
-        // Table type content
-        case "table-type":
-            return (
-                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
-                    <div className="flex border-black [&>textarea]:w-43">
-                        <textarea
-                            placeholder="Table head"
-                            value={block.head_data}
-                            onChange={(e) => onChangeHandler(index, "head_data", e.target.value, setSchema)}
-                            onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                            className="p-1 field-sizing-content resize-none font-['Montserrat'] font-bold" />
-                        <textarea
-                            placeholder="Table data"
-                            value={block.content_data}
-                            onChange={(e) => onChangeHandler(index, "content_data", e.target.value, setSchema)}
-                            onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                            className="p-1 field-sizing-content resize-none font-['Montserrat']" />
-                    </div>
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
-                </div>  
-            );
-
-        // Paragraph type content
-        case "paragraph-type":
-            return (
-                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
-                    <textarea
-                        placeholder="Paragraph title"
-                        value={block.title}
-                        onChange={(e) => onChangeHandler(index, "title", e.target.value, setSchema)}
-                        className="w-full p-1 field-sizing-content resize-none font-['Montserrat'] text-[1.3em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                    <textarea
-                        placeholder="Paragraph content"
-                        value={block.data}
-                        onChange={(e) => onChangeHandler(index, "data", e.target.value, setSchema)}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none bg-transparent" />
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
-                </div>
-            );
-
-        // Plain text type content
-        case "plain-text-type":
-            return (
-                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
-                    <textarea
-                        placeholder="Text"
-                        value={block.text}
-                        onChange={(e) => onChangeHandler(index, "text", e.target.value, setSchema)}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full p-1 field-sizing-content resize-none font-['Montserrat'] text-center text-[1em] outline-none border-l-0 border-t-0 border-r-0 bg-transparent" />
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
-                </div>
-            );
-
-        // Image type content
-        case "image-type":
-            return (
-                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
-                    <img
-                        src={block.url || null}
-                        alt={block.title}
-                        className="w-full rounded-[5px]" />
-                    <input
-                        id={`image-input-${index}`}
-                        type="file"
-                        accept="image/jpeg, image/png, image/webp, .jpg, .jpeg, .png, .webp"
-                        style={{display: "none"}}
-                        onChange={e => {
-                            const selectedFile: File | undefined = e.target.files?.[0];
-                            if (!selectedFile) return;
-
-                            // Set the image path to accessable on browser
-                            const urlPath: string = URL.createObjectURL(selectedFile);
-
-                            // If true, current block has a value already
-                            if (block?.prev_url === "") onChangeHandler(index, "prev_url", block.url, setSchema);
-
-                            onChangeHandler(index, "url", urlPath, setSchema);
-                            onChangeHandler(index, "raw_file", selectedFile, setSchema);
-                            onChangeHandler(index, "is_empty", false, setSchema)
-
-                            if (block?.prev_url !== undefined) {
-                                setToDelete?.((prev: string[]) => [...prev, block.public_id]);
-                            }
-                        }}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)} />
-                    <label
-                        htmlFor={`image-input-${index}`}
-                        className="p-2 font-bold rounded-2xl border hover:bg-gray-500/70 active:bg-white transition-colors duration-150 ease-in-out">
-                            Choose image
-                    </label>
-                    <button
-                        title="Restore previous"
-                        onClick={() => {
-                            // Restore the default image if it's changed
-                            onChangeHandler(index, "url", block?.prev_url, setSchema);
-                            onChangeHandler(index, "prev_url", "", setSchema);
-                            onChangeHandler(index, "raw_file", undefined, setSchema);
-                            console.log(block);
-                            setToDelete?.((prev: string[]) => [...prev].toSpliced([...prev].indexOf(block.public_id), 1));
-                        }}
-                        className={`${block?.prev_url !== undefined && block?.prev_url !== "" ? "block" : "hidden"}
-                                    my-3 p-3 rounded-full border-none bg-transparent transition-colors duration-150 ease-in-out
-                                    hover:bg-gray-500/30`}>
-                        <i className="fa-solid fa-arrow-rotate-left"></i>
-                    </button>
-                    <textarea
-                        placeholder="Add image description"
-                        value={block.description}
-                        onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
-                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} editMode={true} setToDelete={setToDelete} />
-                </div>
-            );
 
         // General content block types
         // Heading type
@@ -203,6 +74,30 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                         onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none bg-transparent" />
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
+            );
+
+        case "gen-image-type":
+            return (
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <img src={block.src || null} alt={block.description} className="w-full rounded-[5px]" />
+                    <input id={`image-input-${index}`} type="file" accept="image/*" className="hidden" onChange={(e) => getSelectedFile(e.target.files?.[0])} />
+                    <label
+                        htmlFor={`image-input-${index}`}
+                        className="p-2 font-bold rounded-2xl border hover:bg-gray-500/70 active:bg-white transition-colors duration-150 ease-in-out">
+                        Choose image
+                    </label>
+                    <button title="Restore previous" onClick={() => restorePrevious()}
+                        className={`my-3 p-3 rounded-full border-none bg-transparent transition-colors duration-150 ease-in-out hover:bg-gray-500/30
+                                    ${block.prev_src !== undefined && block.prev_src !== "" ? "block" : "hidden"}`}>
+                        <i className="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
+                    <textarea
+                        placeholder="Add image description"
+                        value={block.description}
+                        onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
                 </div>
             );
 
@@ -253,6 +148,14 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                     </div>
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
                 </div>  
+            );
+
+        case "ib-image-type":
+            return (
+                <div className="p-3">
+                    <p className="text-center">It's still in building process.</p>
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                </div>
             );
 
         default:

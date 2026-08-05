@@ -79,6 +79,7 @@ export function filtration(schema: Schema): Schema {
         delete schema[index]["raw_cover"];
         delete schema[index]["raw_file"];
         delete schema[index]["prev_url"];
+        delete schema[index]["prev_src"];
         delete schema[index]["is_empty"];
     }
     // Return filtrated schema

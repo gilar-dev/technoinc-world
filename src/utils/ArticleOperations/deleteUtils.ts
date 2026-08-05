@@ -14,7 +14,7 @@ export default async function deleleArticleInit(id: string, category: string): P
 
     const getArticle: ResObject = await getArticleWiki(id, category); // Get article wiki from database
     const wikiContent: Schema = getArticle.article.wiki_content; // Set only article wiki content schema
-    const getImages: Schema = wikiContent.filter((img: ResObject) => img.type === "image-type"); // Filter image type contents
+    const getImages: Schema = wikiContent.filter((img: ResObject) => img.type.includes("image")); // Filter image type contents
 
     // If length is not 0, delete its assets first
     if (getImages.length !== 0) {

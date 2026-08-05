@@ -33,9 +33,9 @@ export default async function uploadArticleInit(article: ArticleConfig, schema: 
     if (!checkContents.passed) return processMessage(false, checkContents.message, checkContents.index);
 
     const coverAssets: ResObject = await uploadCoverAssets(article.raw_cover as File);
-    const containImages: Schema = cloneSchema.filter((img: ResObject) => img.type === "image-type"); // Check image types in schema
+    const containImages: boolean = cloneSchema.some((img: ResObject) => img.type.includes("image")); // Check image types in schema
     let modifiedSchema: any; // Modify schema by uploading asset contents to get its official cloud url
-    if (containImages.length !== 0) {
+    if (containImages) {
         modifiedSchema = await getImagesToUpload(article.category, cloneSchema)
         if (!modifiedSchema) return processMessage(false, "Failed when uploading assets to cloud!");
     } else modifiedSchema = cloneSchema;
@@ -75,6 +75,15 @@ async function getImagesToUpload(category: string, schema: Schema): Promise<any>
             const upload: ResObject = await uploadToCloud(dataPackage);
             if (!upload) return;
             schema[index].url = upload.secure_url;
+            schema[index].public_id = upload.public_id;
+        } else if (schema[index].type === "gen-image-type") {
+            const dataPackage: FormData = uploadPackage(schema[index].raw_file, {
+                folder: category,
+                uploadPreset: import.meta.env.VITE_CLOUDINARY_PRESET
+            });
+            const upload: ResObject = await uploadToCloud(dataPackage);
+            if (!upload) return;
+            schema[index].src = upload.secure_url;
             schema[index].public_id = upload.public_id;
         }
     }

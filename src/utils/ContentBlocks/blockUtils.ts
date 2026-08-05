@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { ResObject } from "../typesUtils"
 
 // Blue print for validated block configurations
@@ -12,6 +13,7 @@ interface BlockConfigs<T> {
         IbHeadingType: () => T;
         IbSubheadingType: () => T;
         IbInfoType: () => T;
+        IbImageType: () => T;
     }
 }
 
@@ -35,9 +37,9 @@ const Blocks: BlockConfigs<ResObject> = {
         }),
         ImageType: () => ({
             type: "gen-image-type" as const,
-            url: "",
+            src: "",
             public_id: "",
-            raw_file: undefined,
+            raw_file: undefined, // Temporary
             description: "",
             is_empty: false
         })
@@ -57,6 +59,14 @@ const Blocks: BlockConfigs<ResObject> = {
             type: "ib-info-type" as const,
             head: "",
             data: "",
+            is_empty: false
+        }),
+        IbImageType: () => ({
+            type: "ib-image-type" as const,
+            src: "",
+            public_id: "",
+            raw_file: undefined, // Temporary
+            description: "",
             is_empty: false
         })
     }
@@ -100,5 +110,10 @@ export const InfoboxBlocks: ResObject[] = [
         label: "IB Info",
         icon: "fa-solid fa-info",
         block: () => Blocks.infobox.IbInfoType()
+    },
+    {
+        label: "IB Image",
+        icon: "fa-solid fa-image border border-[rgb(85,85,85)]",
+        block: () => Blocks.infobox.IbImageType()
     }
 ];

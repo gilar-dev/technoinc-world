@@ -57,6 +57,7 @@ export function checkContentValues(schema: Schema): ResObject {
             case "image-type": // Image type content check
                 if (content.url === "" || content.description === "") return message;
                 break;
+
             // General content blocks
             case "gen-heading-type":
                 if (content.heading === "") return message;
@@ -70,6 +71,10 @@ export function checkContentValues(schema: Schema): ResObject {
             case "gen-image-type":
                 if (content.url === "" || content.description === "") return message;
                 break;
+            case "gen-image-type":
+                if (content.src === "" || content.description == "") return message;
+                break;
+
             // Infobox content blocks
             case "ib-heading-type":
                 if (content.heading === "") return message;

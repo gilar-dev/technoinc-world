@@ -38,7 +38,7 @@ function WikiPage(): React.JSX.Element {
 
     // Get only image types content
     const getImages = useMemo<Schema>(() => {
-        const imgArray: Schema = content.filter((block: ResObject) => block.type === "image-type");
+        const imgArray: Schema = content.filter((block: ResObject) => block.type.includes("image"));
         imgArray.unshift({ url: article.cover, description: article.title });
         return imgArray;
     }, [content]);

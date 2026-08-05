@@ -44,7 +44,7 @@ export default async function updateArticleInit(id: string, category: string, co
 // Helper functions
 // Get changed images to upload to cloud storage
 async function getImagesToUpload(category: string, schema: Schema): Promise<any> {
-    const images: Schema = schema.filter((img: ResObject) => img.type === "image-type");
+    const images: Schema = schema.filter((img: ResObject) => img.type.includes("image"));
     // Return schema immediately if no images are changed
     if (schema.filter((img: ResObject) => Object.keys(img).includes("raw_file") && img.raw_file === undefined).length === images.length){
         return schema;
@@ -62,6 +62,18 @@ async function getImagesToUpload(category: string, schema: Schema): Promise<any>
             if (!upload) return;
             // Set the content data with cloud storage assets url
             schema[index].url = upload.secure_url;
+            schema[index].public_id = upload.public_id;
+        } else if (schema[index].type === "gen-image-type" && schema[index].raw_file !== undefined) {
+            // Create form data to upload to cloud storage
+            const dataPackage: FormData = uploadPackage(schema[index].raw_file, {
+                folder: category,
+                uploadPreset: import.meta.env.VITE_CLOUDINARY_PRESET
+            });
+            // Start uploading form data to cloud storage
+            const upload: ResObject = await uploadToCloud(dataPackage);
+            if (!upload) return;
+            // Set the content data with cloud storage assets url
+            schema[index].src = upload.secure_url;
             schema[index].public_id = upload.public_id;
         }
     }

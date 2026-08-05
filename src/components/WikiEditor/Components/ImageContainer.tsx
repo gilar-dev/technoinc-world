@@ -18,7 +18,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
     
     useEffect(() => {
         for (let index: number = 0; index < images.length; index++) {
-            if (images[index].url === showed) {
+            if (images[index].url === showed || images[index].src === showed) {
                 setCurrent({ index: index, description: images[index].description });
             }
         }
@@ -75,10 +75,10 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                     {images.map((img, idx) => (
                         <div
                             key={idx}
-                            onClick={() => setShowed(img.url)}
+                            onClick={() => setShowed(img.url || img.src)}
                             className="w-15 aspect-square cursor-pointer overflow-hidden">
                             <img
-                                src={img.url || null}
+                                src={img.url || img.src || null}
                                 alt={img.description}
                                 style={{border: img.url === images[current.index]?.url ? "1px solid white" : "none"}}
                                 className="w-15 h-15 object-center object-cover" />
