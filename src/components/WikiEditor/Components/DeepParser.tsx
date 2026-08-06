@@ -1,6 +1,6 @@
+import WikiRenderer from "./WikiRenderer";
 import { ResObject } from "../../../utils/typesUtils";
 import { Config } from "../../../utils/contextUtils";
-import ContentRenderer from "./ContentRenderer";
 import { useMemo, useContext } from "react";
 import "../../../css/DynamicPage.css"
 
@@ -29,13 +29,13 @@ export function PrimaryParser({ block, expandContent }: PrimaryProps): React.JSX
             <div
                 onClick={(e) => expandContent(e.currentTarget)}
                 className="my-3 py-1 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)]">
-                <ContentRenderer block={block[0]} />
+                <WikiRenderer block={block[0]} />
                 <span className="text-[1.3em]"><i className="fa-solid fa-angle-up"></i></span>
             </div>
             <div className="block">
                 {block.map((subBlock: any, subIndex: number) => {
                     if (!isArray(subBlock) && subBlock.type !== "gen-heading-type") return (
-                        <ContentRenderer key={subIndex} block={subBlock} />
+                        <WikiRenderer key={subIndex} block={subBlock} />
                     );
                     else if (isArray(subBlock) && checkType(subBlock, "ib")) return (
                         <SecondaryParser key={subIndex} block={subBlock} index={subIndex} />
@@ -79,7 +79,7 @@ export function SecondaryParser({ block, index }: SecondaryProps): React.JSX.Ele
                         className={`table-row
                                     ${getSubheadings.length > 1 && subIndex >= getSubheadings[1] && `more-${index}`}`}>
                         <td>
-                            <ContentRenderer block={subBlock} />
+                            <WikiRenderer block={subBlock} />
                         </td>
                     </tr>
                 ))}

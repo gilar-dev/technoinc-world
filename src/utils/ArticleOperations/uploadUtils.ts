@@ -76,7 +76,7 @@ async function getImagesToUpload(category: string, schema: Schema): Promise<any>
             if (!upload) return;
             schema[index].url = upload.secure_url;
             schema[index].public_id = upload.public_id;
-        } else if (schema[index].type === "gen-image-type") {
+        } else if (schema[index].type.includes("image")) {
             const dataPackage: FormData = uploadPackage(schema[index].raw_file, {
                 folder: category,
                 uploadPreset: import.meta.env.VITE_CLOUDINARY_PRESET

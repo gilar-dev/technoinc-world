@@ -63,7 +63,7 @@ async function getImagesToUpload(category: string, schema: Schema): Promise<any>
             // Set the content data with cloud storage assets url
             schema[index].url = upload.secure_url;
             schema[index].public_id = upload.public_id;
-        } else if (schema[index].type === "gen-image-type" && schema[index].raw_file !== undefined) {
+        } else if (schema[index].type.includes("image") && schema[index].raw_file !== undefined) {
             // Create form data to upload to cloud storage
             const dataPackage: FormData = uploadPackage(schema[index].raw_file, {
                 folder: category,

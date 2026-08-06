@@ -55,7 +55,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                     <span
                         onClick={() => {
                             if (images.length <= 1) return;
-                            setShowed(!images[current.index - 1] ? images[images.length - 1].url : images[current.index - 1].url);
+                            setShowed(!images[current.index - 1] ? images[images.length - 1].url || images[images.length - 1].src : images[current.index - 1].url || images[current.index - 1].src);
                         }}
                         className="cursor-pointer border border-black">
                         <i className="fa-solid fa-angle-left"></i>
@@ -63,7 +63,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                     <span
                         onClick={() => {
                             if (images.length <= 1) return;
-                            setShowed(!images[current.index + 1] ? images[0].url : images[current.index + 1].url);
+                            setShowed(!images[current.index + 1] ? images[0].url || images[0].src : images[current.index + 1].url || images[current.index + 1].src);
                         }}
                         className="cursor-pointer border border-black">
                         <i className="fa-solid fa-angle-right"></i>
@@ -80,7 +80,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                             <img
                                 src={img.url || img.src || null}
                                 alt={img.description}
-                                style={{border: img.url === images[current.index]?.url ? "1px solid white" : "none"}}
+                                style={{border: img.src === images[current.index]?.src ? "1px solid white" : "none"}}
                                 className="w-15 h-15 object-center object-cover" />
                         </div>
                     ))}

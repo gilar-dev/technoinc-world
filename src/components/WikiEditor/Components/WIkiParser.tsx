@@ -1,4 +1,4 @@
-import ContentRenderer from "./ContentRenderer";
+import WikiRenderer from "./WikiRenderer";
 import { PrimaryParser, SecondaryParser } from "./DeepParser";
 import { Schema } from "../../../utils/typesUtils";
 import { contentGrouper } from "../../../utils/ContentBlocks/parserUtils";
@@ -24,7 +24,7 @@ function WikiParser({ schema }: PropTypes): React.JSX.Element {
         <main className="p-3">
             {content.map((block: any, index: number) => {
                 if (!Array.isArray(block)) return (
-                    <ContentRenderer key={index} block={block} />
+                    <WikiRenderer key={index} block={block} />
                 );
                 else if (block[0].type === "gen-heading-type") return (
                     <PrimaryParser key={index} block={block} expandContent={expandContent} />

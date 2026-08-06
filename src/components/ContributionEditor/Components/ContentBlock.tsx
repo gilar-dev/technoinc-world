@@ -97,7 +97,8 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                         value={block.description}
                         onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
                         onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
+                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} /> 
                 </div>
             );
 
@@ -152,9 +153,26 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
 
         case "ib-image-type":
             return (
-                <div className="p-3">
-                    <p className="text-center">It's still in building process.</p>
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
+                <div className={`content-box ${block.is_empty && "border! border-red-500/70!"}`}>
+                    <img src={block.src || null} alt={block.description} className="w-full rounded-[5px]" />
+                    <input id={`image-input-${index}`} type="file" accept="image/*" className="hidden" onChange={(e) => getSelectedFile(e.target.files?.[0])} />
+                    <label
+                        htmlFor={`image-input-${index}`}
+                        className="p-2 font-bold rounded-2xl border hover:bg-gray-500/70 active:bg-white transition-colors duration-150 ease-in-out">
+                        Choose image
+                    </label>
+                    <button title="Restore previous" onClick={() => restorePrevious()}
+                        className={`my-3 p-3 rounded-full border-none bg-transparent transition-colors duration-150 ease-in-out hover:bg-gray-500/30
+                                    ${block.prev_src !== undefined && block.prev_src !== "" ? "block" : "hidden"}`}>
+                        <i className="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
+                    <textarea
+                        placeholder="(Optional) Add image description"
+                        value={block.description}
+                        onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
+                        onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
+                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} /> 
                 </div>
             );
 

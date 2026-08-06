@@ -85,6 +85,9 @@ export function checkContentValues(schema: Schema): ResObject {
             case "ib-info-type":
                 if (content.head === "" || content.data === "") return message;
                 break;
+            case "ib-image-type":
+                if (content.src === "") return message;
+                break;
             default:
                 return processMessage(false, "None");
         }
