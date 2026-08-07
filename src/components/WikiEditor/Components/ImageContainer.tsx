@@ -80,7 +80,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                             <img
                                 src={img.url || img.src || null}
                                 alt={img.description}
-                                style={{border: img.src === images[current.index]?.src ? "1px solid white" : "none"}}
+                                style={{border: img.src === images[current.index]?.src || img.url === images[current.index]?.url ? "1px solid white" : "none"}}
                                 className="w-15 h-15 object-center object-cover" />
                         </div>
                     ))}

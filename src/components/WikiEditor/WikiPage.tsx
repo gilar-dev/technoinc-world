@@ -118,7 +118,6 @@ function WikiPage(): React.JSX.Element {
                 <TitleBox article={article} />
                 <ActionToolbar visited={article.visited} />
             </Activity>
-            <PageImageCover isExist={isExist} article={article} content={content[0]} states={{ setShowed, setImageContainer }} />
             {content.map((block: ResObject, index: number) => (
                 <ContentParser
                     key={index}

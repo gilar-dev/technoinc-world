@@ -16,21 +16,21 @@ function WikiRenderer({ block }: PropTypes): React.JSX.Element {
         // General content block types
         case "gen-heading-type":
             return (
-                <h2 className="font-['Montserrat'] font-semibold">
+                <h1 className="font-['Inter'] text-[28px]">
                     {block.heading}
-                </h2>
+                </h1>
             );
 
         case "gen-subheading-type":
             return (
-                <h3 className="font-['Montserrat'] font-semibold">
+                <h2 className="font-['Inter'] text-[20px]">
                     {block.subheading}
-                </h3>
+                </h2>
             );
 
         case "gen-paragraph-type":
             return (
-                <p className="mt-3 font-['Montserrat'] text-[.9em] leading-relaxed whitespace-pre-wrap">
+                <p className="mt-3 font-['Inter'] font-normal text-[14px] leading-relaxed whitespace-pre-wrap">
                     <TextParser content={block.text} />
                 </p>
             );
@@ -60,7 +60,7 @@ function WikiRenderer({ block }: PropTypes): React.JSX.Element {
         // Infobox content block types
         case "ib-heading-type":
             return (
-                <div className="font-['Montserrat'] font-medium text-[.9em] text-center whitespace-pre-wrap">
+                <div className="font-['Inter'] font-medium text-[.9em] text-center whitespace-pre-wrap">
                     <TextParser content={block.heading} />
                 </div>
             );
