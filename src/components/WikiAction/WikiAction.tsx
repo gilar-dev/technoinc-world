@@ -23,7 +23,6 @@ function WikiAction(): React.JSX.Element {
                 setLoading(true);
                 const response: Response = await fetch(`${API}/api/v1/wiki/get/${"sdade"}`);
                 const json: any = await response.json();
-                console.log(json);
 
                 if (!ignore) {
                     setArticleData(json.article);
