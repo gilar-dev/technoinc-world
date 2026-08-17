@@ -75,21 +75,25 @@ const Blocks: BlockConfigs<ResObject> = {
 export const GeneralBlocks: ResObject[] = [
     {
         label: "Heading",
+        type: "gen-heading-type",
         icon: "fa-solid fa-heading",
         block: () => Blocks.general.HeadingType()
     },
     {
         label: "Subheading",
+        type: "gen-subheading-type",
         icon: "fa-solid fa-heading -skew-x-12",
         block: () => Blocks.general.SubheadingType()
     },
     {
         label: "Paragraph",
+        type: "gen-paragraph-type",
         icon: "fa-solid fa-paragraph",
         block: () => Blocks.general.ParagraphType()
     },
     {
         label: "Image",
+        type: "gen-image-type",
         icon: "fa-solid fa-image",
         block: () => Blocks.general.ImageType()
     }
@@ -98,21 +102,25 @@ export const GeneralBlocks: ResObject[] = [
 export const InfoboxBlocks: ResObject[] = [
     {
         label: "IB Heading",
+        type: "ib-heading-type",
         icon: "fa-solid fa-heading border border-[rgb(85,85,85)]",
         block: () => Blocks.infobox.IbHeadingType()
     },
     {
         label: "IB Subheading",
+        type: "ib-subheading-type",
         icon: "fa-solid fa-heading -skew-x-12 border border-[rgb(85,85,85)]",
         block: () => Blocks.infobox.IbSubheadingType()
     },
     {
         label: "IB Info",
+        type: "ib-info-type",
         icon: "fa-solid fa-info",
         block: () => Blocks.infobox.IbInfoType()
     },
     {
         label: "IB Image",
+        type: "ib-image-type",
         icon: "fa-solid fa-image border border-[rgb(85,85,85)]",
         block: () => Blocks.infobox.IbImageType()
     }

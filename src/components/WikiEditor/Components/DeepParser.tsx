@@ -25,14 +25,14 @@ export function PrimaryParser({ block, expandContent }: PrimaryProps): React.JSX
     }
 
     return (
-        <div className="mt-5">
+        <div>
             <div
                 onClick={(e) => expandContent(e.currentTarget)}
-                className="my-3 py-1 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)]">
+                className="my-3 py-1 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)] active:bg-gray-500/10">
                 <WikiRenderer block={block[0]} />
-                <span className="text-[1.3em]"><i className="fa-solid fa-angle-up"></i></span>
+                <span className="text-[1.3em]"><i className="fa-solid fa-angle-down"></i></span>
             </div>
-            <div className="block">
+            <div className="hidden">
                 {block.map((subBlock: any, subIndex: number) => {
                     if (!isArray(subBlock) && subBlock.type !== "gen-heading-type") return (
                         <WikiRenderer key={subIndex} block={subBlock} />
@@ -86,17 +86,24 @@ export function SecondaryParser({ block, index }: SecondaryProps): React.JSX.Ele
                 {getSubheadings.length > 1 && (
                     <tr>
                         <td>
-                            <div className="w-full mt-3 font-sans flex justify-center items-center hover:bg-white/30">
+                            <div className={`w-full mt-3 font-sans flex justify-center items-center hover:bg-gray-300 ${!light && "hover:bg-white/30"}`}>
                                 <button
                                     onClick={(e) => setFullMode(e.currentTarget, `more-${index}`)}
-                                    className={`w-full p-1 cursor-pointer border-none bg-transparent
-                                                ${light ? "border-black text-black" : "border-white text-white"}`}>
+                                    className={`w-full p-1 cursor-pointer border-none bg-transparent ${!light && "border-white text-white"}`}>
                                     <span className="px-1 font-semibold border-l border-r">Collapse</span>
                                 </button>
                             </div>
                         </td>
                     </tr>
                 )}
+                <tr>
+                    <td>
+                        <div className="py-1 font-['Inter'] text-[14px] flex justify-between items-center border-t border-[rgb(85,85,85)]">
+                            <span>Infobox</span>
+                            <span className="p-0.5 rounded-[100%] scale-[-55%] text-white bg-blue-500"><i className="fa-solid fa-info ml-auto"></i></span>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     );

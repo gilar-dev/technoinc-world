@@ -11,11 +11,11 @@ interface PropTypes {
     setDisplay: SetState<boolean>;
 }
 
-function ImageContainer({ images, showed, setShowed, display, setDisplay }: PropTypes): ReactElement {
+function ImageGallery({ images, showed, setShowed, display, setDisplay }: PropTypes): ReactElement {
 
     const [navigation, setNavigation] = useState<boolean>(true);
     const [current, setCurrent] = useState<ResObject>({});
-    
+
     useEffect(() => {
         for (let index: number = 0; index < images.length; index++) {
             if (images[index].url === showed || images[index].src === showed) {
@@ -23,7 +23,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
             }
         }
     }, [showed]);
-    
+
     useEffect(() => {
         document.body.style.overflow = display ? "hidden" : "visible";
     }, [display]);
@@ -33,8 +33,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                         ${display ? "flex" : "hidden"}`}>
             <span
                 onClick={() => setDisplay(false)}
-                className={`text-3xl cursor-pointer absolute top-4 right-4 text-white
-                            ${navigation ? "inline" : "hidden"}`}>
+                className={`text-3xl cursor-pointer absolute top-4 right-4 text-white ${navigation ? "inline" : "hidden"}`}>
                 <i className="fa-solid fa-xmark"></i>
             </span>
 
@@ -80,7 +79,7 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
                             <img
                                 src={img.url || img.src || null}
                                 alt={img.description}
-                                style={{border: img.src === images[current.index]?.src || img.url === images[current.index]?.url ? "1px solid white" : "none"}}
+                                style={{ border: img.src === images[current.index]?.src || img.url === images[current.index]?.url ? "1px solid white" : "none" }}
                                 className="w-15 h-15 object-center object-cover" />
                         </div>
                     ))}
@@ -90,4 +89,4 @@ function ImageContainer({ images, showed, setShowed, display, setDisplay }: Prop
     );
 }
 
-export default ImageContainer;
+export default ImageGallery;

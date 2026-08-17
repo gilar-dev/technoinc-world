@@ -5,7 +5,7 @@ interface propTypes {
     effect?: string;
 }
 
-function Footer({ effect="" }: propTypes): ReactElement {
+function Footer({ effect = "" }: propTypes): ReactElement {
 
     return (
         <footer>

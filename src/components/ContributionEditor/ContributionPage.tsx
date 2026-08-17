@@ -3,6 +3,7 @@ import Menu from "../Menu";
 import Loading from "../Loading";
 import ModifyBox from "./Components/ModifyBox";
 import ArticleForm from "./Components/ArticleForm";
+import ContributorForm from "./Components/ContributorForm";
 import TextEditor from "./Components/TextEditor";
 import InspireBox from "./Components/InspireBox";
 import ContentBlock from "./Components/ContentBlock";
@@ -12,9 +13,9 @@ import Footer from "../Footer";
 import "../../css/DynamicPage.css";
 
 // Supporting utilities
-import { ArticleConfig, ResObject, Schema } from "../../utils/typesUtils";
+import { ArticleConfig, ResObject, Schema, ModifyAction, ArticleTemplate } from "../../utils/typesUtils";
 import { Config } from "../../utils/contextUtils";
-import { getCategoryById, handleInputChange } from "../../utils/articleUtils";
+import { handleInputChange } from "../../utils/articleUtils";
 import uploadArticleInit from "../../utils/ArticleOperations/uploadUtils";
 
 // React built-in utilities
@@ -22,27 +23,24 @@ import { ReactElement, Activity, useState, useEffect, useRef } from "react";
 import { Id, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Initialize internal interfaces
+export interface Contributor {
+    show: boolean;
+    user: string;
+    summary: string;
+}
+
 function ContributionPage(): ReactElement {
 
-    // Template for creating new article
-    const [article, setArticle] = useState<ArticleConfig>({
-        id: "", // Article id
-        title: "", // Article title
-        description: "", // Brief article description
-        category: "Civilization", // Article category default value
-        cover: "", // Article image cover
-        public_id: "", // Article image cover public id
-        raw_cover: undefined, // Temporary
-        visited: 0, // Article total visited (0 as start)
-        wiki_content: [] // Array of article contents
-    });
-
+    const [article, setArticle] = useState<ArticleConfig>(ArticleTemplate); // Template for creating new article
     const [schema, setSchema] = useState<Schema>([]); // Schema that contains object of contents
     const [search, setSearch] = useState<boolean>(false); // If search button in Menu component is clicked
     const [loading, setLoading] = useState<boolean>(false); // Loading state to wait validating something
-    const [blockMenu, setBlockMenu] = useState<boolean>(false);
-    const [blockIndex, setBlockIndex] = useState<number | undefined>(undefined);
-    const [blockUsed, setBlockUsed] = useState<ResObject[]>([]);
+    const [blockMenu, setBlockMenu] = useState<boolean>(false); // Block menu boolean state
+    const [blockIndex, setBlockIndex] = useState<number | undefined>(undefined); // Set block index
+    const [blockUsed, setBlockUsed] = useState<ResObject[]>([]); // Array of recently used blocks
+    const [modifyLogs, setModifyLogs] = useState<ModifyAction[]>([]); // Array of content block modify logs
+    const [contributor, setContributor] = useState<Contributor>({ show: false, user: "", summary: "" });
 
     // Create reference to schema div element
     const schemaElement = useRef<HTMLDivElement | null>(null);
@@ -60,35 +58,36 @@ function ContributionPage(): ReactElement {
     });
 
     useEffect(() => {
-        // Set body overflow style property based on loading state
-        document.body.style.overflow = loading ? "hidden" : "visible";
-    }, [loading]);
+        if (loading || contributor.show) document.body.style.overflow = "hidden";
+        else document.body.style.overflow = "visible";
+    }, [loading, contributor]);
 
     useEffect(() => {
+        // Set head title with dynamic vlue from router
         const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
         titleTag.textContent = "Contribution - TechnoInc MC Wiki";
     }, []);
 
     return (
-        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed }}>
+        <Config.Provider value={{ edit: false, light, article, setArticle, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed, modifyLogs, setModifyLogs }}>
             <Menu wikiTitle="Contribution" contribution={false} search={search} setSearch={setSearch} setLight={setLight} />
             <ModifyBox search={search} />
             <Loading show={loading} position="fixed" />
-            <ArticleForm article={article} light={light} states={{setArticle}} />
+            <ArticleForm article={article} light={light} states={{ setArticle }} />
+            <Activity mode={contributor.show ? "visible" : "hidden"}>
+                <ContributorForm setState={[contributor, setContributor]} />
+            </Activity>
             <Activity mode={schema.length === 0 ? "visible" : "hidden"}>
                 <InspireBox />
             </Activity>
-            <div
-                ref={schemaElement}
-                className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]
+            <div ref={schemaElement}
+                className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px] bg-white/70 [&_span]:text-black/20
                             [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                             [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
                             [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
                             [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
                             [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
-                            ${light ? "bg-white/70 [&_span]:text-black/20"
-                                    : `bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white
-                                    [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white`}`}>
+                            ${!light && "bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white"}`}>
                 {schema.map((block: ResObject, index: number) => (
                     <ContentBlock
                         key={index}
@@ -101,20 +100,17 @@ function ContributionPage(): ReactElement {
             </div>
             <button
                 title="Upload article"
-                style={{display: schema.length === 0 ? "none" : "block"}}
+                style={{ display: schema.length === 0 ? "none" : "block" }}
                 onClick={async () => {
                     if (loading) return; // If it's still in loading process, return
+                    if (contributor.user === "") { setContributor({ ...contributor, show: true }); return; }
                     setLoading(true); // Set loading to true
                     // Await to validate all things before uploading
-                    const validate: any = await uploadArticleInit(article, schema, { setArticle, setSchema });
+                    const validate: any = await uploadArticleInit(article, schema, { user: contributor.user, summary: contributor.summary, modify_logs: modifyLogs });
                     if (validate.passed) { // If all validation is success
                         successToastNotify(validate.message);
                         // Set delay before redirecting to the page
-                        setTimeout(() => {
-                            setLoading(false);
-                            // Redirect to created article
-                            window.location.replace(`/wiki/Category:${getCategoryById(article.id, true)}/${article.id}`);
-                        }, 3000);
+                        setTimeout(() => { setLoading(false); window.location.replace(`/wiki/${article.title.replaceAll(" ", "_")}`); }, 3000);
                     } else { // If something isn't valid when validating
                         setLoading(false);
                         if (validate.index === undefined) errorToastNotify(validate.message);
@@ -135,7 +131,6 @@ function ContributionPage(): ReactElement {
                             hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 Upload
             </button>
-
             <ContentToolbar setSchema={setSchema} light={light} />
             <BlockMenu />
             <ToastContainer
@@ -145,7 +140,8 @@ function ContributionPage(): ReactElement {
                 stacked={false}
                 limit={1}
                 pauseOnFocusLoss
-                pauseOnHover />
+                pauseOnHover
+            />
             <Footer />
         </Config.Provider>
     )

@@ -1,20 +1,26 @@
 import { ReactElement, useContext } from "react";
-import { Schema, PublicID, SetState } from "../../../utils/typesUtils";
+import { Schema, PublicID, SetState, ModifyAction } from "../../../utils/typesUtils";
 import { Config } from "../../../utils/contextUtils";
-import { addNewContentBlockAtIndex, moveContentBlock, deleteContentBlock } from "../../../utils/ContentBlocks/contentUtils";
+import { moveContentBlock, deleteContentBlock } from "../../../utils/ContentBlocks/contentUtils";
 import "../../../css/DynamicPage.css";
 
 interface propTypes {
     currentIndex: number;
-    editMode?: boolean;
     schema: Schema;
     setSchema: SetState<Schema>;
     setToDelete?: SetState<PublicID> | undefined;
 }
 
-function BlockControls({ currentIndex, editMode=false, schema, setSchema, setToDelete=undefined }: propTypes): ReactElement {
+interface ContextTypes {
+    edit: boolean;
+    setBlockMenu: SetState<boolean>;
+    setBlockIndex: SetState<number>;
+    setModifyLogs: SetState<ModifyAction[]>;
+}
 
-    const { setBlockMenu, setBlockIndex } = useContext<any>(Config);
+function BlockControls({ currentIndex, schema, setSchema, setToDelete = undefined }: propTypes): ReactElement {
+
+    const { edit, setBlockMenu, setBlockIndex, setModifyLogs } = useContext<ContextTypes>(Config);
 
     return (
         <div className="w-full flex justify-center items-center gap-1
@@ -22,13 +28,27 @@ function BlockControls({ currentIndex, editMode=false, schema, setSchema, setToD
                         [&>button]:text-white [&>button]:cursor-pointer [&_button]:transition-colors [&_button]:duration-150 [&_button]:ease-in-out">
             <button
                 title="Move up"
-                onClick={() => moveContentBlock(currentIndex, "up", schema, setSchema)}
+                onClick={() => {
+                    const action: any = moveContentBlock(currentIndex, "up", schema, setSchema);
+                    if (action && edit) setModifyLogs((prev: ModifyAction[]) => {
+                        const logs: ModifyAction[] = [...prev];
+                        if (logs.length !== 0 && logs[logs.length - 1].block === schema[currentIndex].type) return logs;
+                        return [...prev, { action: "move", block: schema[currentIndex].type }];
+                    });
+                }}
                 className="border-[rgb(0,175,255)] bg-[rgb(0,175,255)]/50 hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 <i className="fa-solid fa-arrow-up"></i>
             </button>
             <button
                 title="Move down"
-                onClick={() => moveContentBlock(currentIndex, "down", schema, setSchema)}
+                onClick={() => {
+                    const action: any = moveContentBlock(currentIndex, "down", schema, setSchema);
+                    if (action && edit) setModifyLogs((prev: ModifyAction[]) => {
+                        const logs: ModifyAction[] = [...prev];
+                        if (logs.length !== 0 && logs[logs.length - 1].block === schema[currentIndex].type) return logs;
+                        return [...prev, { action: "move", block: schema[currentIndex].type }];
+                    });
+                }}
                 className="border-[rgb(0,175,255)] bg-[rgb(0,175,255)]/50 hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
                 <i className="fa-solid fa-arrow-down"></i>
             </button>
@@ -47,10 +67,11 @@ function BlockControls({ currentIndex, editMode=false, schema, setSchema, setToD
             <button
                 title="Delete block"
                 onClick={() => {
-                    if (editMode && schema[currentIndex]?.prev_url !== undefined) {
-                        setToDelete?.((prev: PublicID) => [...prev, schema[currentIndex].public_id]);
+                    if (setToDelete) {
+                        setToDelete((prev: PublicID) => [...prev, schema[currentIndex].public_id]);
                     }
                     deleteContentBlock(currentIndex, setSchema);
+                    if (edit) setModifyLogs((prev: ModifyAction[]) => [...prev, { action: "delete", block: schema[currentIndex].type }]);
                 }}
                 className="delete-btn border-[rgb(255,0,0)] bg-[rgb(255,0,0)]/50 hover:bg-[rgb(235,0,0)] active:text-[rgb(255,0,0)] active:bg-white">
                 <i className="fa-solid fa-eraser"></i>

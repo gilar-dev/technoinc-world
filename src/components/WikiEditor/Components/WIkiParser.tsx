@@ -21,7 +21,7 @@ function WikiParser({ schema }: PropTypes): React.JSX.Element {
     }
 
     return (
-        <main className="p-3">
+        <main className="p-3 mb-5">
             {content.map((block: any, index: number) => {
                 if (!Array.isArray(block)) return (
                     <WikiRenderer key={index} block={block} />

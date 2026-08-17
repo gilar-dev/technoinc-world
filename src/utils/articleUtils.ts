@@ -1,4 +1,4 @@
-import { Schema, ResObject, ArticleConfig, SetState } from "./typesUtils";
+import { Schema, ResObject, ArticleConfig, SetState, TimeAndDate } from "./typesUtils";
 import { processMessage } from "./processUtils";
 
 // Strerilized word from user input to prevent XSS
@@ -14,6 +14,39 @@ export function sterilizedWord(word: string): string {
         .replace(/\//g, "&#x2f") // Replace '/' char
     // Return sterilized word
     return replaced.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+}
+
+// Create time and date for article history
+export function getCurrentDate(): TimeAndDate {
+    // Time section
+    const currentDate: Date = new Date();
+    const hours: number = currentDate.getHours();
+    const minutes: number = currentDate.getMinutes();
+    // Date section
+    const months: string[] = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "Novermber",
+        "December"
+    ];
+    const date: number = currentDate.getDate();
+    const month: number = currentDate.getMonth();
+    const year: number = currentDate.getFullYear();
+    return {
+        hour: `${hours < 10 ? `0${hours}` : `${hours}`}`,
+        minute: `${minutes < 10 ? `0${minutes}` : `${minutes}`}`,
+        date: `${date}`,
+        month: `${months[month]}`,
+        year: `${year}`
+    }
 }
 
 // Generate new article id
@@ -36,25 +69,6 @@ export function generateId(title: string, category: string): string {
     return modifiedTitle + "-" + idNames[category];
 }
 
-// Get article category based on its id
-export function getCategoryById(id: string, plural: boolean=false): string {
-    if (id === "") return ""; // Return empty string if id is empty
-    const splitedId: string[] = id.split("-"); // Split id value by using separator '-'
-    const getId: string = splitedId[splitedId.length - 1]; // Get the last index of splitedId (id)
-    // Object of existed categories (singular & plural)
-    const categories: ResObject = {
-        civ  : !plural ? "Civilization" : "Civilizations", // Id = civ
-        char : !plural ? "Character"    : "Characters", // Id = char
-        org  : !plural ? "Organization" : "Organizations", // Id = org
-        ide  : !plural ? "Ideology"     : "Ideologies", // Id = ide
-        party: !plural ? "Party"        : "Parties", // Id = party
-        town : !plural ? "Town"         : "Towns", // Id = town
-        lore : !plural ? "Lore"         : "Lores" // Id = lore
-    }
-    // Return matched id from categories key ("" if not exist)
-    return categories[getId] ? categories[getId] : "";
-}
-
 // Handle input changes on content schema
 export function handleInputChange(index: number, property: string, value: any, setSchema: SetState<Schema>): void {
     setSchema((prev: Schema) => {
@@ -68,6 +82,7 @@ export function handleInputChange(index: number, property: string, value: any, s
 export function checkArticleValues(article: ArticleConfig): ResObject {
     if (article.title === "") return processMessage(false, "Title can't be empty"); // Return if title is empty
     if (article.description === "") return processMessage(false, "Description can't be empty") // Return if description is empty
+    if (article.category.length === 0) return processMessage(false, "You should add at least one category");
     if (article.cover === "") return processMessage(false, "Cover can't be empty"); // Return if cover is empty
     // // Return true if all values passed the checks
     return processMessage(true, "Passed");

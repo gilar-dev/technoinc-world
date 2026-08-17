@@ -6,8 +6,8 @@ import './index.css';
 
 // Import local components
 import App from './App';
-import CategoryPage from "./components/CategoryPage";
 import WikiPage from './components/WikiEditor/WikiPage';
+import WikiAction from './components/WikiAction/WikiAction';
 import ContributionPage from './components/ContributionEditor/ContributionPage';
 import ContributionEditPage from './components/ContributionEditor/ContributionEditPage';
 
@@ -18,9 +18,9 @@ createRoot(document.getElementById('root')!).render(
             <Routes>
                 <Route path="/" element={<App />} />
                 <Route path="/contribution" element={<ContributionPage />} />
-                <Route path="/contribution/edit/:contentId" element={<ContributionEditPage />} />
-                <Route path="/wiki/:categoryName" element={<CategoryPage />} />
-                <Route path="/wiki/:categoryName/:contentId" element={<WikiPage />} />
+                <Route path="/contribution/edit/:contentID" element={<ContributionEditPage />} />
+                <Route path="/wiki/:contentID" element={<WikiPage />} />
+                <Route path="/wiki/:contentID/:actionName" element={<WikiAction />} />
                 <Route path="*" element={<App />} />
             </Routes>
         </BrowserRouter>

@@ -31,7 +31,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
         onChangeHandler(index, "raw_file", undefined, setSchema);
         setToDelete?.((prev: string[]) => [...prev].toSpliced([...prev].indexOf(block.public_id), 1));
     }
-    
+
     switch (block.type) {
 
         // General content block types
@@ -98,7 +98,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                         onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
                         onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
                         className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" />
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} /> 
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} setToDelete={setToDelete} />
                 </div>
             );
 
@@ -148,7 +148,7 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                             className="p-1 field-sizing-content resize-none font-['Montserrat']" />
                     </div>
                     <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} />
-                </div>  
+                </div>
             );
 
         case "ib-image-type":
@@ -171,8 +171,8 @@ function ContentBlock({ index, block, schema, setSchema, onChangeHandler, setToD
                         value={block.description}
                         onChange={(e) => onChangeHandler(index, "description", e.target.value, setSchema)}
                         onFocus={() => onChangeHandler(index, "is_empty", false, setSchema)}
-                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" /> 
-                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} /> 
+                        className="w-full min-h-25 p-1 field-sizing-content font-['Montserrat'] resize-none outline-none border-none" />
+                    <BlockControls currentIndex={index} schema={schema} setSchema={setSchema} setToDelete={setToDelete} />
                 </div>
             );
 

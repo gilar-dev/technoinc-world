@@ -1,12 +1,23 @@
-import { ResObject } from "../../../utils/typesUtils";
+import { ModifyAction, ResObject, Schema, SetState } from "../../../utils/typesUtils";
 import { Config } from "../../../utils/contextUtils";
 import { GeneralBlocks, InfoboxBlocks } from "../../../utils/ContentBlocks/blockUtils";
 import { addNewContentBlock, addNewContentBlockAtIndex } from "../../../utils/ContentBlocks/contentUtils";
 import { ReactElement, useEffect, useContext } from "react";
 
+interface ContextTypes {
+    light: boolean;
+    blockMenu: boolean;
+    blockIndex: number;
+    setSchema: SetState<Schema>;
+    setBlockMenu: SetState<boolean>;
+    setBlockIndex: SetState<number | undefined>;
+    setBlockUsed: SetState<ResObject>;
+    setModifyLogs: SetState<ModifyAction[]>;
+}
+
 function BlockMenu(): ReactElement {
 
-    const { light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, setBlockUsed } = useContext<any>(Config);
+    const { light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, setBlockUsed, setModifyLogs } = useContext<ContextTypes>(Config);
 
     useEffect(() => {
         document.body.style.overflow = blockMenu ? "hidden" : "visible";
@@ -30,7 +41,7 @@ function BlockMenu(): ReactElement {
                     {GeneralBlocks.map((block: ResObject, index: number) => (
                         <div
                             key={index}
-                            onClick={() =>  {
+                            onClick={() => {
                                 if (blockIndex === undefined) addNewContentBlock(block.block(), setSchema);
                                 else {
                                     addNewContentBlockAtIndex(blockIndex, block.block(), setSchema);
@@ -42,11 +53,13 @@ function BlockMenu(): ReactElement {
                                     if (prev.length > 6) prev.pop();
                                     return [{
                                         label: block.label,
+                                        type: block.type,
                                         icon: block.icon,
                                         block: () => block.block()
                                     }, ...prev];
                                 })
                                 setBlockMenu(false);
+                                setModifyLogs((prev: ModifyAction[]) => [...prev, { action: "add", block: block.type }]);
                             }}
                             className="w-25 h-25 p-3 cursor-pointer flex flex-col items-center justify-between rounded-[5px] border border-[rgb(85,85,85)]">
                             <i className={`${block.icon} text-[3em] text-gray-400`}></i>
@@ -59,7 +72,7 @@ function BlockMenu(): ReactElement {
                     {InfoboxBlocks.map((block: ResObject, index: number) => (
                         <div
                             key={index}
-                            onClick={() =>  {
+                            onClick={() => {
                                 if (blockIndex === undefined) addNewContentBlock(block.block(), setSchema);
                                 else {
                                     addNewContentBlockAtIndex(blockIndex, block.block(), setSchema);
@@ -71,11 +84,13 @@ function BlockMenu(): ReactElement {
                                     if (prev.length > 6) prev.pop();
                                     return [{
                                         label: block.label,
+                                        type: block.type,
                                         icon: block.icon,
                                         block: () => block.block()
                                     }, ...prev];
                                 })
                                 setBlockMenu(false);
+                                setModifyLogs((prev: ModifyAction[]) => [...prev, { action: "add", block: block.type }]);
                             }}
                             className="w-25 h-25 p-3 cursor-pointer flex flex-col items-center justify-between rounded-[5px] border border-[rgb(85,85,85)]">
                             <i className={`${block.icon} text-[3em] text-gray-400`}></i>

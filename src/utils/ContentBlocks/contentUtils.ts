@@ -30,6 +30,7 @@ export function moveContentBlock(currentIndex: number, direction: MoveDirections
 
         return updatedSchema;
     });
+    return true;
 }
 
 // Delete content in array of schema
@@ -45,19 +46,6 @@ export function checkContentValues(schema: Schema): ResObject {
         const content: ResObject = schema[index];
         const message: ResObject = processMessage(false, "This can't be empty", index);
         switch (content.type) {
-            case "heading-type": // Heading type content check
-                if (content.data === "") return message;
-                break;
-            case "table-type": // Table type content check
-                if (content.head_data === "" || content.content_data === "") return message;
-                break;
-            case "paragraph-type": // Paragraph type content check
-                if (content.title === "" || content.data === "") return message;
-                break;
-            case "image-type": // Image type content check
-                if (content.url === "" || content.description === "") return message;
-                break;
-
             // General content blocks
             case "gen-heading-type":
                 if (content.heading === "") return message;
@@ -74,7 +62,6 @@ export function checkContentValues(schema: Schema): ResObject {
             case "gen-image-type":
                 if (content.src === "" || content.description == "") return message;
                 break;
-
             // Infobox content blocks
             case "ib-heading-type":
                 if (content.heading === "") return message;
@@ -88,6 +75,7 @@ export function checkContentValues(schema: Schema): ResObject {
             case "ib-image-type":
                 if (content.src === "") return message;
                 break;
+            // Default
             default:
                 return processMessage(false, "None");
         }

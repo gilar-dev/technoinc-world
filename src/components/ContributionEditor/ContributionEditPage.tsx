@@ -2,43 +2,51 @@
 import Menu from "../Menu";
 import Loading from "../Loading";
 import NotFound from "../NotFound";
-import ContentBlock from "./Components/ContentBlock"; 
+import ArticleForm from "./Components/ArticleForm";
+import ContributorForm from "./Components/ContributorForm";
+import ContentBlock from "./Components/ContentBlock";
 import ContentToolbar from "./Components/ContentToolbar";
 import BlockMenu from "./Components/BlockMenu";
 import Footer from "../Footer";
 import "../../css/DynamicPage.css";
 
 // Supporting utilites
-import { PublicID, ResObject, API } from "../../utils/typesUtils";
-import { handleInputChange, getCategoryById } from "../../utils/articleUtils";
+import { Contributor } from "./ContributionPage";
+import { ArticleConfig, PublicID, ResObject, API, ArticleTemplate, ModifyAction } from "../../utils/typesUtils";
+import { handleInputChange } from "../../utils/articleUtils";
 import { Config } from "../../utils/contextUtils";
 import updateArticleInit from "../../utils/ArticleOperations/updateUtils";
 import deleleArticleInit from "../../utils/ArticleOperations/deleteUtils";
 
 // React built-in utilities
-import { ReactElement, Activity, useState, useEffect, createContext, Context } from "react";
-import { Link, Params, useParams } from "react-router-dom";
+import { Activity, useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Id, toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function ContributionEditPage(): ReactElement {
+function ContributionEditPage(): React.JSX.Element {
 
-    const { contentId }: Params<string> = useParams<string>(); // Get dynamic 'contentid' url
-    const splitedId: string[] = (contentId as string).split("-"); // Split text with '-' separator
+    const { contentID } = useParams<string>(); // Get dynamic 'contentid' url
 
     // Set state variables
-    const [data, setData] = useState<ResObject>({}); // Article informations
+    // Article data states
+    const [article, setArticle] = useState<ArticleConfig>(ArticleTemplate); // Article informations
     const [schema, setSchema] = useState<ResObject[]>([]); // Array of article schema to be edited
-    const [loading, setLoading] = useState<boolean>(false);
+
+    // Configuration states
+    const [loading, setLoading] = useState<boolean>(false); // Loading booleam state
     const [isExist, setIsExist] = useState<boolean | undefined>(undefined); // Check if article id is exist
     const [toDelete, setToDelete] = useState<PublicID>([]); // Array of assets to be deleted
     const [deleteInput, setDeleteInput] = useState<string>(""); // Confirmation before deleting
     const [deleteContainer, setDeleteContainer] = useState<boolean>(false); // Show delete confirmation container
 
+    // Theme state & block toolbar configuration states
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
     const [blockMenu, setBlockMenu] = useState<boolean>(false);
     const [blockIndex, setBlockIndex] = useState<number | undefined>(undefined);
     const [blockUsed, setBlockUsed] = useState<ResObject[]>([]);
+    const [modifyLogs, setModifyLogs] = useState<ModifyAction[]>([]);
+    const [contributor, setContributor] = useState<Contributor>({ show: false, user: "", summary: "" });
 
     // Toast success
     const successToastNotify = (message: string): Id => toast.success(message, {
@@ -48,14 +56,12 @@ function ContributionEditPage(): ReactElement {
     const errorToastNotify = (message: string): Id => toast.error(message, {
         className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
     });
-    
+
 
     // Modify image type content from database
     const modifiedSchema = (rawData: ResObject[]) => {
         for (let index: number = 0; index < rawData.length; index++) {
-            if (rawData[index].type === "image-type") {
-                rawData[index] = { ...rawData[index], raw_file: undefined, prev_url: "" }
-            } else if (rawData[index].type === "gen-image-type") {
+            if (rawData[index].type.includes("image")) {
                 rawData[index] = { ...rawData[index], raw_file: undefined, prev_src: "" }
             }
         }
@@ -66,31 +72,29 @@ function ContributionEditPage(): ReactElement {
 
         const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
         titleTag.textContent = "Edit Article - TechnoInc MC Wiki";
+        const filteredContentId: string = (contentID as string).replaceAll("_", " ").toLowerCase();
 
         // Get wiki article from db
         const fetchData = async () => {
-            const category: string = getCategoryById(splitedId[splitedId.length - 1]).toLowerCase();
-
             try {
                 // Get article from category & article is
-                const response: Response = await fetch(`${API}/api/v1/wiki/${category}/${contentId}`)
+                const response: Response = await fetch(`${API}/api/v1/wiki/get/${filteredContentId}`)
                 // If response is not ok, throw error
                 if (!response.ok) throw new Error(`${response}`);
 
                 // Get the successfull response data
                 const result: ResObject = await response.json();
                 // Clone the object data then delete content schema
-                const articleFront: ResObject = { ...result.article };
-                delete articleFront["wiki_content"];
+                const articleFront: ArticleConfig = { ...result.article, wiki_content: [] };
 
                 // Set data from fetch result to state variables
                 setIsExist(true);
-                setData(articleFront);
+                setArticle(articleFront);
                 setSchema(modifiedSchema(result.article.wiki_content));
 
             } catch (error) {
                 setIsExist(false);
-                console.log(error);
+                console.error(error);
             }
         }
 
@@ -98,14 +102,12 @@ function ContributionEditPage(): ReactElement {
     }, []);
 
     useEffect(() => {
-        // Reset delete input valiidation when delete container is false
         if (!deleteContainer) setDeleteInput("");
-        // Set body overflow property
-        document.body.style.overflow = deleteContainer || loading ? "hidden" : "visible";
-    }, [deleteContainer, loading]);
+        document.body.style.overflow = deleteContainer || loading || contributor.show ? "hidden" : "visible";
+    }, [deleteContainer, loading, contributor]);
 
     return (
-        <Config.Provider value={{ light, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed }}>
+        <Config.Provider value={{ edit: true, light, article, setArticle, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed, modifyLogs, setModifyLogs }}>
             <Menu wikiTitle="Contribution" setLight={setLight} />
             <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
@@ -113,21 +115,13 @@ function ContributionEditPage(): ReactElement {
                     <i className="fa-solid fa-xmark"></i>
                 </Link>
             </div>
+            <ArticleForm article={article} light={light} states={{ setArticle: setArticle }} />
+            <Activity mode={contributor.show ? "visible" : "hidden"}>
+                <ContributorForm setState={[contributor, setContributor]} />
+            </Activity>
             <Activity mode={isExist !== undefined && !isExist ? "visible" : "hidden"}>
                 <NotFound />
             </Activity>
-            <div className={`w-full p-3 flex-col items-center justify-center gap-3 rounded-[5px] shadow-2xs shadow-black text-black
-                            [&_h3,&_p]:text-center
-                            ${isExist ? "flex" : "hidden"}
-                            ${light ? "bg-white/70" : "text-white bg-gray-700/50"}`}>
-                <img
-                    src={data.cover || null}
-                    alt={data.title}
-                    className="w-[80%] border border-white" />
-                <h3>{data.title}</h3>
-                <p className="font-normal">{data?.description || data.id}</p>
-                <p className="text-[.8em]">{data.category}</p>
-            </div>
             <div className={`schema mt-[3em] flex flex-col gap-[2em] rounded-[10px]
                             [&>.content-box]:m-[1em] [&>.content-box]:pl-[1em] [&>.content-box]:flex
                             [&>.content-box]:flex-col [&>.content-box]:items-center [&>.content-box]:gap-3
@@ -135,7 +129,7 @@ function ContributionEditPage(): ReactElement {
                             [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
                             [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
                             ${light ? "bg-white/70 [&_span]:text-black/20"
-                                    : `bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white
+                    : `bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white
                                     [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white`}`}>
                 {schema.map((block, idx) => (
                     <ContentBlock
@@ -153,17 +147,21 @@ function ContributionEditPage(): ReactElement {
                 title="Update article"
                 onClick={async () => {
                     if (loading) return;
+                    if (contributor.user === "") {
+                        setContributor({ ...contributor, show: true });
+                        return;
+                    }
                     setLoading(true);
-                    const update: any = await updateArticleInit(contentId as string, getCategoryById(contentId as string), {
+                    const update: any = await updateArticleInit(article, {
                         schema: schema,
-                        pendingDelete: toDelete
+                        pendingDelete: toDelete,
+                        user: contributor.user,
+                        summary: contributor.summary,
+                        modify_logs: modifyLogs
                     });
                     if (update.passed) {
                         successToastNotify(update.message);
-                        setTimeout(() => {
-                            setLoading(false);
-                            window.location.replace(`/wiki/Category:${getCategoryById(contentId as string, true)}/${contentId}`);
-                        }, 3000);
+                        setTimeout(() => setLoading(false), 3000);
                     } else {
                         setLoading(false);
                         if (update.index === undefined) errorToastNotify(update.message);
@@ -209,7 +207,7 @@ function ContributionEditPage(): ReactElement {
                         Delete Article?
                     </h2>
                     <p className="mt-5 font-medium text-[.9em]">Are you sure you want to delete this article?</p>
-                    <p className="mt-5 text-[.9em]">Type <strong>"{contentId}"</strong> to confirm your action</p>
+                    <p className="mt-5 text-[.9em]">Type <strong>"{contentID}"</strong> to confirm your action</p>
                     <input
                         name="delete-input"
                         type="text"
@@ -225,16 +223,15 @@ function ContributionEditPage(): ReactElement {
                             className="border-gray-300 bg-gray-500 transition-colors duration-150 ease-in-out hover:bg-gray-400">Cancel</button>
                         <button
                             onClick={async () => {
-                                if (deleteInput !== contentId) return;
+                                if (deleteInput !== contentID) return;
                                 if (loading) return;
                                 setLoading(true)
-                                const result: any = await deleleArticleInit(contentId, getCategoryById(splitedId[splitedId.length - 1]).toLowerCase());
+                                const result: any = await deleleArticleInit(article.id);
                                 if (result.passed) {
                                     successToastNotify(result.message)
                                     setTimeout(() => {
                                         setLoading(false);
                                         setDeleteContainer(false);
-                                        window.location.replace(`/wiki/Category:${getCategoryById(splitedId[splitedId.length - 1], true)}`);
                                     }, 3000);
                                 } else {
                                     errorToastNotify(result.message)
@@ -242,8 +239,8 @@ function ContributionEditPage(): ReactElement {
                                     setDeleteContainer(false);
                                 }
                             }}
-                            className={`${deleteInput !== contentId && "cursor-not-allowed"} border-gray-300 bg-gray-300
-                                        ${deleteInput === contentId && "border-red-700 bg-red-500 hover:bg-red-400"} transition-colors duration-150 ease-in-out`}>Delete Article</button>
+                            className={`${deleteInput !== contentID && "cursor-not-allowed"} border-gray-300 bg-gray-300
+                                        ${deleteInput === contentID && "border-red-700 bg-red-500 hover:bg-red-400"} transition-colors duration-150 ease-in-out`}>Delete Article</button>
                     </div>
                 </div>
             </div>

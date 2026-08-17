@@ -46,7 +46,7 @@ export function contentGrouper(content: Schema): Schema {
         else if (Array.isArray(group[last])) {
             if (group[last].some((item: ResObject) => !item.type.includes("ib"))) {
                 group[last].push(block);
-            }
+            } else group.push(block);
         }
     }
 

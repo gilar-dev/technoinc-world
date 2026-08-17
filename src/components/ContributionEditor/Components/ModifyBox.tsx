@@ -55,11 +55,10 @@ function ModifyBox({ search }: propTypes): ReactElement {
         setLoading(true);
 
         // Add delay before searching
-        const delayed = setTimeout(async () => {
+        const delayed: number = setTimeout(async () => {
             const process: ResObject = await searchArticle(input);
             setMatches(process.matches);
             setLoading(false);
-            console.log("fetching");
         }, 700);
 
         // Clear tiemout delay as input changes
