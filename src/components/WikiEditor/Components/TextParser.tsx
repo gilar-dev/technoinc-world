@@ -6,7 +6,7 @@ interface PropTypes {
     style?: string;
 }
 
-function TextParser({ content, style="" }: PropTypes): ReactElement {
+function TextParser({ content, style = "" }: PropTypes): ReactElement {
 
     const parsedText = (content: string): any => {
         if (!content) return [];
@@ -28,7 +28,7 @@ function TextParser({ content, style="" }: PropTypes): ReactElement {
             if (groups?.bold) {
                 const cleanText: string = match[2];
                 elements.push(
-                    <strong key={`b-${index}`}>{parsedText(cleanText)}</strong>
+                    <strong key={`b-${index}`} className="font-semibold">{parsedText(cleanText)}</strong>
                 );
             } else if (groups?.underline) {
                 const cleanText: string = match[4];
@@ -49,7 +49,7 @@ function TextParser({ content, style="" }: PropTypes): ReactElement {
                 const linkLabel: string = match[10];
                 const linkUrl: string = match[11];
                 elements.push(
-                    <a 
+                    <a
                         key={`l-${index}`}
                         href={linkUrl} target={linkUrl.startsWith("http") ? "_blank" : "_self"}
                         rel="noopener nooferrer"

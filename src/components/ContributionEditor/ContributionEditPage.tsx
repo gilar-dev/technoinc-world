@@ -57,6 +57,35 @@ function ContributionEditPage(): React.JSX.Element {
         className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
     });
 
+    const updateArticle = async (): Promise<void> => {
+        if (loading) return;
+        if (contributor.user === "") {
+            setContributor({ ...contributor, show: true });
+            return;
+        }
+        setLoading(true);
+        const update: any = await updateArticleInit(article, {
+            schema: schema,
+            pendingDelete: toDelete,
+            user: contributor.user,
+            summary: contributor.summary,
+            modify_logs: modifyLogs
+        });
+        if (update.passed) {
+            successToastNotify(update.message);
+            setTimeout(() => setLoading(false), 3000);
+        } else {
+            setLoading(false);
+            if (update.index === undefined) errorToastNotify(update.message);
+            else {
+                errorToastNotify(`${update.message} at content ${update.index + 1}`);
+                const schemaContainer: HTMLElement = document.querySelector(".schema") as HTMLElement;
+                const children: HTMLCollection = schemaContainer.children;
+                children[update.index].scrollIntoView({ behavior: "smooth", block: "center" });
+                handleInputChange(update.index, "is_empty", true, setSchema);
+            }
+        }
+    }
 
     // Modify image type content from database
     const modifiedSchema = (rawData: ResObject[]) => {
@@ -109,7 +138,7 @@ function ContributionEditPage(): React.JSX.Element {
     return (
         <Config.Provider value={{ edit: true, light, article, setArticle, setSchema, blockMenu, setBlockMenu, blockIndex, setBlockIndex, blockUsed, setBlockUsed, modifyLogs, setModifyLogs }}>
             <Menu wikiTitle="Contribution" setLight={setLight} />
-            <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] text-white bg-yellow-600">
+            <div className="w-full mb-[5em] p-3 flex justify-between items-center sticky top-[3.7em] z-1 text-white bg-yellow-600">
                 <p className="font-bold">Edit Mode</p>
                 <Link title="Exit edit mode" to="/contribution" replace className="cursor-pointer text-white">
                     <i className="fa-solid fa-xmark"></i>
@@ -117,7 +146,7 @@ function ContributionEditPage(): React.JSX.Element {
             </div>
             <ArticleForm article={article} light={light} states={{ setArticle: setArticle }} />
             <Activity mode={contributor.show ? "visible" : "hidden"}>
-                <ContributorForm setState={[contributor, setContributor]} />
+                <ContributorForm setState={[contributor, setContributor]} updateProcess={updateArticle} />
             </Activity>
             <Activity mode={isExist !== undefined && !isExist ? "visible" : "hidden"}>
                 <NotFound />
@@ -145,35 +174,7 @@ function ContributionEditPage(): React.JSX.Element {
             <Loading show={loading} position="fixed" />
             <button
                 title="Update article"
-                onClick={async () => {
-                    if (loading) return;
-                    if (contributor.user === "") {
-                        setContributor({ ...contributor, show: true });
-                        return;
-                    }
-                    setLoading(true);
-                    const update: any = await updateArticleInit(article, {
-                        schema: schema,
-                        pendingDelete: toDelete,
-                        user: contributor.user,
-                        summary: contributor.summary,
-                        modify_logs: modifyLogs
-                    });
-                    if (update.passed) {
-                        successToastNotify(update.message);
-                        setTimeout(() => setLoading(false), 3000);
-                    } else {
-                        setLoading(false);
-                        if (update.index === undefined) errorToastNotify(update.message);
-                        else {
-                            errorToastNotify(`${update.message} at content ${update.index + 1}`);
-                            const schemaContainer: HTMLElement = document.querySelector(".schema") as HTMLElement;
-                            const children: HTMLCollection = schemaContainer.children;
-                            children[update.index].scrollIntoView({ behavior: "smooth", block: "center" });
-                            handleInputChange(update.index, "is_empty", true, setSchema);
-                        }
-                    }
-                }}
+                onClick={() => setContributor({ ...contributor, show: true })}
                 className={`${schema.length === 0 ? "hidden" : "block"}
                             w-[40%] mt-5 mx-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                             text-white border-none bg-yellow-600
@@ -207,13 +208,13 @@ function ContributionEditPage(): React.JSX.Element {
                         Delete Article?
                     </h2>
                     <p className="mt-5 font-medium text-[.9em]">Are you sure you want to delete this article?</p>
-                    <p className="mt-5 text-[.9em]">Type <strong>"{contentID}"</strong> to confirm your action</p>
+                    <p className="mt-5 text-[.9em]">Type <strong>"{contentID?.toLowerCase().replaceAll(" ", "_")}"</strong> to confirm your action</p>
                     <input
                         name="delete-input"
                         type="text"
                         value={deleteInput}
                         onChange={(e) => setDeleteInput(e.target.value)}
-                        className="w-full mt-5 p-2 outline-blue-500 rounded-[5px]" />
+                        className="w-full mt-5 p-2 outline-blue-500 rounded-[5px] border-solid" />
                     <Loading show={loading} position="static" />
                     <div className="w-full mt-5 flex justify-end items-center gap-3
                                     [&>button]:p-2 [&>button]:font-bold [&>button]:outline-none [&>button]:rounded-[5px]
@@ -223,7 +224,8 @@ function ContributionEditPage(): React.JSX.Element {
                             className="border-gray-300 bg-gray-500 transition-colors duration-150 ease-in-out hover:bg-gray-400">Cancel</button>
                         <button
                             onClick={async () => {
-                                if (deleteInput !== contentID) return;
+                                if (!contentID) return;
+                                if (deleteInput !== contentID.toLowerCase().replaceAll(" ", "_")) return;
                                 if (loading) return;
                                 setLoading(true)
                                 const result: any = await deleleArticleInit(article.id);
@@ -239,8 +241,8 @@ function ContributionEditPage(): React.JSX.Element {
                                     setDeleteContainer(false);
                                 }
                             }}
-                            className={`${deleteInput !== contentID && "cursor-not-allowed"} border-gray-300 bg-gray-300
-                                        ${deleteInput === contentID && "border-red-700 bg-red-500 hover:bg-red-400"} transition-colors duration-150 ease-in-out`}>Delete Article</button>
+                            className={`${deleteInput !== contentID?.toLowerCase().replaceAll(" ", "_") && "cursor-not-allowed"} border-gray-300 bg-gray-300
+                                        ${deleteInput === contentID?.toLowerCase().replaceAll(" ", "_") && "border-red-700 bg-red-500 hover:bg-red-400"} transition-colors duration-150 ease-in-out`}>Delete Article</button>
                     </div>
                 </div>
             </div>

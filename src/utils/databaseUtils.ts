@@ -1,13 +1,11 @@
 import { API, ArticleConfig, ResObject } from "./typesUtils";
 
 // Check article existence by using its id
-export async function checkArticleId(id: string): Promise<any> {
-    if (id === "") return; // If id or category is empty, return
+export async function checkArticleTitle(articleTitle: string): Promise<any> {
+    if (articleTitle === "") return; // If id or category is empty, return
     try {
         // Fetch request to backend for getting article wiki
-        const response: Response = await fetch(
-        `${API}/api/v1/wiki/check/${id}`,
-        );
+        const response: Response = await fetch(`${API}/api/v1/wiki/check/${articleTitle}`);
         // If response is not ok, throw error
         if (!response.ok) throw new Error(`${response}`);
 
@@ -23,9 +21,7 @@ export async function checkArticleId(id: string): Promise<any> {
 export async function getArticleWiki(articleId: number): Promise<any> {
     try {
         // Fetch request to backend for getting article wiki
-        const response: Response = await fetch(
-        `${API}/api/v1/wiki/get/${articleId}`,
-        );
+        const response: Response = await fetch(`${API}/api/v1/wiki/get/${articleId}`);
         // If response is not ok, throw error
         if (!response.ok) throw new Error(`${response}`);
 

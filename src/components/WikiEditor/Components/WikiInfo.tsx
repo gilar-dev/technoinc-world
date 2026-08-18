@@ -39,7 +39,10 @@ function WikiInfo({ articleTitle, categories, modifyInfo }: PropTypes): React.JS
 
     return (
         <div className={`pb-3 bg-gray-300 ${!light && "bg-gray-700"}`}>
-            <Link to={`/wiki/${articleTitle.replaceAll(" ", "_")}/history`} className={`group p-3 cursor-pointer font-['Inter'] leading-relaxed flex items-center gap-3 border-t border-b border-gray-500 text-black ${!light && "text-white"}`}>
+            <Link to={`/wiki/${articleTitle.replaceAll(" ", "_")}/history`}
+                className={`group p-3 cursor-pointer font-['Inter'] leading-relaxed flex items-center gap-3 border-t border-b border-gray-500 text-black
+                    ${!light && "text-white"} ${modifiedDate() === "today" && "bg-blue-500"}`}
+            >
                 <i className="fa-solid fa-clock-rotate-left"></i>
                 <span className="group-hover:underline font-medium text-[14px]">
                     This page was {modifyStatus === "created" ? "created" : "last edited"} {modifiedDate()}, at {`${time[0]}.${time[1]}`}.
@@ -51,7 +54,7 @@ function WikiInfo({ articleTitle, categories, modifyInfo }: PropTypes): React.JS
                     <span>Categories:</span>
                     {categories.map((category: string, index: number) => (
                         <li key={index} className={`my-1 px-3 border-l border-gray-500 ${index === 0 && "border-l-0"}`}>
-                            <Link to={`/${category}`} className={`${!light && "text-blue-400 border-white visited:text-purple-400"}`}>{category}</Link>
+                            <Link to={`/category/${category.replaceAll(" ", "_")}`} className={`${!light && "text-blue-400 border-white visited:text-purple-400"}`}>{category}</Link>
                         </li>
                     ))}
                 </ul>

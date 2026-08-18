@@ -35,23 +35,21 @@ function ArticleForm({ article, light, states }: PropTypes): React.JSX.Element {
                 onChange={(e) => states.setArticle((prev: ArticleConfig) => ({ ...prev, description: e.target.value }))}
                 className={`p-1 min-h-2 font-medium field-sizing-content resize-none
                             outline-none border-l-0 border-t-0 border-r-0 bg-transparent`} />
-            <div className="font-['Montserrat'] flex gap-10">
-                <div>
-                    <span className="font-semibold">Category:</span>
-                </div>
+            <div className="font-['Inter'] flex gap-10">
                 <div>
                     <div>
-                        <ul className="list-none flex items-baseline flex-wrap">
+                        <ul className="list-none flex items-baseline-last flex-wrap">
+                            <li><span className="mr-3 font-semibold">Category:</span></li>
                             {article.category.map((cat: string, index: number) => (
-                                <li key={index} className="mr-2 mb-2 flex items-center gap-1">
-                                    <span className="font-['Montserrat'] font-normal">{cat}</span>
-                                    <button title="Delete category" className="border-none cursor-pointer" onClick={() => {
+                                <li key={index} className="mr-2 mb-2 flex items-baseline-last gap-1">
+                                    <span className="font-normal">{cat}</span>
+                                    <button title="Delete category" className={`cursor-pointer border-none bg-transparent ${!light && "text-white"}`} onClick={() => {
                                         states.setArticle((prev: ArticleConfig) => ({ ...prev, category: [...prev.category].toSpliced(index, 1) }))
                                     }}><i className="fa-solid fa-xmark"></i></button>
                                 </li>
                             ))}
                             <li className={`${!light && "[&_button]:border-white [&_button]:text-white"}`}>
-                                <button title="Add category" className="mx-auto p-1 cursor-pointer font-semibold border-solid rounded-[3px] bg-transparent"
+                                <button title="Add new category" className="mx-auto p-1 cursor-pointer font-semibold border-solid rounded-[3px] bg-transparent"
                                     onClick={() => setAddCategory(true)}
                                 >Add category</button>
                             </li>
@@ -87,7 +85,7 @@ function ArticleForm({ article, light, states }: PropTypes): React.JSX.Element {
                     }} />
                 <label
                     htmlFor="article-cover"
-                    className={`p-3 font-bold rounded-2xl border-2 text-black
+                    className={`self-start p-3 font-bold rounded-2xl border-2 text-black
                                 transition-colors duration-150 ease-in-out
                                 hover:bg-gray-400/70 active:text-[rgb(0,175,255)] active:bg-white
                                 ${!light && "text-white border-gray-500"}`}>

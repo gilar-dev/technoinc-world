@@ -48,6 +48,32 @@ function ContributionPage(): ReactElement {
     // State variable for getting current site theme from local storage
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
+    // Uploading new article process
+    const uploadNewArticle = async (): Promise<void> => {
+        setContributor({ ...contributor, show: false });
+        setLoading(true); // Set loading to true
+        // Await to validate all things before uploading
+        const validate: any = await uploadArticleInit(article, schema, { user: contributor.user, summary: contributor.summary, modify_logs: modifyLogs });
+        if (validate.passed) { // If all validation is success
+            successToastNotify(validate.message);
+            // Set delay before redirecting to the page
+            setTimeout(() => { setLoading(false); window.location.replace(`/wiki/${article.title.replaceAll(" ", "_")}`); }, 3000);
+        } else { // If something isn't valid when validating
+            setLoading(false);
+            if (validate.index === undefined) errorToastNotify(validate.message);
+            else {
+                if (!schemaElement.current) return; // Check if schema element ref is undefined and return
+                errorToastNotify(`${validate.message} at content ${validate.index + 1}`);
+                // Get all children of schema container parent element
+                const children: HTMLCollection = schemaElement.current.children;
+                // Scroll to invalid content value index
+                children[validate.index].scrollIntoView({ behavior: "smooth", block: "center" });
+                // Set the invalid content 'is_empty' property to true
+                handleInputChange(validate.index, "is_empty", true, setSchema);
+            }
+        }
+    }
+
     // Toast success
     const successToastNotify = (content: string): Id => toast.success(content, {
         className: `shadow-2xs! shadow-black! ${light ? "text-black! bg-white!" : "text-white! bg-gray-700!"}`
@@ -75,7 +101,7 @@ function ContributionPage(): ReactElement {
             <Loading show={loading} position="fixed" />
             <ArticleForm article={article} light={light} states={{ setArticle }} />
             <Activity mode={contributor.show ? "visible" : "hidden"}>
-                <ContributorForm setState={[contributor, setContributor]} />
+                <ContributorForm setState={[contributor, setContributor]} uploadProcess={uploadNewArticle} />
             </Activity>
             <Activity mode={schema.length === 0 ? "visible" : "hidden"}>
                 <InspireBox />
@@ -87,7 +113,7 @@ function ContributionPage(): ReactElement {
                             [&>.content-box]:border-l-5 [&>.content-box]:border-[rgb(0,175,255)]
                             [&>.content-box]:has-[.delete-btn:hover]:bg-red-200
                             [&>.content-box]:transition-colors [&>.content-box]:duration-200 [&>.content-box]:ease-in-out
-                            ${!light && "bg-gray-700/50 [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white"}`}>
+                            ${!light && "bg-gray-700/50! [&_span]:text-white/20 [&_label]:border-white [&_textarea]:text-white [&_label]:bg-gray-700 [&_textarea]:bg-gray-700 [&_button]:text-white"}`}>
                 {schema.map((block: ResObject, index: number) => (
                     <ContentBlock
                         key={index}
@@ -101,36 +127,11 @@ function ContributionPage(): ReactElement {
             <button
                 title="Upload article"
                 style={{ display: schema.length === 0 ? "none" : "block" }}
-                onClick={async () => {
-                    if (loading) return; // If it's still in loading process, return
-                    if (contributor.user === "") { setContributor({ ...contributor, show: true }); return; }
-                    setLoading(true); // Set loading to true
-                    // Await to validate all things before uploading
-                    const validate: any = await uploadArticleInit(article, schema, { user: contributor.user, summary: contributor.summary, modify_logs: modifyLogs });
-                    if (validate.passed) { // If all validation is success
-                        successToastNotify(validate.message);
-                        // Set delay before redirecting to the page
-                        setTimeout(() => { setLoading(false); window.location.replace(`/wiki/${article.title.replaceAll(" ", "_")}`); }, 3000);
-                    } else { // If something isn't valid when validating
-                        setLoading(false);
-                        if (validate.index === undefined) errorToastNotify(validate.message);
-                        else {
-                            if (!schemaElement.current) return; // Check if schema element ref is undefined and return
-                            errorToastNotify(`${validate.message} at content ${validate.index + 1}`);
-                            // Get all children of schema container parent element
-                            const children: HTMLCollection = schemaElement.current.children;
-                            // Scroll to invalid content value index
-                            children[validate.index].scrollIntoView({ behavior: "smooth", block: "center" });
-                            // Set the invalid content 'is_empty' property to true
-                            handleInputChange(validate.index, "is_empty", true, setSchema);
-                        }
-                    }
-                }}
+                onClick={async () => setContributor({ ...contributor, show: true })}
                 className="w-[40%] mt-5 mr-auto ml-auto p-2 font-bold text-[1.2em] block rounded-[5px]
                             text-white border-none bg-[rgb(0,175,255)]
-                            hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white">
-                Upload
-            </button>
+                            hover:bg-[rgb(0,155,235)] active:text-[rgb(0,175,255)] active:bg-white"
+            >Upload</button>
             <ContentToolbar setSchema={setSchema} light={light} />
             <BlockMenu />
             <ToastContainer

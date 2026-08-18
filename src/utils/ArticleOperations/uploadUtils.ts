@@ -2,7 +2,7 @@ import { Schema, ResObject, ArticleConfig, History, ModifyAction, TimeAndDate } 
 import { checkArticleValues, getCurrentDate, filtration } from "../articleUtils";
 import { checkContentValues } from "../ContentBlocks/contentUtils";
 import { uploadPackage, uploadToCloud } from "../storageUtils";
-import { uploadArticleWiki, getUniversalId, increaseUniversalId } from "../databaseUtils";
+import { uploadArticleWiki, checkArticleTitle, getUniversalId, increaseUniversalId } from "../databaseUtils";
 import { processMessage } from "../processUtils";
 
 interface Configs {
@@ -27,6 +27,9 @@ export default async function uploadArticleInit(article: ArticleConfig, schema: 
 
     const checkValues: ResObject = checkArticleValues(article); // Check article general values
     if (!checkValues.passed) return processMessage(false, checkValues.message);
+
+    const titleExist: ResObject = await checkArticleTitle(article.title.toLowerCase().replaceAll(" ", "")); // Check if title is exist
+    if (titleExist.is_exist) return processMessage(false, "Article title is already exist!");
 
     const checkContents: ResObject = checkContentValues(cloneSchema); // Check content values
     if (!checkContents.passed) return processMessage(false, checkContents.message, checkContents.index);
