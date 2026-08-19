@@ -28,7 +28,8 @@ export function PrimaryParser({ block, expandContent }: PrimaryProps): React.JSX
         <div>
             <div
                 onClick={(e) => expandContent(e.currentTarget)}
-                className="my-3 py-1 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)] active:bg-gray-500/10">
+                className="my-2 pb-2 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)] active:bg-gray-500/10"
+            >
                 <WikiRenderer block={block[0]} />
                 <span className="text-[1.3em]"><i className="fa-solid fa-angle-down"></i></span>
             </div>

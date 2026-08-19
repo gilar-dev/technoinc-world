@@ -228,7 +228,7 @@ function ContributionEditPage(): React.JSX.Element {
                                 if (deleteInput !== contentID.toLowerCase().replaceAll(" ", "_")) return;
                                 if (loading) return;
                                 setLoading(true)
-                                const result: any = await deleleArticleInit(article.id);
+                                const result: any = await deleleArticleInit(article.title.toLowerCase());
                                 if (result.passed) {
                                     successToastNotify(result.message)
                                     setTimeout(() => {

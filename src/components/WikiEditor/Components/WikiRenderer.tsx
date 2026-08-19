@@ -28,14 +28,14 @@ function WikiRenderer({ block }: PropTypes): React.JSX.Element {
 
         case "gen-subheading-type":
             return (
-                <h2 className="mb-2 font-['Inter'] font-medium text-[18px]">
+                <h2 className="mb-2 font-['Inter'] font-medium text-[19px]">
                     {block.subheading}
                 </h2>
             );
 
         case "gen-paragraph-type":
             return (
-                <p className="mb-3 font-['Inter'] font-light text-[15px] leading-relaxed whitespace-pre-wrap">
+                <p className="mb-3 font-['Inter'] font-normal text-[15px] leading-relaxed whitespace-pre-wrap">
                     <TextParser content={block.text} />
                 </p>
             );
