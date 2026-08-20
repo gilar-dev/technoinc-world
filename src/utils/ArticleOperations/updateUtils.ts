@@ -1,9 +1,9 @@
 import { Schema, PublicID, ResObject, ArticleConfig, History, ModifyAction, TimeAndDate } from "../typesUtils";
-import { filtration, getCurrentDate } from "../articleUtils";
+import { filtration, createDate } from "../articleUtils";
 import { checkContentValues } from "../ContentBlocks/contentUtils";
 import { processMessage } from "../processUtils";
 import { uploadPackage, uploadToCloud, deleteAssets } from "../storageUtils";
-import { updateArticleWiki } from "../databaseUtils";
+import { getArticleWiki, updateArticleWiki } from "../databaseUtils";
 
 // Add essential configurations
 interface Configs {
@@ -26,11 +26,14 @@ export default async function updateArticleInit(articleData: ArticleConfig, conf
 
     const cloneSchema: Schema = structuredClone<Schema>(configs.schema); // Store schema by cloning it
 
+    const latestVersion: ResObject = await getArticleWiki(articleData.title.toLowerCase());
+    if (latestVersion.article.version !== articleData.version) return processMessage(false, "Article just got edited recently with latest version");
+
     const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
     if (!checkContents.passed) return processMessage(false, checkContents.message, checkContents.index);
     // Check delete image assets
     if (configs.pendingDelete.length !== 0) {
-        const deleteProcess: ResObject = await deleteAssets(configs.pendingDelete);
+        const deleteProcess: ResObject = await deleteAssets(`Article_`, configs.pendingDelete, false);
         if (!deleteProcess) return processMessage(false, "Failed to delete previous assets");
     }
     const modifiedSchema: Schema | undefined = await getImagesToUpload(articleData.id, cloneSchema); // Bulk delete and upload new assets
@@ -43,7 +46,6 @@ export default async function updateArticleInit(articleData: ArticleConfig, conf
         history: [...articleData.history, createNewHistory(configs)],
         wiki_content: filtration(cloneSchema)
     }
-    console.log(createNewHistory(configs));
     const updateArticle: ResObject = await updateArticleWiki(updateFinalArticle);
     if (!updateArticle) return processMessage(false, "Failed to update article");
 
@@ -80,13 +82,11 @@ async function getImagesToUpload(articleId: number, schema: Schema): Promise<any
 
 // Create new revision history of article
 function createNewHistory(configs: Configs): History {
-    const date: TimeAndDate = getCurrentDate(); 
     return {
         status: "edited",
         user: configs.user,
         summary: configs.summary,
-        date: [date.date, date.month, date.year],
-        time: [date.hour, date.minute],
+        date: createDate(),
         modify_logs: configs.modify_logs
     }
 }

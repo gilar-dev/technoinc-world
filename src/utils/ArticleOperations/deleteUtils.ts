@@ -17,10 +17,10 @@ export default async function deleleArticleInit(articleTitle: string): Promise<R
 
     // If length is not 0, delete its assets first
     if (getImages.length !== 0) {
-        if (! await deleteAssets(`Article_${getArticle.article.id}`, getImages.map((pid: ResObject) => pid.public_id))) return processMessage(false, "Failed to delete assets");
+        if (! await deleteAssets(`Article_${getArticle.article.id}`, getImages.map((pid: ResObject) => pid.public_id), false)) return processMessage(false, "Failed to delete assets");
     }
     // Delete article cover image by using its public id
-    if (! await deleteAssets(`Article_${getArticle.article.id}`, [getArticle.article.public_id])) return processMessage(false, "Failed to delete article cover assets");
+    if (! await deleteAssets(`Article_${getArticle.article.id}`, [getArticle.article.public_id], true)) return processMessage(false, "Failed to delete article cover assets");
     // Lastly, delete article wiki from database
     if (! await deleteArticleWiki(getArticle.article.id)) return processMessage(false, "Failed to delete article wiki");
 

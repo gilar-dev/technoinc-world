@@ -17,35 +17,24 @@ export function sterilizedWord(word: string): string {
 }
 
 // Create time and date for article history
-export function getCurrentDate(): TimeAndDate {
-    // Time section
-    const currentDate: Date = new Date();
-    const hours: number = currentDate.getHours();
-    const minutes: number = currentDate.getMinutes();
-    // Date section
-    const months: string[] = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "Novermber",
-        "December"
-    ];
-    const date: number = currentDate.getDate();
-    const month: number = currentDate.getMonth();
-    const year: number = currentDate.getFullYear();
+export function createDate(): string {
+    const date: Date = new Date();
+    const year: number = date.getFullYear();
+    const month: number = date.getMonth() + 1;
+    const dateValue: number = date.getDate();
+    const hour: number = date.getHours();
+    const minute: number = date.getMinutes();
+    const second: number = date.getSeconds();
+    return `${year}/${month}/${dateValue}, ${hour}:${minute}:${second}`;
+}
+
+export function parseDate(date: string): TimeAndDate {
+    const splitedDate: string[] = date.split(", ");
+    const getDateData: string[] = splitedDate[0].split("/");
+    const getTimeData: string[] = splitedDate[1].split(":");
     return {
-        hour: `${hours < 10 ? `0${hours}` : `${hours}`}`,
-        minute: `${minutes < 10 ? `0${minutes}` : `${minutes}`}`,
-        date: `${date}`,
-        month: `${months[month]}`,
-        year: `${year}`
+        date: [Number(getDateData[0]), Number(getDateData[1]), Number(getDateData[2])],
+        time: [Number(getTimeData[0]), Number(getTimeData[1]), Number(getTimeData[2])]
     }
 }
 

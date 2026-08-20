@@ -28,12 +28,12 @@ export function PrimaryParser({ block, expandContent }: PrimaryProps): React.JSX
         <div>
             <div
                 onClick={(e) => expandContent(e.currentTarget)}
-                className="my-2 pb-2 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)] active:bg-gray-500/10"
+                className="py-2 flex justify-between items-center gap-2 border-b border-[rgb(85,85,85)] active:bg-gray-500/10"
             >
                 <WikiRenderer block={block[0]} />
                 <span className="text-[1.3em]"><i className="fa-solid fa-angle-down"></i></span>
             </div>
-            <div className="hidden">
+            <div className="hidden pt-2">
                 {block.map((subBlock: any, subIndex: number) => {
                     if (!isArray(subBlock) && subBlock.type !== "gen-heading-type") return (
                         <WikiRenderer key={subIndex} block={subBlock} />

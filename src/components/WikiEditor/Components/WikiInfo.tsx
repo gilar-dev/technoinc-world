@@ -1,6 +1,6 @@
-import { History } from "../../../utils/typesUtils";
+import { History, TimeAndDate } from "../../../utils/typesUtils";
 import { Config } from "../../../utils/contextUtils";
-import { getCurrentDate } from "../../../utils/articleUtils";
+import { createDate, parseDate } from "../../../utils/articleUtils";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import "../../../css/DynamicPage.css";
@@ -20,32 +20,30 @@ function WikiInfo({ articleTitle, categories, modifyInfo }: PropTypes): React.JS
     const { light } = useContext<ContextTypes>(Config);
 
     // History date informations
-    const modifyStatus: string = modifyInfo.status;
-    const date: string[] = modifyInfo.date;
-    const time: string[] = modifyInfo.time;
-
-    // Current date informations
-    const currentDate: string = getCurrentDate().date;
-    const currentMonth: string = getCurrentDate().month;
-    const currentYear: string = getCurrentDate().year;
+    const modifiedStatus: string = modifyInfo.status;
+    const modifiedDate: TimeAndDate = parseDate(modifyInfo.date);
+    const currentDate: TimeAndDate = parseDate(createDate());
 
     // Check if latest modify date is still within a week
-    const modifiedDate = (): string => {
-        const dateRange: number = Number(currentDate) - Number(date[0]);
-        if (currentDate === date[0] && currentMonth === date[1] && currentYear === date[2]) return "today";
-        else if (currentMonth === date[1]) return `${dateRange === 1 ? "yesterday" : `${dateRange} days ago`}`;
-        else return `on ${date[0]} ${date[1]} ${date[2]}`;
+    const getDateInfo = (): string => {
+        const dateRange: number = currentDate.date[2] - modifiedDate.date[2];
+        const months: string[] = [
+            "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novermber", "December"
+        ];
+        if (!currentDate.date.some((item: number, index: number) => item !== modifiedDate.date[index])) return "today";
+        else if (currentDate.date[1] === modifiedDate.date[1]) return `${dateRange === 1 ? "yesterday" : `${dateRange} days ago`}`;
+        else return `on ${modifiedDate.date[2]} ${months[modifiedDate.date[1] - 1]} ${modifiedDate.date[0]}`;
     }
 
     return (
         <div className={`pb-3 bg-gray-300 ${!light && "bg-gray-700"}`}>
             <Link to={`/wiki/${articleTitle.replaceAll(" ", "_")}/history`}
                 className={`group p-3 cursor-pointer font-['Inter'] leading-relaxed flex items-center gap-3 border-t border-b border-gray-500 text-black
-                    ${!light && "text-white"} ${modifiedDate() === "today" && "bg-blue-500"}`}
+                    ${!light && "text-white"} ${getDateInfo() === "today" && "text-white bg-blue-500"}`}
             >
                 <i className="fa-solid fa-clock-rotate-left"></i>
                 <span className="group-hover:underline font-medium text-[14px]">
-                    This page was {modifyStatus === "created" ? "created" : "last edited"} {modifiedDate()}, at {`${time[0]}.${time[1]}`}.
+                    This page was {modifiedStatus === "created" ? "created" : "last edited"} {getDateInfo()}, at {`${modifiedDate.time[0]}.${modifiedDate.time[1]}`}.
                 </span>
                 <i className="fa-solid fa-angle-right ml-auto"></i>
             </Link>

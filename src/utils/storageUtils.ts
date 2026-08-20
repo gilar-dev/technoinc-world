@@ -1,13 +1,13 @@
 import { API, PublicID, ResObject, UploadConfig } from "./typesUtils";
 
 // Delete assets from cloudinary using array of public ids
-export async function deleteAssets(folderName: string, publicIDs: PublicID): Promise<any> {
+export async function deleteAssets(folderName: string, publicIDs: PublicID, deleteFolder: boolean): Promise<any> {
     try {
         // Fetch request to backend for deleting cloud assets
         const response: Response = await fetch(`${API}/api/v1/cloudinary/delete`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ folder_name: folderName, public_ids: publicIDs })
+            body: JSON.stringify({ folder_name: folderName, public_ids: publicIDs, delete_folder: deleteFolder })
         });
         // If response is not ok, throw error
         if (!response.ok) throw new Error(`${response}`);

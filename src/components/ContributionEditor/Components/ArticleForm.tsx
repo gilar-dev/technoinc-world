@@ -92,6 +92,9 @@ function ArticleForm({ article, light, states }: PropTypes): React.JSX.Element {
                     Choose Cover
                 </label>
             </div>
+            <div className="font-['Inter'] opacity-50">
+                <span>Version {article.version}</span>
+            </div>
         </div>
     );
 }

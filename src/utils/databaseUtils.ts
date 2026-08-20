@@ -18,10 +18,10 @@ export async function checkArticleTitle(articleTitle: string): Promise<any> {
 }
 
 // Get article wiki from database
-export async function getArticleWiki(articleTitle: string): Promise<any> {
+export async function getArticleWiki(articleTitle: string, option: string = ""): Promise<any> {
     try {
         // Fetch request to backend for getting article wiki
-        const response: Response = await fetch(`${API}/api/v1/wiki/get/${articleTitle}`);
+        const response: Response = await fetch(`${API}/api/v1/wiki/get/${articleTitle}${option !== "" ? `?option=${option}` : ""}`);
         // If response is not ok, throw error
         if (!response.ok) throw new Error(`${response}`);
 

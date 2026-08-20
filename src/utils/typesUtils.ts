@@ -14,6 +14,7 @@ export interface UploadConfig {
 export interface ArticleConfig {
     title: string;
     id: number;
+    version: number;
     description: string;
     raw_cover: File | undefined; // Temporary
     cover: string;
@@ -26,19 +27,15 @@ export interface ArticleConfig {
 }
 
 export interface TimeAndDate {
-    hour: string;
-    minute: string;
-    date: string;
-    month: string;
-    year: string;
+    date: [number, number, number];
+    time: [number, number, number];
 }
 
 export interface History {
     status: "created" | "edited";
     user: string;
     summary: string;
-    time: [string, string];
-    date: [string, string, string];
+    date: string;
     modify_logs: ModifyAction[];
 }
 
@@ -52,6 +49,7 @@ export const API: string = import.meta.env.VITE_API;
 export const ArticleTemplate: ArticleConfig = {
     title: "",
     id: 0,
+    version: 0,
     description: "",
     raw_cover: undefined, // Temporary
     cover: "",

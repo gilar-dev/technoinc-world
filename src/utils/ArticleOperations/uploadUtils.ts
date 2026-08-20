@@ -1,5 +1,5 @@
 import { Schema, ResObject, ArticleConfig, History, ModifyAction, TimeAndDate } from "../typesUtils";
-import { checkArticleValues, getCurrentDate, filtration } from "../articleUtils";
+import { checkArticleValues, createDate, filtration } from "../articleUtils";
 import { checkContentValues } from "../ContentBlocks/contentUtils";
 import { uploadPackage, uploadToCloud } from "../storageUtils";
 import { uploadArticleWiki, checkArticleTitle, getUniversalId, increaseUniversalId } from "../databaseUtils";
@@ -91,13 +91,11 @@ async function getImagesToUpload(articleId: number, schema: Schema): Promise<any
 
 // Create current date validation
 function createNewHistory(configs: Configs): History {
-    const dateNow: TimeAndDate = getCurrentDate();
     return {
         status: "created",
         user: configs.user,
         summary: configs.summary,
-        time: [dateNow.hour, dateNow.minute],
-        date: [dateNow.date, dateNow.month, dateNow.year],
+        date: createDate(),
         modify_logs: configs.modify_logs
     }
 }
