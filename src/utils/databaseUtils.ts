@@ -21,7 +21,7 @@ export async function checkArticleTitle(articleTitle: string): Promise<any> {
 export async function getArticleWiki(articleTitle: string, option: string = ""): Promise<any> {
     try {
         // Fetch request to backend for getting article wiki
-        const response: Response = await fetch(`${API}/api/v1/wiki/get/${articleTitle}${option !== "" ? `?option=${option}` : ""}`);
+        const response: Response = await fetch(`${API}/api/v1/wiki/get/${articleTitle}?option=${option}`);
         // If response is not ok, throw error
         if (!response.ok) throw new Error(`${response}`);
 
@@ -160,13 +160,13 @@ export async function deleteArticleWiki(articleId: number): Promise<any> {
 }
 
 // Update increase article using its id
-export async function increaseArticleVisited(articleId: string): Promise<any> {
+export async function increaseArticleVisited(articleId: number): Promise<any> {
     try {
         // Fetch request to backend for increasing article visited value
         const response: Response = await fetch(`${API}/api/v1/wiki/view`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: articleId })
+            body: JSON.stringify({ article_id: articleId })
         });
 
         // If response is not ok, throw error

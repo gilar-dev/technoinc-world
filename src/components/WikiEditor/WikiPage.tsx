@@ -3,7 +3,6 @@ import Loading from "../Loading";
 import NotFound from "../NotFound";
 import TitleBox from "./Components/TitleBox";
 import ActionToolbar from "./Components/ActionToolbar";
-import ContentParser from "./Components/ContentParser";
 import WikiParser from "./Components/WIkiParser";
 import ImageGallery from "./Components/ImageGallery";
 import WikiInfo from "./Components/WikiInfo";
@@ -12,7 +11,7 @@ import Footer from "../Footer";
 import { Schema, ResObject, API, ArticleConfig, ArticleTemplate } from "../../utils/typesUtils";
 import { Config } from "../../utils/contextUtils";
 import { checkAndRegisterViewWithCookie } from "../../utils/articleUtils";
-import { increaseArticleVisited } from "../../utils/databaseUtils";
+import { getArticleWiki, increaseArticleVisited } from "../../utils/databaseUtils";
 
 import { Activity, useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -46,28 +45,27 @@ function WikiPage(): React.JSX.Element {
     const [imageGallery, setImageGallery] = useState<boolean>(false);
     const [light, setLight] = useState<boolean>("light" === localStorage.getItem("technoinc-theme"));
 
-    const processToIncreaseView = async (): Promise<void> => {
+    const processToIncreaseView = async (articleId: number): Promise<void> => {
         // Check if content id is not undefined and its value is not empty
         if (contentID) {
             // Check and register view with cookie if not exist
             const isNewVisit: boolean = checkAndRegisterViewWithCookie(contentID);
             if (isNewVisit) {
                 // If new visit, increase the visited value of current article
-                await increaseArticleVisited(contentID.toLowerCase());
+                await increaseArticleVisited(articleId);
             }
         }
     }
 
     useEffect(() => {
         if (!contentID) return;
-        const filteredContentId = contentID.replaceAll("_", " ").toLowerCase();
-
         const fetchData = async () => {
             setLoading(true);
-            await processToIncreaseView(); // Check if article is already visited and process increasing visited value
+            const articleID: any = await getArticleWiki(contentID, "id");
+            await processToIncreaseView(articleID.article);
             try {
                 // Fetch request to backend server
-                const response: Response = await fetch(`${API}/api/v1/wiki/get/${filteredContentId}`);
+                const response: Response = await fetch(`${API}/api/v1/wiki/get/${contentID}`);
                 // If response is not ok, throw error
                 if (!response.ok) throw new Error(`${response}`);
 
@@ -76,19 +74,13 @@ function WikiPage(): React.JSX.Element {
                 const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
                 titleTag.textContent = `${result.article.title} - TechnoInc MC Wiki`;
 
-                // Check if contentId does not equal to article title then redirected
-                if (contentID.replaceAll("_", " ") !== result.article.title) {
-                    window.location.replace(`/wiki/${result.article.title.replaceAll(" ", "_")}`);
-                }
-
                 setIsExist(true);
-                setLoading(false);
                 setArticleData(result.article);
-
             } catch (error) {
                 setIsExist(false);
-                setLoading(false);
                 console.error(error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -106,16 +98,6 @@ function WikiPage(): React.JSX.Element {
                 <TitleBox article={articleData} />
                 <ActionToolbar visited={articleData.visited} />
             </Activity>
-            {articleData.wiki_content.map((block: ResObject, index: number) => (
-                <ContentParser
-                    key={index}
-                    index={index}
-                    content={articleData.wiki_content}
-                    block={block}
-                    menuContent={menuContent}
-                    setShowed={setShowed}
-                    setImageContainer={setImageGallery} />
-            ))}
             <WikiParser schema={articleData.wiki_content} />
             <ImageGallery
                 images={getImages}

@@ -24,10 +24,10 @@ interface Configs {
  */
 export default async function updateArticleInit(articleData: ArticleConfig, configs: Configs): Promise<ResObject> {
 
-    const cloneSchema: Schema = structuredClone<Schema>(configs.schema); // Store schema by cloning it
+    const cloneSchema = structuredClone<Schema>(configs.schema); // Store schema by cloning it
 
-    const latestVersion: ResObject = await getArticleWiki(articleData.title.toLowerCase());
-    if (latestVersion.article.version !== articleData.version) return processMessage(false, "Article just got edited recently with latest version");
+    const latestVersion: ResObject = await getArticleWiki(articleData.title.toLowerCase(), "version");
+    if (latestVersion.article !== articleData.version) return processMessage(false, "Article just got edited recently with latest version");
 
     const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
     if (!checkContents.passed) return processMessage(false, checkContents.message, checkContents.index);
@@ -41,10 +41,11 @@ export default async function updateArticleInit(articleData: ArticleConfig, conf
     if (!modifiedSchema) return processMessage(false, "Failed to upload assets to cloud");
 
     // Wait for the update article to database result
+    const modifiedHistory: History[] | false = articleData.history.length >= 5 && [...articleData.history.toSpliced(1, 1), createNewHistory(configs)];
     const updateFinalArticle: ArticleConfig = {
         ...articleData,
-        history: [...articleData.history, createNewHistory(configs)],
-        wiki_content: filtration(cloneSchema)
+        history: modifiedHistory ? modifiedHistory : [...articleData.history, createNewHistory(configs)],
+        wiki_content: filtration(modifiedSchema)
     }
     const updateArticle: ResObject = await updateArticleWiki(updateFinalArticle);
     if (!updateArticle) return processMessage(false, "Failed to update article");

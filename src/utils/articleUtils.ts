@@ -91,15 +91,15 @@ export function filtration(schema: Schema): Schema {
 }
 
 // Check and register user view based on cookie in their browser
-export function checkAndRegisterViewWithCookie(articleId: string): boolean {
-    const cookieName: string = `visited_art_${articleId}`;
+export function checkAndRegisterViewWithCookie(articleTitle: string): boolean {
+    const cookieName: string = `visited_art_${articleTitle.replaceAll(" ", "_")}`;
     // Check if cookie with article id is exist in the browser
     const cookies: string[] = document.cookie.split("; ");
     const cookieExists: boolean = cookies.some((row: string) => row.startsWith(`${cookieName}=`));
     // If cookie exists, it's not been 2 hours yet and return false
     if (cookieExists) return false;
     // If doesn't exist, it's been 2 hours and a new visit
-    const maxAgeSeconds: number = 60 * 30;
+    const maxAgeSeconds: number = 60 * 120; // (seconds) * (minutes)
     document.cookie = `${cookieName}=true; max-age=${maxAgeSeconds}; path=/; SameSite=Lax`;
     return true;
 }

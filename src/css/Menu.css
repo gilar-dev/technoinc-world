@@ -7,6 +7,7 @@
 .menu-panel.light {
     background-color: var(--light-theme-color);
 }
+
 .menu-panel.dark {
     background-color: var(--dark-theme-color);
 }
@@ -32,11 +33,11 @@
 }
 
 .light .menu-box {
-    background-color: rgb(20, 30, 50);
+    background-color: #141e32;
 }
 
 .dark .menu-box {
-    background-color: rgb(36, 14, 30);
+    background-color: #240e1e;
 }
 
 .menu-box #menu-btn {
@@ -70,9 +71,11 @@
     border-bottom-right-radius: 20px;
     transition: transform ease .5s, background-color ease .5s;
 }
+
 .light .sidebar-menu {
     background-color: var(--light-theme-color);
 }
+
 .light .sidebar-panel,
 .light #sidebar-close-btn,
 .light .sidebar-list,
@@ -82,9 +85,11 @@
     color: #000;
     transition: color ease .5s;
 }
+
 .dark .sidebar-menu {
     background-color: var(--dark-theme-color);
 }
+
 .dark .sidebar-panel,
 .dark #sidebar-close-btn,
 .dark .sidebar-list,
@@ -120,9 +125,11 @@
 .sidebar-panel #sidebar-close-btn:hover {
     color: rgb(125, 125, 125);
 }
+
 .sidebar-menu.active {
     transform: translateX(0);
 }
+
 .sidebar-menu.active #sidebar-close-btn {
     transform: rotateZ(180deg)
 }
@@ -150,9 +157,11 @@
     align-items: center;
     border-radius: 10px;
 }
+
 .light .sidebar-list .list-title {
     background-color: rgb(210, 205, 175);
 }
+
 .dark .sidebar-list .list-title {
     background-color: rgb(35, 45, 65);
 }

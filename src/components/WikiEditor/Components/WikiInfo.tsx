@@ -43,7 +43,7 @@ function WikiInfo({ articleTitle, categories, modifyInfo }: PropTypes): React.JS
             >
                 <i className="fa-solid fa-clock-rotate-left"></i>
                 <span className="group-hover:underline font-medium text-[14px]">
-                    This page was {modifiedStatus === "created" ? "created" : "last edited"} {getDateInfo()}, at {`${modifiedDate.time[0]}.${modifiedDate.time[1]}`}.
+                    This page was {modifiedStatus === "created" ? "created" : "last edited"} {getDateInfo()}, at {`${modifiedDate.time[0]}.${modifiedDate.time[1] < 10 ? "0" : ""}${modifiedDate.time[1]}`}.
                 </span>
                 <i className="fa-solid fa-angle-right ml-auto"></i>
             </Link>

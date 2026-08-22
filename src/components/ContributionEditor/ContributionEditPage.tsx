@@ -50,19 +50,16 @@ function ContributionEditPage(): React.JSX.Element {
 
     // Toast success
     const successToastNotify = (message: string): Id => toast.success(message, {
-        className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
+        className: `shadow-2xs! shadow-black! ${light ? "text-black! bg-white!" : "text-white! bg-gray-700!"}`
     });
     // Toast error
     const errorToastNotify = (message: string): Id => toast.error(message, {
-        className: `!shadow-2xs !shadow-black ${light ? "!text-black !bg-white" : "!text-white !bg-gray-700"}`
+        className: `shadow-2xs! shadow-black! ${light ? "text-black! bg-white!" : "text-white! bg-gray-700!"}`
     });
 
     const updateArticle = async (): Promise<void> => {
         if (loading) return;
-        if (contributor.user === "") {
-            setContributor({ ...contributor, show: true });
-            return;
-        }
+        if (contributor.user === "") { setContributor({ ...contributor, show: true }); return; }
         setLoading(true);
         const update: any = await updateArticleInit(article, {
             schema: schema,
@@ -73,7 +70,7 @@ function ContributionEditPage(): React.JSX.Element {
         });
         if (update.passed) {
             successToastNotify(update.message);
-            setTimeout(() => setLoading(false), 3000);
+            setTimeout(() => { setLoading(false); window.location.replace(`/wiki/${article.title.replaceAll(" ", "_")}`) }, 3000);
         } else {
             setLoading(false);
             if (update.index === undefined) errorToastNotify(update.message);

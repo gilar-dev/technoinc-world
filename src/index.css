@@ -7,8 +7,8 @@
 
 :root {
     /* Self local variables */
-    --light-theme-color: rgb(235, 225, 210);
-    --dark-theme-color: rgb(20, 30, 50);
+    --light-theme-color: #ebe1d2;
+    --dark-theme-color: #141e32;
 }
 
 * {
