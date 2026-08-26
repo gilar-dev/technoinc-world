@@ -95,16 +95,15 @@ function ContributionEditPage(): React.JSX.Element {
     }
 
     useEffect(() => {
-
+        if (!contentID) return;
         const titleTag: HTMLTitleElement = document.getElementsByTagName("title")[0];
         titleTag.textContent = "Edit Article - TechnoInc MC Wiki";
-        const filteredContentId: string = (contentID as string).replaceAll("_", " ").toLowerCase();
 
         // Get wiki article from db
         const fetchData = async () => {
             try {
                 // Get article from category & article is
-                const response: Response = await fetch(`${API}/api/v1/wiki/get/${filteredContentId}`)
+                const response: Response = await fetch(`${API}/api/v1/wiki/get/${contentID}`)
                 // If response is not ok, throw error
                 if (!response.ok) throw new Error(`${response}`);
 

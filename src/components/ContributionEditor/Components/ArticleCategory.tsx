@@ -102,6 +102,7 @@ function ArticleCategory({ addToggle }: PropTypes): React.JSX.Element {
                                             setSearch("");
                                             setMatches([]);
                                             addToggle(false);
+                                            setCreateNewCat(false);
                                             return setArticle((prev: ArticleConfig) => ({ ...prev, category: [...prev.category, newCat] }));
                                         }
                                         if (article.category.some((cat: string) => cat === data.category)) return;

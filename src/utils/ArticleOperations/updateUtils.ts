@@ -26,7 +26,7 @@ export default async function updateArticleInit(articleData: ArticleConfig, conf
 
     const cloneSchema = structuredClone<Schema>(configs.schema); // Store schema by cloning it
 
-    const latestVersion: ResObject = await getArticleWiki(articleData.title.toLowerCase(), "version");
+    const latestVersion: ResObject = await getArticleWiki(articleData.title.replaceAll(" ", "_"), "version");
     if (latestVersion.article !== articleData.version) return processMessage(false, "Article just got edited recently with latest version");
 
     const checkContents: ResObject = checkContentValues(cloneSchema); // Check if all content values are not empty
@@ -41,7 +41,7 @@ export default async function updateArticleInit(articleData: ArticleConfig, conf
     if (!modifiedSchema) return processMessage(false, "Failed to upload assets to cloud");
 
     // Wait for the update article to database result
-    const modifiedHistory: History[] | false = articleData.history.length >= 5 && [...articleData.history.toSpliced(1, 1), createNewHistory(configs)];
+    const modifiedHistory: History[] | false = articleData.history.length >= 10 && [...articleData.history.toSpliced(1, 1), createNewHistory(configs)];
     const updateFinalArticle: ArticleConfig = {
         ...articleData,
         history: modifiedHistory ? modifiedHistory : [...articleData.history, createNewHistory(configs)],

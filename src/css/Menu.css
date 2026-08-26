@@ -159,11 +159,11 @@
 }
 
 .light .sidebar-list .list-title {
-    background-color: rgb(210, 205, 175);
+    background-color: #d2cdaf;
 }
 
 .dark .sidebar-list .list-title {
-    background-color: rgb(35, 45, 65);
+    background-color: #232d41;
 }
 
 .sidebar-list .list-title .dropdown-icon {
