@@ -107,7 +107,7 @@ function WikiRenderer({ block }: PropTypes): React.JSX.Element {
                                     setShowed(block.src);
                                     setImageGallery(true);
                                 }}
-                                className="max-w-[80vw] max-h-[22em] transition-transform ease-in-out duration-500 hover:scale-[110%]" />
+                                className="min-w-[60vw] max-w-[80vw] max-h-[22em] transition-transform ease-in-out duration-500 hover:scale-[110%]" />
                             <span className="p-1.25 text-[10px] absolute bottom-2 right-2 self-end rounded-full text-white bg-black/50">
                                 <i className="fa-regular fa-clone"></i>
                             </span>
