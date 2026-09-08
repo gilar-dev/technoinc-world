@@ -16,12 +16,12 @@ interface MenuProps {
 }
 
 function Menu({
-    wikiTitle="",
-    selected="",
-    setReplace=false,
-    contribution=true,
-    search=false,
-    menuContent=[],
+    wikiTitle = "",
+    selected = "",
+    setReplace = false,
+    contribution = true,
+    search = false,
+    menuContent = [],
     setSearch,
     setLight
 }: MenuProps): ReactElement {
@@ -53,40 +53,21 @@ function Menu({
 
     // Menu effect when the page is being scrolled
     useEffect(() => {
-        
+
         const menuBox: HTMLElement = document.querySelector(".menu-box") as HTMLElement;
 
         for (let inputBox of document.querySelectorAll(".sidebar-checkbox")) {
-            (inputBox as HTMLInputElement).checked = true; 
+            (inputBox as HTMLInputElement).checked = true;
         }
 
-        const fetchData = async () => {
-            setLoading(true);
-
-            try {
-                const response: Response = await fetch(`${API}/api/v1/wiki/categories`);
-                if (!response.ok) throw new Error(`${response}`);
-                const result: ResObject = await response.json();
-
-                setCategories(result.category_list);
-                setLoading(false);
-                 
-            } catch (error) {
-                setLoading(false);
-                console.error(error);
-            }
-        }
-        
         const scrollMovement = () => {
             if (window.scrollY === 0) menuBox.style.padding = ".7em";
             else menuBox.style.padding = ".5em";
         }
 
-        fetchData();
-    
         // Add event listener to component
         window.addEventListener("scroll", scrollMovement);
-        
+
         // Remove event listener from component
         return () => {
             window.removeEventListener("scroll", scrollMovement);
@@ -119,18 +100,18 @@ function Menu({
                     {wikiTitleCheck}
                     <h6 id="title" className="unchanged">TechnoInc MC Wiki</h6>
                 </div>
-                <a href="/contribution" title="Contribution" style={{display: !contribution ? "none" : "block"}}>
+                <a href="/contribution" title="Contribution" style={{ display: !contribution ? "none" : "block" }}>
                     <i className="fa-solid fa-pen-to-square"></i>
                 </a>
                 <a
                     title="Search article to modify"
-                    style={{display: contribution || search ? "none" : "block"}}
+                    style={{ display: contribution || search ? "none" : "block" }}
                     onClick={() => setSearch?.(true)}>
                     <i className="fa-solid fa-magnifying-glass"></i>
                 </a>
                 <a
                     title="Close"
-                    style={{display: !search ? "none" : "block"}}
+                    style={{ display: !search ? "none" : "block" }}
                     onClick={() => setSearch?.(false)}>
                     <i className="fa-solid fa-xmark"></i>
                 </a>
@@ -146,7 +127,7 @@ function Menu({
                     <a href="/" title="Home">
                         <h6>TechnoInc MC Wiki</h6>
                     </a>
-                    <button 
+                    <button
                         id="sidebar-close-btn"
                         title="Close sidebar menu"
                         onClick={() => sidebarMenuClicked()}>
@@ -155,7 +136,7 @@ function Menu({
                 </div>
 
                 <div className="sidebar-list">
-                    <input id="list-category" className="sidebar-checkbox" type="checkbox"></input> 
+                    <input id="list-category" className="sidebar-checkbox" type="checkbox"></input>
                     <label className="list-title" htmlFor="list-category">
                         <span className="title">Categories</span>
                         <span className="dropdown-icon">
@@ -177,7 +158,7 @@ function Menu({
                 </div>
 
                 <div className="sidebar-list">
-                    <input id="list-featured" className="sidebar-checkbox" type="checkbox"></input> 
+                    <input id="list-featured" className="sidebar-checkbox" type="checkbox"></input>
                     <label className="list-title" htmlFor="list-featured">
                         <span className="title">Featured</span>
                         <span className="dropdown-icon">
@@ -199,9 +180,9 @@ function Menu({
                 </div>
 
                 <div
-                    style={{display: menuContent.length === 0 ? "none" : "block"}}
+                    style={{ display: menuContent.length === 0 ? "none" : "block" }}
                     className="sidebar-list">
-                    <input id="list-contents" className="sidebar-checkbox" type="checkbox"></input> 
+                    <input id="list-contents" className="sidebar-checkbox" type="checkbox"></input>
                     <label className="list-title" htmlFor="list-contents">
                         <span className="title">Contents</span>
                         <span className="dropdown-icon">
